@@ -1,0 +1,23 @@
+c@vmcom0  11040/bald89/weqvmom DEQVMOM
+c  rgb 07-jul-89 added mm1neq for 1D array zc1d in sbrtn vmhdeq
+c  rgb 06-jun-89 changed mm1 from 10 to 55, mtheta from 11 to 21
+c     and mnmx fro 61 to 25
+c  rgb 05-jun-89 changed mm1 from 10 to 55
+cbate        cliche vmcom0
+c
+      integer mnmoms,mneq,mnmx,mtheta,mm1,mimom,mj,mm1t,mm1neq
+c
+c..as obtained from Wieland in the TRANSP code (1989)
+c
+      parameter (mnmoms=3, mneq=6, mnmx=25, mtheta=21, mm1=55
+     & , mimom=8, mm1neq=mm1*mneq )
+c
+c..as set in ORNL/TM-7871 (1982)
+c
+c      parameter (mnmoms=3, mneq=6, mnmx=61, mtheta=11, mm1=10
+c     & , mimom=8, mj=25)
+c
+      parameter (mm1t=2*mm1+1)
+c
+cbate        endcliche
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7-c

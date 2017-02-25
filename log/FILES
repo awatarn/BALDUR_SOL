@@ -1,0 +1,92 @@
+c@FILES  .../baldur/code/bald/FILES   Bateman, PPPL
+c
+c    Source files that make up the BALDUR code:
+c
+c  d3hefus.f
+c  dauxheat.f
+c  dbeams.f
+c  default.f
+c  dempirc.f
+c  deqbald.f
+c  dfusion.f
+c  dimprad.f
+c  dio.f
+c  dislbal.f
+c  divertor.f
+c  dneocl.tex
+c  dneugas.f
+c  dolymp.f
+c  doutput.f
+c  dpellet.f
+c  dripple.f
+c  dsawmix.f
+c  dsawold.f
+c  dsawtst.tex
+c  dtheory.tex
+c  dtransp.f
+c
+c
+c      Non-equilibrium impurity radiation package from dimprad.f:
+c  ncinit.f   : initialization
+c  ncprof0.f  : initialize profiles xn, xns, cmean, and c2mean
+c
+c      Subroutines from file dolymp.f:
+c  inital.f   : define physical initial conditions
+c
+c      The subprograms from file default.f are:
+c  auxval.f   : compute auxiliary values from input data
+c  fbes.f     : Bessel function
+c  blockdta.f : set physical constants in common block cbaldr
+c  errchk.f   : check input data for errors
+c  preset.f   : set default input values
+c  units.f    : set conversion factors among units
+c  oclear.f   : clear common block comcor
+c  otable.f   : set up tables of impurity fits in common comcor
+c  ofit.f     : compute radiation loss, z-bar, and z^2-bar
+c
+c     The subprograms in this dsolver.f are:
+c  cotrol : to control run
+c  stepon : to compute one timestep
+c  coef   : compute coefficients in transport equations
+c  convrt : convert transport coefficients to aaaa, bbbb, cccc, and dddd
+c  cnvcof : convert aaaa, bbbb, cccc, dddd and eta to internal units
+c  solveb : solver equation for b-poloidal and add ohmic heating
+c  noncor : solver impurity rate equations
+c  bounds : compute boundary coefficients
+c  reduce : compute eeee and ffff, reducing eqns to first order
+c  solve  : compute chi at new timestep
+c  resolv : timestep control
+c  getchi : convert to standard units and compute derived plasma variables
+c
+c  imprad - impurity radiation package
+c
+c  labrun - labels for the BALDUR code (version number, date, ...)
+c
+c  main   - BALDUR program main code
+c
+c  neuset - sets default values of neutral impurity influx parameters
+c  neudep - calculates neutral impurity influx deposition profile
+c
+c    Impurity Rate Equations subroutines:
+c
+c  ncinit - initialization for the non-equilibrium impurity radiation
+c  ncprof0 - initialize the impurity states profiles
+c  ncdata - sets input data
+c  ncsorc - calculates source deposition profile
+c  ncrats - calculates reaction and radiation rates
+c  ncdifu - calculates diffusion and drift coefficients
+c  nccoef - assembles coefficients of rate balance equations
+c  ncsolv - solves tridiagonal matrix system for charge state densities
+c  nccons - totals conservation checks
+c
+c  synch  - synchrotron radiation package by S. Tamor
+c  syopac - absorbtion coefficients for the synchrotron package
+c  syedit - output routine for the synchrotron package
+c
+c    The following routines are the same synchrotron radiation package
+c    modified by Linda Sugiyama at MIT
+c
+c  syndrv - driver for tamor's synchrotron radiation package by Sugiyama
+c  synch2 - corresponds to sbrtn synch above
+c  syopac2 - corresponds to sbrtn syopac above
+c  syedit2 - corresponds to sbrtn syedit above

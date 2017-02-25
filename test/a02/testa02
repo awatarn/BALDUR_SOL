@@ -1,0 +1,356 @@
+F  0  0  0
+ testa02 Bateman 12-Sept-97 DIII-D #81499 Low kappa #1 H-mode
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ NBI = 5.92 MW B=1.9 I=1.35 nebar=4.81 Zeff=2.33
+ ITER Database shot @ t=4.00 secs
+ &nurun1
+ 
+ ! nrun=101,
+ nrun=801,
+ !
+ leqtyp=11,          !  Hirshman moments equilibrium code
+ !
+ reread = 1.47,     ! time to reread namelist
+ !
+ limprd(32) = 2,     ! cmean, c2mean, and zeff computed outside plasma
+ lsmord = 0,
+ !
+ theta=4.0,          ! implicitness parameter
+ thetap=0.0,         ! implicitness of predictor corrector scheme
+ nlextr=.F,         ! turn off extrapolation method
+ !
+ nlomt2(13)=.T,     ! skip sbrtn cmpres
+ !
+ nsedit=2,           ! short printout frequency
+ nplot=100000,       ! control plot frequency with splot below
+ !
+ errmax=.25, delmax=.25, ! maximum change per time step in any zone
+ ntrans=2,           ! include neoclassical (use chii and ware only, below)
+ nbound=3,           ! pedestal boundaries unless gradients reverse
+ !
+ cfutz(9)=1.0, 0.0,  ! simplified neoclassical hydrogen diffusion
+ cfutz(11)=2*1.00,   ! simplified neoclassical thermal diffusion
+ cfutz(19)=1.,       ! ware pinch multiplier
+ cfutz(21)=1.e2,     ! constant additive hydrogen diffusion
+ cfutz(22)=1.e2,     ! constant additive impurity diffusion
+ cfutz(23)=1.e2,     ! chi-e -> + c23
+ cfutz(24)=1.e2,     ! chi-i -> + c24
+ cfutz(35)=1.e-3,-6.,  ! d hh -> + c35 * (r/rscr)**c36
+ cfutz(38)=0.0,-6.,  ! d ii -> + c38 * (r/rscr)**c39
+ cfutz(43) = 5.0e5,5.0e5, ! max value of d and chi
+ cfutz(81)=4.,       ! flow bias parameter
+ !
+ ! natomc = 3,           ! nonequilibrium impurity radiation model
+ cfutz(110)=1.0,1.0,1.0,1.0, ! use Hawryluk-Hirshman impurity transport
+ cfutz(200) = 3.0,    ! control Zeff influxing of impurities
+ cfutz(201) = 0.040,  ! KE of neutral impurities (kev)
+ cfutz(203) = 0.18,   ! energy loss per impurity ionized (keV)
+ cfutz(207) = 2*1.0,  ! outermost zone in from edge allowing ionization
+ cfutz(209) = 2*0.90, ! max penetration for neutral impurities
+ cfutz(222) = 2*1.e16, ! max impurity influx rate cm^2/sec
+ cfutz(281)=1.2, ! for 1x chang-hinton neoclassical model, set = cfutz(410)
+ cfutz(295)=1.0, ! add to shear to avoid singularity
+ cfutz(410)=1.00,! set =extzef/<zeff> to correct couloumb interchange
+ !
+ !
+ ! replace coronal radiation model with
+ !
+ cfutz(327) = 0.25,  ! radiated power / heating power instead of .10
+ cfutz(328) = 0.00,  ! f(r=0.),
+ cfutz(329) = 0.90,  ! xzoni(jz) break to zero at edge
+ !
+ cfutz(460)=1.01,1.5,.015, ! sawtooth time on, off, period [sec]
+ !
+ cfutz(480) = 1.,  ! Bootstrap current used
+ cfutz(481) = 1.,  ! Analytic computation of trapped particle fraction
+ !
+ cimprd(2) = 5.0, ! gain for impurity feedback in sbrtn ncinfl
+ cimprd(3) = 1.0, ! gain for impurity loss rate
+ cimprd(4) = 1.0, ! coeff of zinflx in sbrtn ncinfl
+ xfutz(2)=1.732,   ! maximum time step increase
+ xfutz(6)=.5,      ! timestep control
+ !
+    ! printout ( F=print, T=omit )
+ nlpomt(1)=  .F, .F, .F, .F, .F,  ! Fe, Fi..., n_a, energy, global, diff coefs
+ nlpomt(6)=  .T, .T, .T, .T, .T,  ! , zoning, ripple, f_b(E,mu), void, sawteeth
+ nlpomt(11)= .F, .F, .T, .T, .T,  ! gas/plasma,source; beam levels,source,sum
+ nlpomt(16)= .F, .F, .F, .F, .F,  ! beam curr, H(r), tot H(r), alphas, void
+ nlpomt(21)= .F, .F, .T, .T, .T,  ! noncoronal, theory, void, void, void
+ !
+ extzef=1.0,        ! z effective
+ extf  =1.0,     ! ne/ni dilution factor
+ !
+ grecyc=0.00, ngprof=20,ngpart=200, ! recycling off wall
+ !
+ ! Multi Mode Model in sbrtn THEORY version 4.10 as of 9 May 1990
+ !
+ lthery(3)  = 4, ! use hydrogen and impurity density scale length in etaw14
+ lthery(4)  = 1, ! use neoclassical resistivity in sbrtn THEORY
+ lthery(5)  = 2, ! skip dissipative trapped electron mode
+ lthery(6)  = 1, ! min[1.1,1.1/\nu_e^*] transition to collisionless TEM
+ lthery(7)  = 27, ! Weiland ITG model etaw14 w/ 10 eqns, no collisions
+ lthery(8)  = 21, ! use effective diffusivities
+ lthery(9)  = 2, ! Linear ramp form for f_ith
+ lthery(13) = 3, ! Guzdar-Drake resistive ballooning mode (1994)
+ lthery(14) = 1, ! Single iteration for lambda in RB mode
+ lthery(15) = 0, ! Neoclassical MHD Model w/ Callen
+ lthery(16) = 0, ! Circulating electron mode
+ lthery(17) = 1, ! 1995 kinetic ballooning model
+ lthery(21) = 0, ! use sbrtn theory
+ lthery(25) = 0, ! Rebut-Lallia-Watkins model
+ lthery(26) = 310, ! time-step for diagnostic output
+ lthery(27) = 1, ! replace negative diffusivity with convective velocity
+ lthery(29) = 5, ! more printout
+ lthery(30) = 1, ! retain sign of gradient scale lengths
+ lthery(31) = 1, ! Monotonic gradient scale lengths at axis
+ lthery(32) = -4, ! smooth 1/(gradient scale lengths) over lthery(32) points
+ lthery(33) = 0, ! printout unsmoothed gradient scale lengths
+ !
+ !  misc. parameters for sub. theory
+ cthery(1)  = 1.0,     ! divertor shear on
+ cthery(8)  = 3.50,    ! for fbeta-th in kinetic ballooning
+ cthery(12) =-0.0,-4.0,-4.0,-4.0, ! k-scaling
+ cthery(17) = 0.,      ! turn off convective correction in sbrtn THEORY
+ cthery(50) = 5*10.0,  ! limit L_n ... to cthery(50) times the major radius
+ cthery(85) = 2.0,     ! Specify dia stabilization in Guzdar-Drake model
+ cthery(86) = 0.15,    ! Diamagnetic stabilization in Guzdar-Drake model
+ cthery(111) = 0.0,    ! difthi -> velthi for chi_i
+ cthery(112) = 0.0,    ! difthi -> velthi for hydrogen
+ cthery(113) = 0.0,    ! difthi -> velthi for chi_e
+ cthery(119) = 1.0,    ! coeff of finite beta in etaw14
+ cthery(121) = 1.0,    ! set fast particle fraction for use in etaw14
+ cthery(121) = 1.0,    ! set fast particle fraction for use in etaw14
+ cthery(123) = 1.0,    ! coeff of k_ii
+ cthery(124) = 0.0,    ! coeff of nuhat
+ !
+ !  contributions to fluxes and interchange(for sub. theory)
+ !
+ !particles  e-energy ion-energy
+ fdr=0.00,    0.00,    0.00,
+ fig=0.20,    0.20,    0.20,
+ fkb=1.00,    0.65,    0.65,
+ frb=1.00,    1.00,    1.00,
+ fmh=0.00,    0.00,    0.00,
+ fec=0.00,    0.00,    0.00,
+ fdrint=0.00,
+ !
+ /
+ &nurun2
+ !
+ rastar = 1.,         ! normalization for empirical model above
+ !
+ nedit=0, nskip=1, ! major printout
+ splot=0.050, ! plot every 0.050 sec
+ ! tplot=99.0
+ !
+ sedit=0.50,  ! long printout every sedit sec
+ ! tedit(1) =  2.0, 2.5, 3.0,
+ !
+ ntty=1, ! frequency of output to file short
+ !
+ tinit=0.50,
+ tmax=4.00,    ! =final dtmax/2 before diagnostic time
+ dtinit=.0002,
+ dtmax=.025,   ! timestep control
+ !
+ nzones=50,    ! number of radial zones
+ !
+ eioniz=.030,  ! energy loss for each hydrogen ioniztion (1804)
+ !
+ cpvelc=0.0,cpvion=0.0, ! energy per particle carried by convection
+    ! WARNING: The Kinsey THEORY model accounts for energy carried
+    !          by convection in its own way. Keep cpvelc and cpvion small
+ !
+ rmajor=169.30, ! variables used to initialize the 1-D BALDUR
+ rminor=50.59,
+ curent=1350.,
+ bz=19100.,
+ ! initial gas fill
+ ngas(1)= 1,denga0(1)=2.70e11,denga1(1)=1.50e11, ! Hydrogen
+ ngas(2)=-2,denga0(2)=2.67e13,denga1(2)=1.49e13, ! Deuterium
+ nimp(1)= 6,denim0(1)=1.93e12,denim1(1)=1.67e12, ! Carbon
+ ehfit = 1.50,1.50, eehfit=2.0,2.0,  ! n_H,D = n_H,D0 (1-(r/a)**eehfit)**ehfit
+ eifit = 1.50, eeifit=2.0,          ! n_C = n_C0 (1-(r/a)**eeifit)**eifit
+ ti0=2.0,ti1=.20, ! Initial Ti(r) profile
+ te0=2.0,te1=.20, ! Initial Te(r) profile
+ etefit=2.0, eeteft=1.00, ! Te = Te0 (1-(r/a)^eeteft)^etefit
+ etifit=2.0, eetift=1.00, ! Ti = Ti0 (1-(r/a)^eetift)^etifit
+ !
+ ! time dependent boundary conditions
+ bdtime =   0.5, 1.0, 1.5, 1.70, 1.80, 2.0, 2.35, 2.50,
+            2.7, 2.8, 3.0, 3.5, 4.0, 99.,               ! BC times
+ ! densities computed by the zeff code, given:
+ ! zeff(1) =      2.3300E+00,  2.3300E+00,  2.3300E+00,  2.3300E+00,  2.3300E+00,
+ !            2.3300E+00,  2.3300E+00,  2.3300E+00,  2.3300E+00,  2.3300E+00,
+ !            2.3300E+00,  2.3300E+00,  2.3300E+00,  2.3300E+00,
+ ! zdene(1) =     2.5070E+13,  2.5070E+13,  2.5714E+13,  3.6338E+13,  3.9034E+13,
+ !            4.0061E+13,  4.0061E+13,  4.0061E+13,  4.0061E+13,  4.0061E+13,
+ !            4.0061E+13,  4.0061E+13,  4.0061E+13,  4.0061E+13,
+ ! Hydrogen
+ bdhyde(1,1) =  1.8219E+11,  1.8219E+11,  1.8687E+11,  2.6408E+11,  2.8367E+11,
+            2.9114E+11,  2.9114E+11,  2.9114E+11,  2.9114E+11,  2.9114E+11,
+            2.9114E+11,  2.9114E+11,  2.9114E+11,  2.9114E+11,
+ ! Deuterium
+ bdhyde(1,2) =  1.8219E+13,  1.8219E+13,  1.8687E+13,  2.6408E+13,  2.8367E+13,
+            2.9114E+13,  2.9114E+13,  2.9114E+13,  2.9114E+13,  2.9114E+13,
+            2.9114E+13,  2.9114E+13,  2.9114E+13,  2.9114E+13,
+ ! Carbon
+ bdimpe(1,1) =  1.1114E+12,  1.1114E+12,  1.1400E+12,  1.6110E+12,  1.7305E+12,
+            1.7760E+12,  1.7760E+12,  1.7760E+12,  1.7760E+12,  1.7760E+12,
+            1.7760E+12,  1.7760E+12,  1.7760E+12,  1.7760E+12,
+ bdtie  = 3*0.20,11*0.83, ! edge Ti
+ bdtee  = 3*0.20,11*0.90, ! edge Te
+ !
+ npuff=1, ! gas puffing parameters, monitor line average density
+ tcoldp=0.83,                   ! energy of gas puffed neutrals [keV]
+ gflmax = 15*1.e19,  ! max neutral flux at nebar
+ gftime=0.0,       0.5,       1.0,       1.5,       1.7,        1.8,
+                   2.0,      2.35,       2.5,       2.7,        2.8,
+                   3.0,       3.5,       4.0       99.0, ! times
+ denmon=1.,               2*3.35e13,    3.95e13,    5.43e13,
+     5.84e13,   6.00e13,    5.90e13,    5.50e13,    5.19e13,
+     5.00e13,   4.80e13,  3*4.81e13, ! Line-avg ne
+ gfract = 15*0.01,   ! H recycling fraction
+ !
+ timp = 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 99.,  ! break times for impurity influx
+ ftzeff(1) = 2.5, 2.5, 2.33, 2.33, 2.33, 2.33, 2.33, 2.33,
+ flimp(1,1) = 1.e15,  ! impurity influx (cm^2/sec)
+ flimp(1,2) = 1.e13,  ! impurity influx (cm^2/sec)
+ flimp(1,3) = 1.e13,
+ flimp(1,4) = 1.e13,
+ flimp(1,5) = 1.e13,
+ flimp(1,6) = 1.e13,
+ flimp(1,7) = 1.e13,
+ flimp(1,8) = 1.e13,
+ !
+ tcold=.83, flgas=0.0,0.0, ! recycling temp and influx rate (1808)
+ !
+ ! Neutral beam injection data:
+ !
+ hton(1)  = 0.51,2*1.5,   ! three beams in sequence
+ htoff(1) = 4.0,2*4.0,    ! continue past end of run
+        ! geometry
+        ! angle at hrmaj+hrmin
+ hangle(3,1) = 15.4,            ! injection angle
+ hangle(3,2) = 24.0,            ! injection angle
+ hangle(3,2) = 24.0,            ! injection angle
+ hrmaj(1)    = 3*254.,          ! to pivot point on vacuum vessel
+ hrmin(1)    = 3*84.,           ! in cm
+ haper(1)    = 3*12.,           ! aperture width at pivot point [cm]
+ haperv(1)   = 3*48.,           ! aperture height at pivot point [cm]
+ hdiv(1)     = 3*0.5,           ! horizontal divergence
+ hdivv(1)    = 3*0.5,           ! vertical   divergence
+ hwidth(1)   = 3*12.,           ! width of injector face [cm]
+ height(1)   = 3*12.,           ! height of injector face [cm]
+ hfocl(1)    = 3*1.e10,         ! horizontal focal length [cm]
+ hfoclv(1)   = 3*1.e10,         ! vertical   focal length [cm]
+ hlenth(1)  = 3*400.,           ! length from injector face to pivot [cm]
+ nhaper(1)   = 3*2,             ! rectangular ports
+ nhshap(1)   = 3*2,             ! rectangular injector face
+        ! beam particle characteristics
+ hebeam(1)   = 3*72.55,         ! full energy in kV
+ hfract(1,1) = 0.70,0.20,0.10,  ! full, half, third E-fraction
+               0.70,0.20,0.10,  ! full, half, third E-fraction
+               0.70,0.20,0.10,  ! full, half, third E-fraction
+ !
+ hpowmw(1)   = 2.7,1.61,1.61,   ! 5.92 MW NBI
+ hibeam(1)   = 3*0.0,           ! current in kA (not used)
+ nhbeam(1)   = 3*-2,            ! deuterium beam species
+        ! effect of beam
+ cjbeam      = 1.,              ! beam driven current
+ hfutz(1)    = 0.10,            ! charge exchange mult to account for
+                                ! lack of multiple cx in BALDUR
+ hnchek      = 0.1,             ! max frac chnge in ne befor recomp beam
+ htchek      = 0.2,             ! max frac chnge in te befor recomp beam
+ nipart      = 20000,           ! number of Monte Carlo particles used
+ niprof      = 5,              ! max number of steps between beam comp
+ !
+ /
+ d3dflk1b Kinsey 06Feb97 DIII-D #81499 Low kappa #1 H-mode
+ BALDUR version bald960831 H-mode kappa scan
+ &inpt
+ !  lsw(1)=3,    ! include for full output
+ !  lsw(4)=0,    ! modify for full output
+ !  lsw(5)=0,    ! moments equlibrium switch
+ lsweq(1)=3,    ! verbose output, long form of output to terminal
+ lsweq(4)=0,    ! complete ballooning mode comp every 0th equilibrium
+ lsweq(5)=0,    ! output to file 'stabil' with each equilib comp
+ lsweq(6)=3,    ! number of initial equilibrium iterations
+ lsweq(7)=0,    ! include to initialize with uniform vloop
+ lsweq(8)=1,    ! number of baldur zone bndries with q=qmin
+ lsweq(10)=0,   ! start with bpoli(j) as set by 1-D BALDUR
+ lsweq(11)=1,   ! start with analytic equilibrium
+ qmin=0.65,     ! minimum initial q-value
+ mombnd=3,      ! number of moments specified for equilibrium boundary
+ mom=5,         ! number of moments computed in equilibrium interior
+ ntbkmx = 6,   ! number of breakpoint times
+ tbk(1) = 0.5, 1.0, 2.0, 3.0, 4.0, 99.0,
+ neqdt(1) = 6*20,       ! number of equilibria computed in each interval
+ rmajbt(1) = 6*1.693,   ! R = 1.69 m
+ rminbt(1) = 6*.5959,   ! rlambda = .5959 = r/a(0.92), a=0.627
+ elngbt(1) = 6*1.68,    ! kappa
+ trngbt(1) = 6*0.324,   ! avg. triangularity
+ btort(1)  = 6*1.91,    ! B(T) and rtort
+ rtort(1)  = 6*1.693,   ! major radius in meters where btort is given
+ curmat(1) = 6*1.35,    ! Ip (MA)
+ shift = 0.020,         ! initial shift Raxis - Rmid
+ nskip=100,              ! iterations skipped between printout
+ mflxs=21,
+ lsawth(1)=1,  ! new sawtooth reconnection model
+ lsawth(2)=1,  ! printout some profiles from sbrtn sawmix
+ lsawth(3)=99, ! long output every 99th call to sbrtn sawmix
+ !  lsawth(5)=1,  ! include to plot out just before and after sawtooth crash
+ lsawth(6)=1,  ! flat-top model for chi after each sawtooth crash
+ lsawth(7)=1,  ! smoothing at edge of mixing region
+ csawth(1)=0.9, ! Only 10% magnetic reconnection
+ csawth(5)=0., ! fraction of pol. mag. energy to electrons
+ /
+ &nmread
+ !
+ ! reread namelist
+ dtmax=.025,
+ splot=0.025,
+ sedit=0.5,  ! long printout every sedit sec
+ cfutz(460)= 1.62, 4.0, .16, ! sawtooth period during NBI
+ reread=2.0,
+ !
+ /
+ &nmread
+ dtmax=.025,
+ cfutz(460)= 2.16, 4.0, .30,
+ reread = 2.92,
+ /
+ &nmread
+ dtmax=.020,
+ cfutz(460)= 3.035, 4.0, .17,
+ reread = 3.5,
+ /
+ &nmread
+ !
+ dtmax=.010,
+ cfutz(460)= 3.595, 4.0, .19,
+ reread = 3.75,
+ !
+ /
+ &nmread
+ !
+ dtmax=.0050,
+ cfutz(460)= 3.805, 4.0, .20, ! last sawtooth = 3.81
+ !
+ /
+ !
+ !
+ ! 1a = 1st attempt w/ bald960409, 10 eqns w/ no collisions, fig=.80,.80,.80
+ !      new KB model w/ c_8=3.5,fkb=1.0,.65,.65, tcold=tcoldp=c_251=0.83
+ ! 1b = 1a w/ workstation version bald960831, 50 zones
+ !      0.040 kev impurity neutrals, 1.2 for Chang-Hinton
+ ! 1f = 1b w/ new Z_eff control 25 Mar 97 and less printout
+ ! d3dflk1b Kritz 19Mar97 DIII-D #81499 Low kappa #1 H-mode
+ ! 1g = 1f w/ new boundary density conditions, Z_eff_bndry = 2.33
+ ! d3dflk1g Bateman 27Mar97 DIII-D #81499 Low kappa #1 H-mode
+ ! d3dflk1o Bateman 11-Sept-97 DIII-D #81499 Low kappa #1 H-mode
+ ! (\kappa)^{0.0), cthery(12)=0.0,  fig=0.12,    0.12,    0.12,
+ ! d3dflk1p Bateman 12-Sept-97 DIII-D #81499 Low kappa #1 H-mode
+ ! (\kappa)^{0.0), cthery(12)=0.0,  fig=0.2,    0.2,    0.2,
+ /
+%%%%

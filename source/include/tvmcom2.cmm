@@ -1,0 +1,12 @@
+c@vmcom2  11040/bald89/weqvmom DEQVMOM
+cbate        cliche vmcom2
+c
+      common /cfeval/ nfl
+      integer nfl
+      common /nio/ nin, nout, nplot, ndebug, nttyi, nttyo
+      integer nin,nout,nplot,ndebug,nttyi,nttyo
+      common /veps/ epsmch
+      real epsmch
+c
+cbate        endcliche
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7-c

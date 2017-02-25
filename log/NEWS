@@ -1,0 +1,130 @@
+.../baldur/bald/code/bald1/NEWS
+  by Glenn Bateman, (609) 243 2873, bateman@pppl.gov
+ Jon Kinsey, Lehigh, (610) 758-5733
+ Arnold Kritz, (610) 758 3909
+
+
+
+23:25  27 June 1996  Bateman
+   Just after a sawtooth crash in tftlrs7u (see for example jl960624f.Z)
+the Weiland model routine etaw13 yields different results on f.nersc.gov
+and plasma.physics.lehigh.edu.  Near the magnetic axis, the variables
+going into etaw13 are identical, but the variables coming out are not.
+
+
+17:30  25 June 1996  Bateman
+   I made two important changes on the workstation:
+1) setenv XLFRTEOPTS namelist=old
+   allows the older style of namelist to be used in jobxdat files
+   (Note, this option is now included in the .../baldur/.cshrc file
+2) The -1 option has been removed from the .../baldur/code/bald1/makefile
+   so that do loops are not executed in cases like: do j=1,0
+
+   The results in jf960624e (run on f.nersc.gov) and jl960624e (run on plasma)
+are identical through time-step 5 and then diverge after the first 
+sawtooth crash.
+
+
+20:30 23 June 1996
+   Bateman moved the utilities to bald1 and installed them in bald1/makefile
+since they were already appearing in libbald.a in any event.
+
+20:00 23 June 1996
+   Bateman reinstalled diagnostic printouts in sbrtn mcarlo (file dneugas.f)
+and in sbrtn ran2 (file random.f) to test with new data sets.
+
+c@mhdBAL   .../baldur/code/bald/deqbald.f
+c  rgb 23-jun-96 compute dvoli(j) from j=1,mjbal-1, not to mjbal
+   This change was put in to avoid array out of bounds when using
+nzones = 52 in jobxdat.
+
+02 February 1995
+
+cfs get /11040/bald95/w950202/{wcode.tar wlib.tar xbaldur}
+
+   A Z_eff monitor is now installed in order to automate the impurity
+influxing to match a prescribed volume-averaged Z_eff as a function of
+time.  To turn this feature on, set
+
+cfutz(200) = 3.0  ! in the first namelist
+
+ftzeff(jtime) = prescribed Z_eff values at breakpoint times timp(jtime)
+  in the second namelist
+
+   The following files have been changed:  preset.f, dio.f, imprad.f,
+ncinfl.f and ncsorc.f.  Note that ncinfl.f computes the neutral
+impurity influx rate.
+
+c--------1---------2---------3---------4---------5---------6---------7-c
+
+31 January 1995
+
+cfs get /011040/bald95/w950131/{wcode.tar wlib.tar xbaldur}
+
+   The non-equilibrium impurity radiation package has been improved
+in the BALDUR code.  The source code is included in the files
+imprad.f, nc*.f, and noncor.f.  To use this package, you need the
+following lines in the input data file jobxdat:
+
+   First namelist:
+
+ nbound = 0,         ! prescribed boundary conditions
+
+ natomc = 3,           ! nonequilibrium impurity radiation model
+ cfutz(200) = 1.0,     ! impurities influxed as neutrals
+ cfutz(201) = 2*1.0,   ! kinetic energy of neutral impurities (keV)
+ cfutz(203) = 0.18,    ! energy loss per impurity ionization (keV)
+ cfutz(207) = 2*1.0,   ! outermost zone in from ledge allowing ionization
+ cfutz(209) = 2*0.90,  ! max penetration depth for neut impurities / a
+
+   Second namelist:
+
+ bdimpe(1,1) = 10*2.50e11, ! impurity edge density as a function of time
+
+   Third namelist:
+
+ $ncodat
+ ! impurity radiation namelist
+ recflx = 1.0,   ! recycling factor for diffusive losses to the wall
+ recscr = 1.0,   ! recycling factor for scrape-off losses
+ nwcool = 1100,  ! print local and vol rad power, electron cooling rate
+ nwline = 1000,  ! print local and vol rad power, line radiation
+ nwioni = 0,     ! ionization losses
+ nwreko = 0,     ! recombination radiation
+ nwchex = 0,     ! charge exchange radiation
+ nwbrem = 0,     ! bremsstrahlung radiation
+ $end
+
+   This must be followed by two lines of text, 
+the equilibrium namelist, and any reread namelists, as needed.
+
+   Note that when bdimpe has non-zero value in the second namelist,
+the distribution of impurity ionization states at the boundary is
+set equal to the equilibrium distribution.  If bdimpe is not given,
+then the boundary value of the impurity density is given by denim1,
+it is fixed in time, and only the first ionization state is filled.
+
+   In this new package, the impurity ionization states are initialized
+across the radius by their equilibrium distribution.  Hence there is
+no initial burst of impurity radiation and the electron density does
+not change very much during the first few steps of the run.
+
+   This package is still being tested and will probably be improved.
+
+   Also, please see the file .../baldur/code/bald/chngs95
+for other changes to the source code.
+c--------1---------2---------3---------4---------5---------6---------7-c
+ 01-Dec-95
+
+ Added capability for current drive in subroutine solveb.f. This is
+ turned on in jobxdat by setting cfutz(499) = 1.0. The current drive
+ profile is then inserted in the file 'lhcurr' which must be present
+ in the run directory.
+
+ Subroutine 'bounds.f' was corrected, so the variables 'bdtee' and
+ 'bdtie' correspond to the boundary electron and ion temperatures,
+ respectively.
+
+ The Itoh-Itoh current-diffusive ballooning model has been added to
+ subroutine THEORY. It is recommended that an empirical transport model
+ is used for the particle transport if this model is used.

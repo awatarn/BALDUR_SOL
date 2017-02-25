@@ -1,0 +1,447 @@
+bald/auxval.f:44:c       aes 29-oct-81 array dimension 52-->55 in zjs, 105-->111 in zdens
+bald/auxval.f:232:c    Default size lengths (55 and 20) are hardcoded in cbaldr.m
+bald/auxval.f:250:          DO j1 = 2, 55
+bald/auxval.f:1572:        call rarray('  zjs(j)',zjs,55)
+bald/doutput.f:373:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+bald/doutput.f:375:        dimension ztemp(55)
+bald/doutput.f:1112:      DO 1055 J=NWR(1,1,INX),NWR(2,1,INX)
+bald/doutput.f:1115: 1055 CONTINUE
+bald/doutput.f:1139:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+bald/doutput.f:1426:        do 455 jb=lcentr+1,mzones
+bald/doutput.f:1530:  455   continue
+bald/doutput.f:2609:        do 1155 j=2,nft
+bald/doutput.f:2611:        do 1155 i=1,jm1
+bald/doutput.f:2612:        if(abt(i).ne.abt(j)) go to 1155
+bald/doutput.f:2619: 1155   continue
+bald/doutput.f:2945:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+bald/dbeams.f:898:        do 550 je = 1, nhe
+bald/dbeams.f:908:  550   continue
+bald/dbeams.f:1462:     1  (sqrt(ahalfs(jz,2)/rmids(jz,2)) * (1.55 + 0.85/xzeff(2,jz))-
+bald/dbeams.f:1463:     2  (ahalfs(jz,2)/rmids(jz,2))*(.20+1.55/xzeff(2,jz)))/
+bald/dbeams.f:1473:        do 955 jz = lcentr, ledge
+bald/dbeams.f:1475:  955   continue
+bald/dbeams.f:1897:     2 10.,  6.855e-22,   45.6243,  491.7580,   -0.0263,    0.1571,
+bald/dbeams.f:1898:     3 11.,  1.289e-21,   41.6274,  380.2556,    0.2476,    0.0333,
+bald/dbeams.f:1899:     4 12.,  2.231e-21,   38.2332,  302.5680,    0.4830,   -0.0554,
+bald/dbeams.f:1909:     4 100.,  4.855e-18,    5.0132,    3.5586,    1.6338,   -0.0001,
+bald/dbeams.f:1918:     4 400.,  3.048e-17,    1.9838,    1.7559,    0.8963,    0.3299,
+bald/dbeams.f:1923:     9 1000.,  6.841e-17,    2.6679,    4.9570,    1.3538,    3.5521/
+bald/dbeams.f:1933:     9 32.,  2.355e-19,   15.0448,   26.4519,    1.2812,   -0.0046,
+bald/dbeams.f:1947:     4 400.,  3.550e-17,    4.1521,    3.8351,    3.1773,    0.2724,
+bald/dbeams.f:1952:     9 1000.,  7.582e-17,    1.8181,    2.8108,    0.8225,    1.5564/
+bald/dbeams.f:1958:     5 14.,  1.097e-18,   33.7973,  238.2975,   -0.0441,    0.3855,
+bald/dbeams.f:1959:     6 17.,  3.227e-18,   28.2879,  159.6798,    0.3072,    0.5501,
+bald/dbeams.f:1978:     6 630.,  3.004e-16,    2.5568,    5.1021,    0.9028,    6.5380,
+bald/dbeams.f:1981:     9 1200.,  2.006e-16,    0.3937,    5.8982,   -0.5536,    5.5717,
+bald/dbeams.f:1983:     1 1700.,  1.873e-16,   -0.8553,    9.0282,   -1.3623,    7.9472,
+bald/dbeams.f:2001:     4 400.,  4.415e-16,   10.6303,    7.5539,   14.7738,   19.0596,
+bald/dbeams.f:2010:     4 1200.,  1.928e-16,    7.7455,   18.7920,    5.8571,   24.8914,
+bald/dbeams.f:2012:     6 1700.,  1.445e-16,    3.4355,   18.8552,    1.9097,   18.9097,
+bald/dbeams.f:2471:        if (zdtsum.ge.htchek*yr(nyzone+1)) go to 255
+bald/dbeams.f:2507:  255   continue
+bald/dbeams.f:2896:        do 550 jspc=1,mhsp
+bald/dbeams.f:2938:550     continue
+bald/dbeams.f:3515:       do 3355 j=iq,ix
+bald/dbeams.f:3517:3355   continue
+bald/dbeams.f:4227:       data zp0,zp1,zp2,zp3,zp4,zp5,zp6/-42.03309,3.557321,
+bald/dbeams.f:4293:       fsig= 6.937e-15*(1.-0.155*ze)**2/(1.+1.112e-15*(ef/af)**3.3)
+bald/divertor.f:34:c                      main output array, scroff(mxchi,55), in common
+bald/divertor.f:51:c  scroff(mchi,55) = loss rate in scrapeoff due to divertor (sec**(-1))
+bald/divertor.f:148:        zsig=0.6937e-14*(1.-0.155*log10(ze))**2/
+bald/dripple.f:336:      zms00=.8862269255/z0
+bald/dripple.f:357:      go to (552,552,554,554,552), nriple
+bald/dripple.f:358:      go to 554
+bald/dripple.f:360:  552 continue
+bald/dripple.f:376: 554  continue
+bald/dripple.f:464:      zms0=.8862269255/z0
+bald/dripple.f:577:c       aes 29-oct-81 array dimensions 52 --> 55 in common/apolar/
+bald/dripple.f:856:c       aes 29-oct-81 array dimensions 52 -->55 in common/apolar/
+bald/dtransp.f:36:c rgb 02-jun-96 removed if(.not.inital) go to 550
+bald/dtransp.f:151:      data    iscrp1,iscrp2,iscrp3,iscrp4 /53,54,55,56/,
+bald/dtransp.f:187:        data igfac,igalfa,igbeta,igamma,igdelt/451, 452, 453, 454, 455/
+bald/dtransp.f:240:        data    ipdx1,ipdx2,ipdx3,ipdxke/355,356,357,358/
+bald/dtransp.f:402:c      data    iscrp1,iscrp2,iscrp3,iscrp4 /53,54,55,56/,
+bald/dtransp.f:664:cbate      if(.not.inital) go to 550
+bald/dtransp.f:723:  550 continue
+bald/CVS/Entries:27:/synch.f/1.2/Thu Aug  1 14:55:11 2002//
+bald/CVS/Entries:40:/getchi.f/1.3/Thu Aug  1 19:55:12 2002//
+bald/CVS/Entries:42:/nccoef.f/1.3/Thu Aug  1 19:55:49 2002//
+bald/CVS/Entries:48:/oclear.f/1.2/Thu Aug  1 19:32:55 2002//
+bald/deqvmom.f:1368:         do 55 i = kp1, n
+bald/deqvmom.f:1370:   55    continue
+bald/deqvmom.f:1813:c      write (ndebug,550) betapb,betatb,bpbp,bpbe
+bald/deqvmom.f:1814:c  550 format (//,'   betapb   = ',f10.3,/,2x,'   betatb   = ',
+bald/deqvmom.f:3107:c     data imach(13) /  255 /
+bald/deqvmom.f:3110:c     data imach(16) /  255 /
+bald/imprad.f:115:c                      ing scroff(mxchi,55) located in common/comdf2/.
+bald/imprad.f:138:c       aes 29-oct-81 array dimensions 52 --> 55 in common/tempry/,
+bald/imprad.f:319:     r           -2.274558e+01, 2.823806e+00, 4.693808e+00,
+bald/imprad.f:356:     1 1.5562e-02,-3.9483e-03,2.6917e-04/
+bald/imprad.f:916:     2  *zbmi(jz)*(1.+tes(2,jz)*useh/255.)
+bald/imprad.f:970:          zploss=5.34e-24*zte**.5*(1.+zte/255.)*xzeff(2,jz)+
+bald/dneugas.f:63:c       aes 29-oct-81 array dimension 52 -->55 in array zpdx
+bald/dneugas.f:174:     r  zpdx(6,55),     znel2(4),
+bald/dneugas.f:264:        call resetr(zrparls,2*55,0.0)                          ! heifetz
+bald/dneugas.f:265:        call resetr(zrparli,2*55,0.0)                          ! heifetz
+bald/dneugas.f:268:        call resetr(zrecomi,2*55,0.0)                          ! heifetz
+bald/dneugas.f:269:        call resetr(zrecoms,2*55,0.0)                          ! heifetz
+bald/dneugas.f:270:        call resetr(zbchxs,2*55,0.0)                           ! heifetz
+bald/dneugas.f:271:        call resetr(zbchxi,2*55,0.0)                           ! heifetz
+bald/dneugas.f:275:        call resetr(zpdx,6*55,0.0)                             ! heifetz
+bald/dneugas.f:442:        go to (55,65),npuff
+bald/dneugas.f:463:        if(rlined(iti).gt.epslon) go to 55
+bald/dneugas.f:489: 55     continue
+bald/dneugas.f:1031:        if (imax.le.0) go to 255
+bald/dneugas.f:1040:  255   continue
+bald/dneugas.f:2882:        data zpicof/-42.03309, 3.557321, -1.045134, .3139238,
+bald/dneugas.f:3135:     +     0.025,0.075,0.35,0.55,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+bald/d3hefus.f:80:c    r shfuel(2,55), sifuel(4,55), shd3fs(2,55), sid3fs(4,55),
+bald/d3hefus.f:203:     b  5.9915e+0,6.5511e+0/
+bald/d3hefus.f:204:      data sxb/ 4.6050e+0, 5.2980e+0, 5.9910e+0, 6.5510e+0, 6.9080e+0,
+bald/d3hefus.f:208:     a -4.0557e+1,-3.9472e+1,-3.8777e+1,-3.8393e+1,-3.7724e+1,
+bald/d3hefus.f:220:     a -4.0444e+1,-3.9335e+1,-3.8635e+1,-3.8255e+1,-3.7613e+1,
+bald/d3hefus.f:229:     a  4.9932e-2,4.7755e-2,3.5458e-2,5.4741e-2,-6.9142e-2,
+bald/d3hefus.f:237:      data scdt/-9.9417e-1,-8.5512e-1,-6.7115e-1,-7.5456e-1,-8.4459e-1,
+bald/d3hefus.f:255:      data sytt4/-4.9468e+1,-4.6395e+1,-4.4042e+1,-4.2559e+1,-4.1772e+1,
+bald/d3hefus.f:256:     a -4.0526e+1,-3.9559e+1,-3.8901e+1,-3.8498e+1,-3.7698e+1,
+bald/d3hefus.f:268:      data sydtb/-3.4579e+1,-3.4550e+1,-3.4802e+1,-3.5312e+1,-3.5694e+1,
+bald/d3hefus.f:276:      data syttb/-3.9625e+1,-3.8854e+1,-3.8173e+1,-3.7599e+1,-3.7155e+1,
+bald/d3hefus.f:280:      data scttb/-2.2858e-1,-9.2391e-2, 3.5933e-2, 1.8025e-1, 8.5545e-1,
+bald/d3hefus.f:282:      data sdttb/ 6.5507e-2, 6.1724e-2, 8.5901e-2, 6.3044e-1,-1.5945e+0,
+bald/d3hefus.f:284:      data syd3b/-3.7247e+1,-3.6536e+1,-3.5853e+1,-3.5568e+1,-3.5633e+1,
+bald/d3hefus.f:290:      data sdd3b/-1.8049e-1,-1.5527e-1,-3.1648e-1, 2.2028e-1, 6.1021e-2,
+bald/d3hefus.f:338:            svd3b(j) = exp(-35.694+(500.-zti)*(35.694-41.551
+bald/d3hefus.f:825:        dimension w(6,6,55), wd(6,6,55)
+bald/d3hefus.f:1015:      do 55 ii=1,mimp
+bald/d3hefus.f:1016:  55  zai=zai+rhois(ii,1,j)*aspec(ii+lhydn)
+bald/d3hefus.f:1097: 520  if(lreplt.eq.0) go to 550
+bald/d3hefus.f:1103: 550    if(lrepl3.eq.0) go to 600
+bald/synch.f:155:      if(nze.eq.0) go to 155
+bald/synch.f:162:  155 continue
+bald/getchi.f:419:        if (mimp.le.0) go to 355
+bald/getchi.f:425:  355   continue
+bald/convrt.f:192:     4za(idxion)           ,zb(idxion)           ,zhydv0(55)           ,
+bald/convrt.f:193:     5zxdrag(idximp,55)    ,zzzz(idxion,55)
+bald/convrt.f:218:        ix1=mxions*mxions*55
+bald/deqbald.f:607:c  dimensions are 55 x 20 = 1100
+bald/deqbald.f:2751:      write (9,155) r0b
+bald/deqbald.f:2752: 155  format (' r0b=',1pe15.7)
+bald/deqbald.f:2765:     &  ,t55,'pressure',t70,'d p / d psi',t85,'b-pol')
+bald/deqbald.f:5158:      call cubint(armins(1,1),zpsi(1,1),njav,1,zcav,55,
+bald/dfusion.f:360:        zsigv=-.160990*zlnzti*zlnzti+2.55872*zlnzti-46.5088
+bald/dfusion.f:1665:        dimension zrvtot(155),zrvrad(155),zrx(75),zrcos(75),ztmdcp(75)
+bald/dfusion.f:1666:        dimension times(75),errors(75),zrsx(155),zrsz(155),
+bald/dfusion.f:1667:     x  zrcosp(155),
+bald/dfusion.f:1717:  55    nstart=nstart+1
+bald/dfusion.f:1959:        do 550 j=js,je,jd
+bald/dfusion.f:1961:        if(mlost) go to 551
+bald/dfusion.f:2002: 550    continue
+bald/dfusion.f:2003: 551    continue
+bald/dfusion.f:2093: 755    continue
+bald/syedit2.f:2:c     parameter(jx=55)
+bald/syedit2.f:3:c     zncnt=55
+bald/preset.f:41:c  rgb 12.55 12-aug-87 initialized HTON(j)=epsinv, HTOFF(j)=-epsinv
+bald/preset.f:105:c       amck 16-feb-77 55 zone, 2hyd, 2imp, 20t
+bald/deqmom2.f:78:c       1. S. P. Hirshman and J. C. Whitson, Phys. Fluids 26, 3553 (1983).
+bald/deqmom2.f:885:      if ( nvac .eq. 0  .or.  iter2 .le. 1 ) go to 55
+bald/deqmom2.f:919:  55  if ( iequi .eq. 1 ) then
+bald/deqmom2.f:1340:        do 55 l=2,nrzt
+bald/deqmom2.f:1347: 55     wb = wb + hs*dnorm*wint(l)*abs(gsqrt(l))*bsq(l)
+bald/deqmom2.f:1962:c       NOTE: CAN ELIMINATE 55 LOOP WHEN LAMBDA FORCE IS DEBUGGED
+bald/deqmom2.f:1964:            do 55 js= 2+nlam,ns
+bald/deqmom2.f:1969:  55        continue
+bald/ncdifu.f:162:         zcolfa(j) = 2.116455e-02 * zlnla * zcharg**4
+bald/ncdifu.f:164:         zxsifa = 2.116455e-02 * zlnla / (zdielk**2*zevws*sqrt(zevws))
+bald/ncdifu.f:218:         zfak = zcolaa * (0.353553+zza) / (zcharg**2 * zxnzqs(j))
+bald/synch2.f:181:      if(nze.eq.0) go to 155
+bald/synch2.f:187:  155 continue
+bald/dio.f:1071:        if (zznb(jsp).le.epslon) go to 255
+bald/dio.f:1076:  255   continue
+bald/dio.f:2062:        do 255 jz=lcentr,mzones
+bald/dio.f:2067:255     continue
+bald/dio.f:2479:10303   format(55x,'-- joules --'/
+bald/dio.f:3046:        write (nprint,10255) js, zrad,
+bald/dio.f:3153:c               28, pp. 43-55, july 1978.  the integral performed
+bald/dio.f:3239:c       number of zones may not exceed 55, else dimensions
+bald/dio.f:3241:                izones = min0(nsurf-1,55)
+bald/dio.f:3405:                zsvbrx = .6937e-14 * (1. - 0.155*log10(zrelnp))**2
+bald/dio.f:3477:                do 455 jg = 1,ngases
+bald/dio.f:3478:                do 455 j2 = 1,itheta+1
+bald/dio.f:3479:                do 455 j9 = 1,ngxene
+bald/dio.f:3482:  455           continue
+bald/dio.f:3770:10255   format(2x,i4,2x,0pf7.2,3(2x,3(1x,1pe10.3)))
+bald/dio.f:4406:cgb     x   (nlzzzz(551),zscrof(1))   , (nlzzzz(606),ztconf(1,1)) ,
+bald/dio.f:5931:        zsig(j)=0.6937e-14*(1.-0.155*log10(ze))**2/
+bald/dio.f:6009:        do 855 j=isep,ledge
+bald/dio.f:6015:  855   continue
+bald/dio.f:6039:        if(nadump(3).eq.100) write(nprint,10855) zlined,zrsep
+bald/dio.f:6481:10855   format(/5x,'line den(ions/cm**2)=',1pe10.2,45x,
+bald/dpellet.f:49:c       to multiply the pellet deposition (c-254 and c-255)
+bald/dpellet.f:95:        data ifiabl, ifract/ 254, 255/
+bald/dpellet.f:504:        do 255 je=1,lhemax
+bald/dpellet.f:507:255     continue
+bald/dpellet.f:555:      call sscal(55,1.0e6,zpden,1)
+bald/dpellet.f:561:      call sscal(55,1.0e-6,zpden,1)
+bald/dpellet.f:1343:     #               1.64694,  1.39401,  1.14336,  0.87304,  0.38355/
+bald/cnvcof.f:47:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+bald/dpellet.f.ORIGINAL:49:c       to multiply the pellet deposition (c-254 and c-255)
+bald/dpellet.f.ORIGINAL:95:        data ifiabl, ifract/ 254, 255/
+bald/dpellet.f.ORIGINAL:470:        do 255 je=1,lhemax
+bald/dpellet.f.ORIGINAL:473:255     continue
+bald/dpellet.f.ORIGINAL:521:      call sscal(55,1.0e6,zpden,1)
+bald/dpellet.f.ORIGINAL:527:      call sscal(55,1.0e-6,zpden,1)
+bald/dpellet.f.ORIGINAL:1305:     #               1.64694,  1.39401,  1.14336,  0.87304,  0.38355/
+bald/dadpak.f:321:c     3 0.1093, 0.4018, 0.6800, 0.9155, 0.9796,
+bald/dadpak.f:327:c     6 0.0277, 0.1098, 0.2455, 0.4267, 0.5764,
+bald/dadpak.f:332:c     8 0.5062, 0.6355, 0.7441, 0.8300, 0.9000,
+bald/dadpak.f:334:c     9 0.4222, 0.5444, 0.6558, 0.7553, 0.8300, 0.0100, 0.0400,
+bald/dadpak.f:335:c     & 0.0900, 0.1584, 0.2450, 0.3492, 0.4655, 0.5760, 0.6723, 0.7612/
+bald/dadpak.f:403:     3 0.1093, 0.4018, 0.6800, 0.9155, 0.9796,
+bald/dadpak.f:409:     6 0.0277, 0.1098, 0.2455, 0.4267, 0.5764,
+bald/dadpak.f:414:     8 0.5062, 0.6355, 0.7441, 0.8300, 0.9000,
+bald/dadpak.f:416:     9 0.4222, 0.5444, 0.6558, 0.7553, 0.8300, 0.0100, 0.0400,
+bald/dadpak.f:417:     & 0.0900, 0.1584, 0.2450, 0.3492, 0.4655, 0.5760, 0.6723, 0.7612/
+bald/dadpak.f:575:     3 .109,.397,.702,.850,.920,.955,.970,.980,.990,1.00,
+bald/dadpak.f:577:     5 .0398,.155,.331,.531,.720,.830,.900,.950,.970,.980,
+bald/dadpak.f:751:      ztip(15) = 0.855
+bald/dadpak.f:1039:     8 -1.55, -1.25, -.94, -.63, -.31, 0. /
+bald/dadpak.f:1049:     7 584.0, 571.9, 550.7, 524.9, 496.8, 463.4,
+bald/dadpak.f:1350:     1          -3.5894e-9, 1.5529e-9,   1.3207e-9,
+bald/dadpak.f:1352:     2           9.7863e-11, 1.5591e-10, 6.2236e-11 /
+bald/dadpak.f:1360:      data ali / 9.9655e-8, -5.5941e-8, -5.5228e-8,
+bald/dadpak.f:1374:      data abe / 7.4206e-8, -1.5520e-8, -3.9403e-8,
+bald/dadpak.f:1375:     1           7.2155e-9, 1.1098e-8, -2.5501e-9,
+bald/dadpak.f:1386:     4            -4.5966e-10, 3.7317e-10, 2.5564e-9 /
+bald/dadpak.f:1396:     3          1.0242e-9, -3.8855e-11, -1.7281e-10,
+bald/dadpak.f:1414:     2          2.8395e-8, -1.6698e-8, -2.3557e-9,
+bald/dadpak.f:1416:     3          9.0555e-9, -6.3206e-9, -1.3256e-9,
+bald/dadpak.f:1421:     5          8.2555e-11, 5.3899e-11, -2.6102e-11,
+bald/dadpak.f:1435:      data en / 14.53, 29.60, 47.45, 77.47, 97.89, 552.06, 667.03 /
+bald/dadpak.f:1438:     2          2.4369e-8, -2.2155e-9, -1.4805e-8,
+bald/dadpak.f:1447:     6          4.9404e-11, 3.2255e-11, -1.5620e-11,
+bald/dadpak.f:1452:     &           1.5539e-10 /
+bald/dadpak.f:1455:     3           3.4218e-8, -2.9155e-7, 1.2324e-6,
+bald/dadpak.f:1465:      data ao / 3.3559e-8, 1.3449e-8, -6.7112e-9,
+bald/dadpak.f:1472:     4          1.3559e-9, 8.6816e-10, -4.3189e-10,
+bald/dadpak.f:1490:     7           -2.3148e-11, -9.3201e-10, 4.9557e-9,
+bald/dadpak.f:1491:     8           -5.7557e-11, 4.6727e-11, 3.2010e-10 /
+bald/dadpak.f:1646:     &     5566., 5491., 5318., 5204., 5095., 4990., 4890., 4794.,
+bald/dadpak.f:1653:     &     0., 0., 2046., 1950., 1852., 1755., 1679., 1566., 1482.,
+bald/dadpak.f:2195:     &         - .24991055*px**2 + .05519968*px**3 - .00976004*px**4
+bald/solveb.f:123:c  xcd(jx) = normalized radial grid points, 0 < jx <= Kjbal == 55
+bald/solveb.f:261:c  xcd(jx) = normalized radial grid points, 0 < jx <= 55
+bald/solveb.f:512:        if(cfutz(398).gt.0.) go to 255
+bald/solveb.f:513:        if(nadump(1).le.lcentr) go to 255
+bald/solveb.f:514:        if(jz.lt.nadump(1)) go to 255
+bald/solveb.f:517:        if(zl.gt.1.e18) go to 255
+bald/solveb.f:573:        go to 255
+bald/solveb.f:576:  255   continue
+bald/dio.f0:1071:        if (zznb(jsp).le.epslon) go to 255
+bald/dio.f0:1076:  255   continue
+bald/dio.f0:2062:        do 255 jz=lcentr,mzones
+bald/dio.f0:2067:255     continue
+bald/dio.f0:2479:10303   format(55x,'-- joules --'/
+bald/dio.f0:3046:        write (nprint,10255) js, zrad,
+bald/dio.f0:3153:c               28, pp. 43-55, july 1978.  the integral performed
+bald/dio.f0:3239:c       number of zones may not exceed 55, else dimensions
+bald/dio.f0:3241:                izones = min0(nsurf-1,55)
+bald/dio.f0:3405:                zsvbrx = .6937e-14 * (1. - 0.155*log10(zrelnp))**2
+bald/dio.f0:3477:                do 455 jg = 1,ngases
+bald/dio.f0:3478:                do 455 j2 = 1,itheta+1
+bald/dio.f0:3479:                do 455 j9 = 1,ngxene
+bald/dio.f0:3482:  455           continue
+bald/dio.f0:3770:10255   format(2x,i4,2x,0pf7.2,3(2x,3(1x,1pe10.3)))
+bald/dio.f0:4406:cgb     x   (nlzzzz(551),zscrof(1))   , (nlzzzz(606),ztconf(1,1)) ,
+bald/dio.f0:5926:        zsig(j)=0.6937e-14*(1.-0.155*log10(ze))**2/
+bald/dio.f0:6004:        do 855 j=isep,ledge
+bald/dio.f0:6010:  855   continue
+bald/dio.f0:6034:        if(nadump(3).eq.100) write(nprint,10855) zlined,zrsep
+bald/dio.f0:6476:10855   format(/5x,'line den(ions/cm**2)=',1pe10.2,45x,
+bald/dempirc.f:1424:      write (nprint,10550) zetots(mzones)*1.e-6, zitots(mzones)*1.e-6
+bald/dempirc.f:1426:10550 format (1x,'zetots=',1pe13.5,' zitots=',1pe13.5,' zgtots='
+bald/dauxheat.f:649:        common/comtst/zll(8,55),zione(8,55),zelece(8,55)
+bald/dauxheat.f:743:        zr = .94955669
+bald/dauxheat.f:751:        za2 = 19.795543
+bald/dauxheat.f:791:        zb=2.55872
+bald/dauxheat.f:947:        dimension zb2(64),ip(55)
+bald/dauxheat.f:1076: 255    do 260 jz=lcentr,ledge
+bald/dauxheat.f:1141:c       aes 29-oct-81 array dimensions 52 -->55 in common/tempry/;
+bald/nccoef.f:535:      do 55 j=lcentr,ledge
+bald/nccoef.f:541:   55 continue
+bald/ncinit.f:67:        yhnm(2,jii) = 0.55
+bald/Apr10_2015_dpellet.f:49:c       to multiply the pellet deposition (c-254 and c-255)
+bald/Apr10_2015_dpellet.f:95:        data ifiabl, ifract/ 254, 255/
+bald/Apr10_2015_dpellet.f:504:        do 255 je=1,lhemax
+bald/Apr10_2015_dpellet.f:507:255     continue
+bald/Apr10_2015_dpellet.f:555:      call sscal(55,1.0e6,zpden,1)
+bald/Apr10_2015_dpellet.f:561:      call sscal(55,1.0e-6,zpden,1)
+bald/Apr10_2015_dpellet.f:1339:     #               1.64694,  1.39401,  1.14336,  0.87304,  0.38355/
+bald/ftrap_hughes.f:18:       real :: zwork(55), zwint(55)
+baldur/CVS/Entries:3:/makefile/1.5/Fri May 16 14:55:51 2003//
+ezcdf/share/Make.flags:260:	CXXFLAGS = -c $(SGI_ABI) -LANG:std -woff 1355
+ezcdf/share/Make.flags:261:	DCXXFLAGS = -c -g $(SGI_ABI) -LANG:std -woff 1355
+ezcdf/netcdf.inc:158:      parameter (nf_enorecvars = -55)
+include/cmg.m:5:      dimension xcmg(55), zstara(55), dxcmg(55), vxcmg(55),
+include/cmg.m:6:     1  xub(55), xcmg0(55), xub0(55)
+include/commhd.m:10:      parameter  (Kjbal=mj,Knave=20,Kjflx=55,Kmhrm=7,Kixeq=65,Kjyeq=65
+include/commhd.m:189:c  xcd(jx) = normalized radial grid points, 0 < jx <= 55
+include/crplocal.m:15:        common/clocal/ zimrad(55),zpalfs(55),zpbeam(55),zpauxs(55),
+include/crplocal.m:16:     1  ztheat(55),isep,isepm1,
+include/crplocal.m:24:     3  tepre(55),tepost(55),teavg(55),tipre(55),tipost(55),tiavg(55),
+include/crplocal.m:25:     4  ajzpre(55),ajzpst(55),ajzavg(55),ohravg(55)
+include/cfokkr.m:16:     r   halsps(55,2),       hchexs(20,55,2),    hdei(20,2),
+include/cfokkr.m:18:     r   hdmuc(10),          hecmps(55),         heelec(20,55,2),
+include/cfokkr.m:19:     r   hei(20,2),          heinjs(55),         heion(20,55,2),
+include/cfokkr.m:20:     r   heloss(55),         heplas(55),         hesrci(10,2),
+include/cfokkr.m:21:     r   hfi(10,20,55,2),    hlogbs(20,55),      hmub(11),
+include/cfokkr.m:22:     r   hmuc(10),           hncmps(55),         hninjs(55),
+include/cfokkr.m:23:     r   hnloss(55),         hnplas(55),         hnsrcs(10,2),
+include/cfokkr.m:24:     r   hscats(20,55,2),    hsigv(20,2),        hsin(11),
+include/cfokkr.m:25:     r   hslows(20,55,2),    htspon(2),          websps(55,2),
+include/cfokkr.m:26:     r   wibsps(55,2)
+include/cfokkr.m:28:     i   lhemin(55,2),       libeam(12),         nhbem1(2)
+include/cd3he.m:5:      parameter(nsv=12,n9=55)
+include/comadp.m:41:c  yhnm(l,i)    * l-th Hahn factor for diel. recomb. n-m rate; .1, .55, 1.
+include/tvmcom0.cmm:3:c  rgb 06-jun-89 changed mm1 from 10 to 55, mtheta from 11 to 21
+include/tvmcom0.cmm:5:c  rgb 05-jun-89 changed mm1 from 10 to 55
+include/tvmcom0.cmm:12:      parameter (mnmoms=3, mneq=6, mnmx=25, mtheta=21, mm1=55
+include/calpht.m:15:     x  arlssr(155),argrtr(155),llquit(155),
+include/calpht.m:30:     x  aeslow(75),awslow(75),biralf(55),wifrac(75),sltaus(75)
+include/comtrp.m:5:     +   RL13(55,2),         RL23(55,2),         RLY(55,2),
+include/comtrp.m:6:     +   RDRDTH(55,32),      RDYDTH(55,32)
+include/comhd3.m:3:c  rgb 31-may-92 removed parameter(Kjbal=55) already in commhd.m
+include/comhd3.m:5:c      parameter(Kjbal=55)
+include/csynrd.m:10:     &  ,stemp(55),sdens(55),bavg(55),svol(55),surf(55),wsyn(55)
+include/csynrd.m:11:     &  ,teqp(55), deny(55), voq(55), ploss(55)
+include/clparm.m:7:      parameter (kpgrid=55, kpharm=11, kpmode=5)
+include/come24.m:3:      parameter  (jbal=55)
+include/comncr.m:13:     r     xnold(55,0:28,2), daqexp(2)       , vaqexp(2)       ,
+include/comncr.m:14:     r     xn (55,0:28,2)  , ra (55,0:28,2)  , sa (55,0:28,2)  ,
+include/comncr.m:15:     r     weir (55,28,2)  , wline (55,28,2) , wioni (55,28,2) ,
+include/comncr.m:16:     r     wreko (55,28,2) , wchex (55,28,2) , wbrem (55,28,2) ,
+include/comncr.m:17:     r     va (55,0:28,2)  , s0 (55,2)       , xns (55,2)      ,
+include/comncr.m:18:     r     xnsold (55,2)   , da (55,0:28,2)  , dq (55,2)       ,
+include/comncr.m:19:     r     xn0(55,2)       , xnas(55)        , aaa (55)        ,
+include/comncr.m:20:     r     bbb (55)        , ccc (55)        , ddd (55)        ,
+include/comncr.m:21:     r     eee (55)        , fff (55)        , pflxo (2)       ,
+include/comncr.m:26:     r     dz(55,2)        , delts  , fcstep , xnerr  , recflx ,
+include/cparm.m:3:      integer, parameter :: mj=55   ! maximum number of radial grid zones
+misc/replacestr.pl:15:    #(s/call reset[ir]\((\w+),55,0\.0\)/\1 = 0.0/i);
+mlib/tomsqz.f:702:         DO 255 I = 1, N
+mlib/tomsqz.f:711:  255    CONTINUE
+mlib/dode.f:628:        if(km2)265,260,255
+mlib/dode.f:629:  255   erkm2 = erkm2 + ((phi(l,km1)+temp4)*temp3)**2
+mlib/dode.f:731:      if(knew .eq. km1) go to 455
+mlib/dode.f:743:  445 if(erkm1 .le. min(erk,erkp1)) go to 455
+mlib/dode.f:757:  455 k = km1
+mlib/random.f:180:      integer  mbig, mseed, mz, mj, mk, ma(55)
+mlib/random.f:187:c      real  mbig, mseed, mz, mj, mk, ma(55)
+mlib/random.f:202:c..initialize ma(55) using the seed idum and large number mseed
+mlib/random.f:206:        ma(55) = mj
+mlib/random.f:212:          ii = mod ( 21*i, 55 )
+mlib/random.f:222:          do i=1,55
+mlib/random.f:223:            ma(i) = ma(i) - ma( 1 + mod ( i + 30, 55 ) )
+neoclass/dneocl.f:127:      dimension zk(21)      , zft(55)           , zaspin(55)
+neoclass/dneocl.f:128:     &  , zifreq(idxion,55) , zgyro2(idxion,55) , znstar(idxion,55)
+neoclass/dneocl.f:285:        zbps = ( 0.553 + 2.41 * zaspin(jz)
+neoclass/dneocl.f:331:     4  1.13 + 0.50*xzeff(1,jz) + 0.55*xzeff(1,jz)/(0.59 + xzeff(1,jz)))
+neoclass/dneocl.f:355:     4  1.13 + 0.50*xzeff(1,jz) + 0.55*xzeff(1,jz)/(0.59 + xzeff(1,jz)))
+neoclass/dneocl.f:503:      z1zeta = 0.55 + 0.255 * xzeff(jb,jz)
+neoclass/dneocl.f:639:c       aes 29-oct-81 array dimensions 52 -->55 in common/tempry,neoion/
+neoclass/dneocl.f:1082:        do 4550 ihh=1,ihmax
+neoclass/dneocl.f:1085:4550    continue
+pedestal/CVS/Entries:4:/bdheight1.f/1.1/Fri Aug 16 20:35:55 2002//
+portlib/sset_cwd.F:23:      if(ild.le.255) then
+portlib/share/Make.flags:262:	CXXFLAGS = -c $(SGI_ABI) -LANG:std -woff 1355
+portlib/share/Make.flags:263:	DCXXFLAGS = -c -g $(SGI_ABI) -LANG:std -woff 1355
+portlib/cftio.F:127:      if(ilfn.gt.255) then
+portlib/jsystem.F:19:      character*(255) line
+portlib/jsystem.F:23:      if(l.gt.255) then
+portlib/jsystem.F:39:      if(l.gt.255) then
+sawtooth/sawavg.f:23:        dimension zteold(55),ztecum(55),ztiold(55),zticum(55),
+sawtooth/sawavg.f:24:     1  zjzold(55),zjzcum(55),zohold(55),zohcum(55),
+sawtooth/dsawmix.f:228:     3  tepre(55),tepost(55),teavg(55),tipre(55),tipost(55),tiavg(55),
+sawtooth/dsawmix.f:229:     4  ajzpre(55),ajzpst(55),ajzavg(55),ohravg(55)
+sawtooth/dsawmix.f:231:        dimension zbpold(55),zimix(2),zomix(2),
+sawtooth/dsawmix.f:994:            if (ibinn+1.gt.ibout-2) go to 155
+sawtooth/dsawmix.f:1001:  155       continue
+sawtooth/dsawmix.f:1038:        if(ibinn+1.gt.ibout-2) go to 55
+sawtooth/dsawmix.f:1042:  55    continue
+sawtooth/dsawmix.f:1257:     & ,t55,'ne-pre',t63,'ne-aft',t71,'Ti-pre',t79,'Ti-aft'
+sawtooth/sawamp.f:106:        zsigv=-.160990*zlnzti*zlnzti+2.55872*zlnzti-46.5088
+sawtooth/dsawtst.f:115:     3  tepre(55),tepost(55),teavg(55),tipre(55),tipost(55),tiavg(55),
+sawtooth/dsawtst.f:116:     4  ajzpre(55),ajzpst(55),ajzavg(55),ohravg(55)
+sawtooth/dsawtst.f:118:      dimension ztemp1(55), ztemp2(55)
+sawtooth/dsawtst.f:146:       real,dimension(55)::zrdp1,zttpi,zpsum,zzfb
+sawtooth/dsawtst.f:147:       real,dimension(55)::zztrapp,zztrappg,zp1avgs
+sawtooth/dsawtst.f:148:       real,dimension(55)::zdvols,zbsum
+sawtooth/dsawtst.f:149:       real,dimension(55,2)::zlahi
+sawtooth/dsawtst.f:151:       real,dimension(55) :: zbetai(55), zbetae(55), zbetat(55)
+sawtooth/dsawtst.f:152:     &  , zrminor1(55), zrminor2(55), zvolume(55), zarea(55)
+sawtooth/dsawtst.f:153:     &  , zbpol2di(55)
+simstat/README:103:       -.0556  = teoff
+tmodels/mmm2001.f:37:c  rgb  2-jul-01 temporarily dimension zbetaea, ... to 55
+tmodels/mmm2001.f:547:      real zbetaa(55), zbetaea(55), zbetaha(55)
+tmodels/mmm2001.f:548:     & ,  zbetaza(55)
+tmodels/mmm2001.f:623:      real zwpe, zlce(55), zdeltae(55), zgamaeg(55), zgtec(55)
+tmodels/mmm2001.f:1547:        write (nprout,155)
+tmodels/mmm2001.f:1548: 155    format (t4,'radius',t15,'zchieff'
+tmodels/ptheory.f:76:c rgb 21-jan-96 changed common /cnvect/ from (55,12) to (55,9)
+tmodels/ptheory.f:361:      real zgamma(kmatdim,55), zomega(kmatdim,55)
+tmodels/ptheory.f:362:     &  , zvflux(kmatdim,55)
+tmodels/ptheory.f:370:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+tmodels/ptheory.f:412:        integer, parameter :: maxx = 55         !maximum x points
+tmodels/ptheory.f:975:      kxdim = 55 ! this has to be passed down from somewhere!!!
+tmodels/ptheory.f:1094:     &            )+((hpowmw(3)+hpowmw(4))/3.664556)))+29826)*ztikev(jz)
+tmodels/ptheory.f:1097:c     &            +hpowmw(4))/3.664556)))**0.61)*((eqcamp/1.0E6)**0.3)
+tmodels/ptheory.f:2611:        allocate ( zexb_out2(1:55,10) )
+tmodels/ptheory.f:3298:        write (nprint,155) (cthery(j),j=1,150)
+tmodels/ptheory.f:3299: 155    format ('# cthery(j)'/,(1p10e12.4))
+tmodels/weiland18flux.f:881:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw14diff.f:501:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw17a.f:2235:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw17a.f:2272:!| 151--155.
+tmodels/neo_pol.f:239:     &                     2.453553677, 2.979991436, 3.531972170,
+tmodels/neo_pol.f:240:     &                     4.121994972, 4.773993492, 5.550352097/)
+tmodels/glf2d.F:22:c  Ron Waltz 619-455-4584  or email: waltz@gav.gat.com
+tmodels/glf2d.F:2297:         do 155 j = i, igh
+tmodels/glf2d.F:2301:  155    continue
+tmodels/glf2d.F:2586:         do 155 j = i, n
+tmodels/glf2d.F:2590:  155    continue
+tmodels/weiland18.f:777:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/mmm99.f:552:      real zwpe, zlce(55), zdeltae(55), zgamaeg(55), zgtec(55)
+tmodels/weiland18eqns.f:1661:!| Nucl. Fusion {\bf 32} (1992) 151--155.
+tmodels/weiland18diff.f:564:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw14flux.f:2055:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw14flux.f:2092:!| 151--155.
+tmodels/etaw14a.f:2228:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw14a.f:2265:!| 151--155.
+tmodels/ptheory_Pon_9Mar2015.f:76:c rgb 21-jan-96 changed common /cnvect/ from (55,12) to (55,9)
+tmodels/ptheory_Pon_9Mar2015.f:361:      real zgamma(kmatdim,55), zomega(kmatdim,55)
+tmodels/ptheory_Pon_9Mar2015.f:362:     &  , zvflux(kmatdim,55)
+tmodels/ptheory_Pon_9Mar2015.f:370:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+tmodels/ptheory_Pon_9Mar2015.f:412:        integer, parameter :: maxx = 55         !maximum x points
+tmodels/ptheory_Pon_9Mar2015.f:975:      kxdim = 55 ! this has to be passed down from somewhere!!!
+tmodels/ptheory_Pon_9Mar2015.f:1093:     &            )+((hpowmw(3)+hpowmw(4))/3.664556)))+29826)*ztikev(jz)
+tmodels/ptheory_Pon_9Mar2015.f:1096:c     &            +hpowmw(4))/3.664556)))**0.61)*((eqcamp/1.0E6)**0.3)
+tmodels/ptheory_Pon_9Mar2015.f:2605:        allocate ( zexb_out2(1:55,10) )
+tmodels/ptheory_Pon_9Mar2015.f:3267:        write (nprint,155) (cthery(j),j=1,150)
+tmodels/ptheory_Pon_9Mar2015.f:3268: 155    format ('# cthery(j)'/,(1p10e12.4))
+tmodels/etaw17diff.f:499:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/theory.f:2666:        write (nprint,155)
+tmodels/theory.f:2667: 155    format (t4,'radius',t15,'zchieff'
+tmodels/theory.f:5294:!| {\tt zdrb  } & 55 & $D^{RB}_{a}$
+tmodels/wexbint.f:51:      real zwxmed (55)      !Intermediate vector for interpolation in x
+tmodels/weiland14.f:2563:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/weiland14.f:2619:!| 151--155.
+tmodels/etaw17flux.f:2232:     &    ,t42,'dif_Z',t55,'chi_Z')
+tmodels/etaw17flux.f:2269:!| 151--155.
+tmodels/ptheory.f0:76:c rgb 21-jan-96 changed common /cnvect/ from (55,12) to (55,9)
+tmodels/ptheory.f0:345:      real zgamma(kmatdim,55), zomega(kmatdim,55)
+tmodels/ptheory.f0:346:     &  , zvflux(kmatdim,55)
+tmodels/ptheory.f0:354:        common /cnvect/ vftot(55,9), flxtot(55,9), srctot(55,9)
+tmodels/ptheory.f0:396:        integer, parameter :: maxx = 55         !maximum x points
+tmodels/ptheory.f0:959:      kxdim = 55 ! this has to be passed down from somewhere!!!
+tmodels/ptheory.f0:2089:        allocate ( zexb_out2(1:55,10) )
+tmodels/ptheory.f0:2751:        write (nprint,155) (cthery(j),j=1,150)
+tmodels/ptheory.f0:2752: 155    format ('# cthery(j)'/,(1p10e12.4))

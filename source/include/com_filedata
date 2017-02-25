@@ -1,0 +1,2 @@
+       integer k1dfile, k2dfile, l1dfile, l2dfile
+       common/fileunits/k1dfile, k2dfile, l1dfile, l2dfile

@@ -1,0 +1,90 @@
+c .../baldur/code/chngs00  Changes to the BALDUR code in 2000  Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c@mmm99.tex
+c  rgb 15-dec-00 reduce the thermal transport through the hydrogenic channel
+c      by znh / zni if lig > 0
+
+c@mmm99.tex
+c   rap 21-jul-00 new parameter cthery(131) added, which is responsible for
+c                 transfer diffusivity to convective velocity in the case
+c                 of negative difthi()
+
+c@heat in ../baldur/code/bald/dauxheat
+c  rgb 12-jun-00 interpolate rlepwr and rlipwr as a function of bdtime
+c    to rlepwrt and rlipwrt scalars at time tai
+
+c@auxval  .../baldur/code/bald/auxval.f
+c  rgb 12-jun-00 Check rlepwr and rlipwr arrays
+c    Negative elements are given value of previous element
+
+c@preset  .../baldur/code/bald/preset.f
+c  rgb 12-jun-00 initialized arrays rlepwr(jt) and rlipwr(jt)
+
+c@clear.f
+c rgb 12-jun-00 zeroed out rlepwr(j) and rlipwr(j), j=1,20
+c   zeroed out scalars rlepwrt and rlipwrt
+
+c@cbaldr.m
+c rgb 12-jun-00
+c rlepwr(j), rlipwr(j) electron and ion heating power as a fnc of time
+c rlepwrt, rlipwrt electron and ion heating power at current time
+
+c@mixed.tex
+c   12-Jun-2000  gyro-Bohm term restored
+
+c@dadpak .f
+c  rap 02-may-00 control for khole added
+c
+
+c@ncinfl.f
+c  rap 02-may-00 parameter impnum is added to the list of saved ones
+c      (save impnum)
+
+
+c@ptheory.f
+c  rap 08-mar-00 output modified (diffusivity matrix is not printed,
+c      when lthery(39)>=0 and zxithe/zvithe are used rather than 
+c      difthi/velthi)
+c
+
+c@auxval.f, dadpak.f, dauxheta.f, dbeams.f, dfusion.f, dneugas.f, 
+c@dpellet.f, dripple.f, dsawmix.f, dtrasp.f, imprad.f, ncsorc.f,
+c@neudep.f, noncor.f, resolv.f
+c  rap 23-feb-00 call ifix(...) changed to call int(...)
+c
+
+c@control, dempirc, divertor, dneocl, dolymp, imprad, dsawmix, initial, 
+c@preset, units, auxval, dauxheat, dbeams, dneocl, dneugas, errchk, ofit, 
+c@dio, dtransp, matrx1, dfusion, otable
+c  ap  15-feb-00 changed Hollerith character representation into '...' 
+c                in call mesage(...) and call error(...)
+
+c@second.f
+c  ap  11-feb-00 name of subroutine second was changed for timeInSeconds
+c  all calls of the subroutine were changed to '0.01 * mclock()'
+
+c@daytim  .../baldur/code/bald/daytim.f
+c  rgb 07-feb-00 revised system calls for SGI IRIX
+
+c@imprad  /11040/baldur/code/imprad.f
+c  rgb 07-feb-00 removed equivalence statement
+
+c@trneo1  /11040/bald92/wbaldn1 DNEOCL
+c  rgb 07-feb-00 removed equivalence statement
+
+c@solveb  .../baldur/code/bald/dsolver.f
+c  rgb 07-feb-00 removed equivalence statement
+
+c@convrt  .../baldur/code/bald/dsolver.f
+c  rgb 07-feb-00 removed equivalence statement
+
+c@neugas  .../baldur/code/bald/dneugas.f
+c  rgb 07feb00 data newname/8hbalxxxr1,... --> data newname/'balxxxr1',
+c    and changed Holerith fields throughout the dnegas.f file
+
+c@mprint   /baldur/code/bald  file DIO
+c  rgb 07-feb-00 removed equivalence (nlzzzz(1),zsig(1)), ...
+
+c@heat in ../baldur/code/bald/dauxheat
+c  rgb 07-feb-00 removed equivalence (nlzzzz(1),zdn(1)), ...

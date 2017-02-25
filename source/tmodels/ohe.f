@@ -1,0 +1,316 @@
+!| %
+!| %  To extract the fortran source code, obtain the utility "xtverb" from
+!|  0lenn Bateman (bateman@plasma.physics.lehigh.edu) and type:
+!| 0tverb < ohe_model.tex > ohe_model.f
+!| %
+!| \documentstyle{article}    % Specifies the document style.
+!| 
+!| \headheight 0pt \headsep 0pt  \topmargin 0pt  \oddsidemargin 0pt
+!| \textheight 9.0in \textwidth 6.5in
+!| 
+!| \begin{document}
+!| \begin{center}
+!| {\LARGE Subroutine for Computing Particle and Energy Fluxes\\ \vskip8pt
+!| Using the Ottaviani-Horton-Erba Transport Model}\vskip1.0cm
+!| Version 1.0: October 20, 1998 \\
+!| Implemented by Matteo Erba, Aaron J.~Redd, Arnold H. Kritz\\
+!|  Lehigh University
+!| \end{center}
+!| For questions about this routine, please contact: \\
+!| Aaron J.~Redd, Lehigh:  {\tt aredd@plasma.physics.lehigh.edu} \\
+!| Matteo Erba, Lehigh:  {\tt erba@plasma.physics.lehigh.edu}\\
+!| Arnold Kritz, Lehigh: {\tt kritz@plasma.physics.lehigh.edu}
+!| 
+!| 
+c@ohe_model.tex
+c--------1---------2---------3---------4---------5---------6---------7-c
+c
+      subroutine ohe(
+     &   chibohm,     zq,         zeps,       zrhostar,   zrlt
+     & , zrltcrit,    zra,        chii,       chie,       dh
+     & , dimp,        zkappa,     zkapexp,    zbound,     ierr
+     & , zcoef1,      zcoef2,     zcoef3,     zcoef4,     switch)
+c
+c Ottaviani-Horton-Erba Transport Model
+c
+c Inputs:
+c    chibohm:   Bohm diffusivity, defined as T_e/eB, in MKS units.
+c         *** all other inputs are dimensionless ***
+c    zq:        The local value of q, the safety factor
+c    zeps:      The inverse aspect ratio of the local flux surface
+c    zrhostar:  The local value of rho-star, defined as the ion gyroradius
+c                    rho_i divided by the minor radius, a, of the plasma
+c    zrlt:      R/L_T, where R is the major radius of the plasma,
+c                    and L_T is the local ion temperature scale length
+c    zrltcrit:  The value of R/L_T associated with the local critical
+c                    temperature threshold (for ITG transport); used
+c                    only used with the OHEm model-- switch=1
+c    zra:       The minor radius of the local flux surface, divided by
+c                    the minor radius of the plasma (r/a)
+c    zkappa:    Elongation of the local flux surface
+c    zkapexp:   Power-law exponent on zkappa; this geometric factor
+c                    multiplies the thermal diffusivities
+c    zbound:    When multiplied by q*rho_s, the lower bound on the
+c                    radial correlation length for the turbulence
+c    zcoef1:    Coefficient for empirical hydrogen diffusivity
+c    zcoef2:    Coefficient for empirical hydrogen diffusivity
+c    zcoef3:    Coefficient for empirical impurity diffusivity
+c    zcoef4:    Coefficient for empirical impurity diffusivity
+c    switch:    Integer switch.  =0 selects the thresholdless OHE model
+c                                =1 selects the thresholded OHEm model
+c
+c Outputs:
+c    chii:      The ion thermal diffusivity, in chibohm's units
+c    chie:      The electron thermal diffusivity, in chibohm's units
+c    dh:        The hydrogenic ion particle diffusivity, in [m^2/sec]
+c    dimp:      The impurity ion particle diffusivity, in [m^2/sec]
+c
+      IMPLICIT NONE
+c
+c Declare variables
+c NAMING CONVENTION: Dimensionless variables begin with a 'z'
+c
+      REAL
+     &   chibohm,     zq,         zeps,       zrhostar,   zrlt
+     & , zrltcrit,    zra,        chii,       chie,       dh
+     & , dimp,        zkappa,     zkapexp,    zbound,     zfkappa
+     & , zalpha,      zrltb,      zchii,      zcoef1
+     & , zcoef2,      zcoef3,     zcoef4
+
+      INTEGER switch, ierr
+c
+c check input for validity
+c
+      ierr = 0
+      if ((zq .lt. 0.0) .or. (zq .gt. 100.0)) then
+         ierr=1
+         return
+      elseif ((zeps .lt. 0.0) .or. (zeps .gt. 1.0)) then
+         ierr=2
+         return
+      elseif ((zrhostar .lt. 0.0) .or. (zrhostar .gt. 1.0)) then
+         ierr=3
+         return
+      elseif ((zbound .lt. 0.0).or. (zbound .gt. 100.0)) then
+         ierr=4
+         return
+      elseif ((zra .le. 0.0) .or. (zra .gt. 1.0)) then
+         ierr=5
+         return
+      elseif ((zkappa .lt. 0.0) .or. (zkappa .gt. 10.0)) then
+         ierr=6
+         return
+      elseif (abs(zkapexp) .gt. 10.0) then
+         ierr=7
+         return
+      elseif ((zrltcrit .lt. 0.0) .or. (zrltcrit .gt. 100.0)) then
+         ierr=8
+         return
+      elseif (abs(zrlt) .gt. 100.0) then
+         ierr=9
+         return
+      endif
+!| 
+!| We define below a factor NOT included in the original definition of
+!| the OHE model.  The factor {\tt zfkappa} depends on the elongation,
+!| $\kappa$, of the discharge.  In the results presented in Ref.~[2] is
+!| $\kappa^{-4}$, that is {\tt zkapexp} is set equal to -4.  Note also
+!| that negative values of the ion temperature gradient scale length are
+!| not allowed.
+!| 
+      zfkappa = zkappa**zkapexp
+      zrlt = abs(zrlt)
+!| 
+!| \section{The Ottaviani-Horton-Erba ``Santa Barbara'' $\eta_i$ model}
+!| 
+!| The 1996 Ottaviani-Horton-Erba ITG/TEM mode transport model \cite{ohe97}
+!| has two versions, distinguished by whether or not the transport is
+!| thresholded by a marginal stability gradient.  The thresholdless version
+!| is selected by setting {\tt switch = 0}.  The thresholded version is
+!| selected by setting {\tt switch = 1}, and it is assumed that the
+!| threshold $\eta_i$ has been calculated elsewhere.
+!| 
+!| \subsection{Thresholdless OHE Model}
+!| 
+!| The OHE model derivation begins with the assumption that the ion thermal
+!| diffusivity will be given by a quasilinear form, related to the
+!| radial correlation length $\lambda_c$ and correlation time $\tau_c$
+!| for ITG-driven turbulence:
+!| \[ \chi_i^{\rm ITG} \propto \frac{\lambda_c^2}{\tau_c} \]
+!| 
+!| The correlation length $\lambda_c$ is estimated from the large-scale
+!| poloidal cutoff ($k_{\theta c}$) of the turbulent spectrum:
+!| \[ \lambda_c \simeq \frac{1}{k_{\theta c}} \simeq
+!|    \frac{q R \rho_s}{L_{T_i}} \]
+!| where $\rho_s$, the ion inertial gyroradius, is defined by
+!| \[ \rho_s \equiv \frac{ \sqrt{m_i T_e}}{eB} =
+!|    \sqrt{ \frac{T_e}{T_i} } \rho_i \]
+!| and where $L_{Ti}$, the local ion temperature gradient scale length,
+!| is defined by
+!| $$L_{Ti}= {{T_i}\over {|\nabla T_i|}}$$
+!| Note that the correlation length is inversely proportional to the ion
+!| temperature scale length; hence, $\lambda_c$ is directly proportional to
+!| the normalized ion temperature gradient.  However, in the case of a very
+!| small or reversed gradient, it is obviously nonsense to have a vanishing
+!| or negative correlation length.  In the coding of the model, the
+!| correlation length is bounded underneath by $q\rho_s$ multiplied by {\tt
+!| zbound}.  Wendell Horton (IFS) recommends that {\tt zbound = 1.0}.  In
+!| the work of Ref.\cite{redd98ohe}, we used {\tt zbound = 0.0}.  This
+!| difference is not large, in the test cases we have considered so far,
+!| but could be significant when attempting to replicate the results in
+!| Ref.~[2].
+!| 
+!| In order to give the correct scaling with plasma current (essentially,
+!| the correct scaling of the transport with $q$), the correlation time
+!| $\tau_c$ is chosen to be: \[ \tau_c \simeq \frac{ \sqrt{ R L_{T_i} }
+!| }{v_i} \] where $v_i$ is the ion thermal velocity.
+!| 
+!| Putting these estimates together, we find that the ion thermal diffusivity
+!| is (in MKS units):
+!| $$
+!| \chi_i^{\rm ITG} = C_i \left( \frac{T_e}{eB} \right) q^2
+!|    \left( \frac{\rho_i}{L_{T_i}} \right)
+!|    \left( \frac{R}{L_{T_i}} \right)^{3/2}
+!| \eqno{\tt chii}
+!| $$
+!| where $C_i$ is a constant to be calibrated (see below).
+!| 
+!| With regards to the electron thermal diffusivity $\chi_e^{\rm ITG}$,
+!| Ottaviani, {\it et al} \cite{ohe97} simplify the situation considerably
+!| by assuming that the electron heat energy will be conducted only by the
+!| trapped electrons.  Then, simplify further by assuming that $\chi_e^{\rm
+!| ITG}$ will be equal to $\chi_i^{\rm ITG}$ multiplied by the trapped
+!| particle fraction ($\sqrt{\epsilon}$, where $\epsilon$ is the inverse
+!| aspect ratio r/R):
+!| $$ \chi_e^{\rm ITG} = C_e \left( \frac{T_e}{eB} \right) q^2
+!|   \sqrt{\epsilon}
+!|   \left( \frac{\rho_i}{L_{T_i}} \right)
+!|   \left( \frac{R}{L_{T_i}} \right)^{3/2}
+!| \eqno{\tt chie} $$
+!| where $C_e$ is a constant.
+!| These expressions were calibrated against the medium power L-mode JET
+!| discharge \#19649.
+!| The optimum fit between the JETTO runs and the experimental data were
+!| achieved when:
+!| \[ C_i = C_e = 0.014 \]
+!| 
+!| The relevant coding is as follows:
+!| 
+c *
+c * The Thresholdless Ottaviani-Horton-Erba ITG/TEM model
+c *
+      if ( switch .eq. 0) then
+c
+c Calculate dimensionless zchii, with lower bound on lambda_c
+c
+         zrltb = max( zbound, zrlt )
+c
+         zchii = zq * zq * (zrlt*zeps*zrhostar/zra) * zrltb**1.5
+!| 
+!| \subsection{Thresholded OHE Model}
+!| 
+!| The second version of the OHE model (called the ``modified OHE'' or OHEm
+!| model), a version that explicitly makes use of the marginal stability
+!| criterion.
+!| 
+!| If the plasma is near marginal stability, it is well-known that the
+!| ITG-driven turbulent diffusivity is linearly proportional to the
+!| parameter $\alpha$, where $\alpha$ is defined as the difference: \[
+!| \alpha \equiv \frac{R}{L_{T_i}} - \frac{R}{L_{T_i}^{\rm crit}} \] Note
+!| that $L_{T_i}^{\rm crit}$ denotes the critical ion temperature scale
+!| length.  The only modification to the OHE model is in the scaling with
+!| normalized temperature gradient; the $(R/L_T)^{3/2}$ term is replaced
+!| with $\alpha$, giving:
+!| $$
+!| \chi_i^{\rm ITG} = C_i \left( \frac{T_e}{eB} \right) q^2
+!|   \left( \frac{\rho_i}{L_{T_i}} \right)
+!|   \left( \frac{R}{L_{T_i}} - \frac{R}{L_{T_i^{\rm crit}}} \right)
+!| \eqno{\tt chii}
+!| $$
+!| Note, $\chi_i^{ITG}$ is set equal to 0 when $R/L_{Ti} - R/L_{T^{\rm crit}_i}$
+!| is negative.
+!| Once again, the electron thermal diffusivity $\chi_e^{\rm ITG}$ is found
+!| by multiplying $\chi_i^{\rm ITG}$ by the trapped particle fraction
+!| $\sqrt{\epsilon}$:
+!| $$
+!| \chi_e^{\rm ITG} = C_i \left( \frac{T_e}{eB} \right) q^2 \sqrt{\epsilon}
+!|   \left( \frac{\rho_i}{L_{T_i}} \right)
+!|   \left( \frac{R}{L_{T_i}} - \frac{R}{L_{T_i^{\rm crit}}} \right)
+!| \eqno{\tt chie}
+!| $$
+!| It is not clear that this version of the OHE model was ever calibrated;
+!| we simply use the calibration \[ C_i = C_e = 0.014 \] that was found for
+!| the thresholdless model.  This deficiency is not significant, however;
+!| work with this OHEm model has indicated that it has very little
+!| predictive power in tokamak plasma simulations -- and its deficiencies
+!| are unlikely to be corrected with a new value for $C_i$\cite{redd98ohe}.
+!| In any case, Ottaviani, {\it et al} do not provide a method for
+!| calculating the critical $T_i$ gradient and they indicate that the critical
+!| gradient should be very small in realistic conditions.
+!| 
+!| The relevant coding is:
+c *
+c * The Thresholded Ottaviani-Horton-Erba ITG/TEM model (OHEm)
+c *
+      else
+c
+c Calculate dimensionless zchii, with lower bound on lambda_c
+c
+         zrltb = max( zbound, zrlt )
+c
+         zalpha = max( 0.0, zrltb-zrltcrit )
+c
+         zchii = zq * zq * (zrlt*zeps*zrhostar/zra) * zalpha
+      end if
+c
+c Now determine the actual thermal and particle diffusivities.  The factor
+c that depends on plasma elongation, zfkappa, was not included in the
+c original OHE model.
+c
+         chii = (0.014) * chibohm * zchii * zfkappa
+         chie = chii * sqrt(zeps)
+c
+c The hydrogen and impurity diffusivities below are not included in the OHE
+c model described in Ref. [1] but were included (with zcoef1=1.0, zcoef2=0.25
+c and zcoef3=zcoef4=1.25) in obtaining the results in Ref. [2].
+c
+         dh   = zcoef1 + zcoef2 * zra * zra
+         dimp = zcoef3 + zcoef4 * zra * zra
+c
+      return
+      end
+!| %**********************************************************************c
+!| 
+!| \begin{thebibliography}{99}
+!| 
+!| \bibitem{ohe97}
+!| M.~Ottaviani, W.~Horton, M.~Erba
+!| ``Thermal Transport from a Phenomenological Description of ITG-Driven
+!| Turbulence'',
+!| Plasma Physics and Controlled Fusion {\bf 39}, 1461 (1997).
+!| 
+!| \bibitem{redd98ohe}
+!| A.~J.~Redd, A.~H.~Kritz, G.~Bateman and W.~Horton,
+!| ``Predictive Simulations of Tokamak Plasmas with a Model for
+!| Ion-Temperature-Gradient-Driven Turbulence,''
+!| Physics of Plasmas {\bf 5}, 1369 (1998).
+!| 
+!| \end{thebibliography}
+!| 
+!| %**********************************************************************c
+!| 
+!| \end{document}              0.000000E+00nd of document.
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 
+!| 

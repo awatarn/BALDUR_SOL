@@ -1,0 +1,61 @@
+# include this file before Make.flags
+# to define variables for peculiar local setups
+
+SYSTEM=$(shell uname)
+
+ifeq ($(SYSTEM),Linux)
+	LIBROOT = /usr/local
+	FLIBROOT = $(LIBROOT)/lf9561
+	FORTLIBS  = -L$(FLIBROOT)/lib -lfj9f6 -lfj9i6 -lfj9e6 -lfccx86_6a
+	BLAS = -lblasmt
+	LAPACK = -llapackmt
+endif
+
+ifeq ($(SYSTEM),IRIX64)
+  LIBROOT = /usr/pppl
+endif
+
+# for Garching
+#-------------
+ifeq ($(SYSTEM),AIX)
+#	FC90 = xlf90 -qsuffix=f=f90
+#        INCLDIR2=/afs/ipp/@sys/soft/netcdf/include
+        INCLDIR2= ../include
+        LIBROOT = /afs/ipp/@sys
+        LAPACK = /afs/ipp/rs_aix51/lib/liblapack_RS6K.a
+        BLAS = -lblas
+        NETCDF = -lnetcdf
+	HDF = -lgeneric_dummy
+#	LAPACK = -lessl
+#	BLAS = -lessl
+endif
+ifeq ($(SYSTEM),SunOS)
+        INCLDIR2 = /afs/ipp/sun4x_58/soft/netcdf-3.5.0/include
+        LIBROOT = /afs/ipp/@sys
+	CLIBS = -L/usr/gnu/lib -lstdc++ -lgcc_s
+	LDFLAGS = -xlic_lib=sunperf 
+	NETCDF = -lnetcdf
+	SUNPERF = Y
+	FORTLIBS = -L/opt/SUNWspro/lib -lfsu -lF77 -lsunmath -lfai -lfai2 \
+		   -lfmaxvai -lfmaxlai -lfminvai -lfminlai -lfsumai -lsunperf
+
+ endif
+
+ifeq ($(SYSTEM),HP-UX)
+	LAPACK = -L/d/hp/lib -llapack
+endif
+
+ifndef LIBROOT
+	LIBROOT = /usr/local
+endif
+#if netCDF is not available
+#--------------------------
+ifeq ("$(wildcard $(LIBROOT)/include/netcdf*)","")
+ifeq ("$(wildcard /usr/include/netcdf*)","") 
+ifeq ("$(wildcard $(INCLDIR)/netcdf*)","")
+ifeq ("$(wildcard $(INCLDIR2)/netcdf*)","")
+	NETCDF = -lgeneric_dummy
+endif
+endif
+endif
+endif

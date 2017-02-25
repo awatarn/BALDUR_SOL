@@ -1,0 +1,374 @@
+%  To extract the fortran source code, obtain the utility "xtverb" from
+%  Glenn Bateman (bateman@plasma.physics.lehigh.edu) and type:
+%  xtverb < mixed.tex > mixed.f
+%
+\documentclass{article}    % Specifies the document style.
+
+\headheight 0pt \headsep 0pt  \topmargin 0pt  \oddsidemargin 0pt
+\textheight 9.0in \textwidth 6.5in
+
+\begin{document}
+\begin{center}
+{\LARGE Subroutine for Computing Particle and Energy Fluxes\\ \vskip8pt
+Using the JET Mixed Bohm/gyro-Bohm\\ \vskip8pt
+Transport Model
+}\vskip1.0cm
+Version 1.1: 27 July 2000 \\
+Implemented by M. Erba, G. Bateman, Arnold H. Kritz, T. Onjun\\
+ Lehigh University
+\end{center}
+For questions about this routine, please contact: \\
+Arnold Kritz, Lehigh: {\tt kritz@plasma.physics.lehigh.edu}\\
+Glenn Bateman, Lehigh: {\tt glenn@plasma.physics.lehigh.edu}
+Thawatchai Onjun, Lehigh: {\tt onjun@fusion.physics.lehigh.edu}\\ \vskip8pt
+
+
+\begin{verbatim}
+c@mixed.tex
+c--------1---------2---------3---------4---------5---------6---------7-c
+c
+      subroutine mixed(
+     &  amu,            btor,           chie,           chii,
+     &  chibe,          chibi,          chigbe,         chigbi,
+     &  cwexb,          dhyd,           dimp,           ierr,		
+     &  gradte,         q_safety,       ra,             rlpe,		
+     &  rmaj,           shear,          tekev,          te_p8,          
+     &  te_edge,        tikev,          wexb,           zi)		
+c
+c Revision History
+c ----------------
+c      date          description
+c
+c   27-Jul-2000      Major rewrite by Bateman
+c   12-Jun-2000      gyro-Bohm term restored
+c   06-May-1999      Revised as module by Thawatchai Onjun
+c   24-Feb-1999      First Version by Matteo Erba
+c
+c Mixed Transport Model (by M.Erba, V.V.Parail, A.Taroni)
+c
+c Inputs:
+c    amu:	Mass of Deuterium in amu units
+c    btor:      Toroidal magnetic field strength in Tesla
+c                 at geometric center along magnetic flux surface
+c    cwexb:     EXB multiplier
+c    gradte:    Local electron temperature gradient [keV/m]
+c    q_safety:  Local value of q, the safety factor
+c    ra:       	Normalized minor radius r/a
+c    rlpe:     	a/L_pe, where a is the minor radius of the plasma,
+c                    and L_pe is the local electron pressure scale length
+c    rmaj:      Major radius [m]	
+c    shear:     Local magnetic Shear
+c    tekev:     Local electron temperature [keV]
+c    tikev:     Ion temperature [keV]
+c    te_p8:     Electron temperature at r/a = 0.8
+c    te_edge:   Electron temperature at the edge [r/a = 1]
+c    wexb:      EXB Rotation
+c                    "Effects of {ExB} velocity shear and magnetic shear 
+c                    on turbulence and transport in magnetic confinement 
+c                    devices", Phys. of Plasmas, 4, 1499 (1997).
+c    zi:        Ion charge
+c
+c Outputs:
+c    chibe:     Bohm contribution to electron thermal diffusivity [m^2/sec]
+c    chibi:     Bohm contribution to ion thermal diffusivity [m^2/sec]
+c    chigbe:    gyro-Bohm contribution to electron thermal diffusivity
+c                 [m^2/sec]
+c    chigbi:    gyro-Bohm contribution to ion thermal diffusivity
+c                 [m^2/sec]
+c    chie:      Total electron thermal diffusivity [m^2/sec]
+c    chii:      Total ion thermal diffusivity [m^2/sec]
+c    dimp:      Impurity ion particle diffusivity [m^2/sec]
+c    dhyd:      Hydrogenic ion particle diffusivity [m^2/sec]
+c    ierr:      Status code returned; 0 = OK, .ne.0 indicates error
+c    gamma:     The characteristic growthrate for the ITG type of 
+c                    electrostatic turbulence 	
+c    func:      Function for EXB and magnetic shear stabilization
+c
+c Coefficients set internally:
+c
+c    alfa_be:   Bohm contribution to electron thermal diffusivity
+c    alfa_bi:   Bohm contribution to ion thermal diffusivity
+c    alfa_gbe:  gyro-Bohm contribution to electron thermal diffusivity
+c    alfa_gbi:  gyro-Bohm contribution to ion thermal diffusivity
+c
+c    coef1:     First coefficient for empirical hydrogen diffusivity
+c    coef2:     Second coefficient for empirical hydrogen diffusivity
+c    coef3:     First coefficient for empirical impurity diffusivity
+c    coef4:     Second coefficient for empirical impurity diffusivity
+c
+      IMPLICIT NONE
+c
+c Declare variables
+c
+      REAL
+     &  alfa_be,        alfa_bi,        alfa_gbe,       alfa_gbi,
+     &  alfa_d,         amu,            btor,           c,		
+     &  chibe,          chibi,          chie,           chigbe,		
+     &  chigbi,         chii,           chi0,           coef1,		
+     &  coef2,          coef3,          coef4,          convfac1,	
+     &  convfac2,       convfac3,       convfac4,       cwexb,		
+     &  dhyd,           dimp,           e,              edge,		
+     &  el_mass,        em_i,           func,           gamma,		
+     &  gradte,         omega_ce,       omega_ci,       q_safety,	
+     &  ra,             rmaj,           rlpe,           rho,		
+     &  shear,          tekev,          te_p8,          te_edge,	
+     &  tikev,          v_sound,        vte_sq,         vti,		
+     &  wexb,           zi,             zepsilon
+c
+      INTEGER ierr
+c
+c..initialize diffusivities
+c
+      chie = 0.0
+      chii = 0.0
+      dhyd = 0.0
+      dimp = 0.0
+c
+      chibe = 0.0
+      chibi = 0.0
+      chigbe = 0.0
+      chigbi = 0.0
+c
+c check input for validity
+c
+      zepsilon = 1.e-10
+c
+      ierr = 0
+      if ( tekev .lt. zepsilon ) then
+         ierr=1
+         return
+      elseif ( tikev .lt. zepsilon ) then
+         ierr=2
+         return
+      elseif ( te_p8 .lt. zepsilon ) then
+         ierr=3
+         return
+      elseif ( te_edge .lt. zepsilon ) then
+         ierr=4
+         return
+      elseif ( rmaj  .lt. zepsilon ) then
+         ierr=5
+         return
+      endif
+\end{verbatim}
+
+\section{The Mixed Bohm/gyro-Bohm model}
+
+The Mixed Bohm/gyro-Bohm transport model derives from an
+originally purely Bohm-like model for electron transport
+developed for the JET Tokamak\cite{tar94}. This preliminary model has 
+subsequently been extended to describe ion transport\cite{erb95},
+and a gyro-Bohm term has been added in order to simulate data from
+different machines\cite{erb98}.  
+
+\subsection{Bohm term}
+
+The mixed model is derived using the dimensional analysis approach,
+whereby the diffusivity in a Tokamak plasma can be written as:\hfill
+\[ \chi = \chi_0 F(x_1, x_2, x_3, ...)\]
+where $\chi_0$ is some basic transport coefficient and F is a function
+of the plasma dimensionless parameters $(x_1,\ x_2,\ x_3,\ ...)$. We choose 
+for $\chi_0$ the Bohm diffusivity:\hfill
+\[ \chi_0 = \frac{cT_e}{eB}\]
+
+The expression of the dimensionless function F is chosen according to
+the following criteria:\
+\begin{itemize}
+\item{The diffusivity must be bowl-shaped, increasing towards the plasma
+boundary}
+\item{The functional dependencies of F must be in agreement with 
+scaling relationships of the global confinement time, reflecting
+trends such as power degradation and linear dependence on plasma
+current}
+\item{The diffusivity must provide the right degree of resilience
+of the temperature profile}
+\end{itemize}
+
+It easily shown that a very simple expression of F that satisfies
+the above requirements is:\hfill
+\[ F = q^2/|L_{pe}^*|\]
+
+where q is the safety factor and $L_{pe}^*=p_e(dp_e/dr)^{-1}/a$, being a the
+plasma minor radius. The resulting expression of the diffusivity
+can be written as:\hfill
+\[ \chi \propto |v_d| \Delta G\]
+where $v_d$ is the plasma diamagnetic velocity, $\Delta=a$ and $G=q^2$,
+so that it is clear that this model represents transport due to 
+long-wavelength turbulence.\\
+The evidence coming up from the simulation of non-stationary
+JET experiments \cite{erb97}(such as ELMs, cold pulses, sawteeth, {\sl etc}.)
+suggested that the above Bohm term should depend non-locally
+on the plasma edge conditions through the temperature
+gradient averaged over a region near the edge:\hfill
+
+\[ <L_{T_e}^*>_{\Delta V}^{-1} = \frac{T_e(x=0.8) - T_e(x=1)}{T_e(x=1)}\]
+where x is the normalized toroidal flux coordinate. The final
+expression of the Bohm-like model is:\hfill
+
+\[ \chi_{e,i}^B = \alpha_{Be,i} \frac{cT_e}{eB} L_{pe}^{*-1} q^2 <L_{T_e}^*>_{\Delta V}^{-1}\]
+where $\alpha_{e,i}^B$ is a parameter to be determined empirically,
+both for ions and electrons.\hfill 
+
+\subsection{gyro-Bohm term}
+
+The Bohm-like expression so derived proved to be very successful
+in simulating JET discharges, but failed badly in smaller Tokamaks
+such as START\cite{roa96}.\\
+For this reason a simple gyro-Bohm-like term, also based on 
+dimensional analysis, was added:
+
+\[ \chi_{e,i}^{gB} = \alpha_{e,i}^gB \frac{cT_e}{eB} L_{Te}^{*-1} \rho^*\]
+where $\rho^*$ is the normalized larmor radius:
+
+\[ \rho^* =  \frac {M^{1/2}cT_e^{1/2}}{aZ_ieB_t}\]
+
+This expression is what can be expected from small scale
+drift-wave turbulence. It is important to note that in large
+Tokamaks such as JET and TFTR the gyro-Bohm term is negligible,
+while in smaller machines, with larger values of $\rho^*$, the
+gyro-Bohm term can play a role especially near the plasma centre.\hfill 
+
+\subsection{Final Model}
+The resulting expressions of the diffusivities are:
+
+\[ \chi_{e,i}=\chi_{Be,i}+\chi_{gBe,i}\]
+where the Bohm and gyro-Bohm terms are defined above and the adopted values
+of the empirical parameters are:\hfill
+
+\[ \alpha_{Be} = 8\times10^{-5} ,\alpha_{Bi} = 2\times\alpha_{Be}\]
+\[ \alpha_{gBe} = 3.5\times10^{-2} , \alpha_{gBi} = \alpha_{gBe}/2\]\vskip8pt
+
+
+The following definitions are used:\vskip8pt
+
+\begin{tabular}{lll}
+el\_mass &electron mass    &$m_e$ \\
+c       &velocity of light &$c$ \\
+e       &electron charge  &$e$\\
+vte\_sq &eletron thermal velocity squared &$v_{\rm te}^2$\\
+omega\_ce &electron cyclotron frequency &$\omega_{\rm ce}$\\
+chi0 &Bohm diffusitivity & $\chi_0$\\
+em\_i & ion atomic mass [kg] & $M_{\rm i}$\\
+%v_sound & ion 
+\end{tabular}\vskip8pt
+
+The relevant coding is as follows:
+
+\begin{verbatim}
+c *
+c * Definition of the mixed model
+c *
+c
+c Constants
+c
+      el_mass 	= 9.1094e-28!   	[gm]
+      c 	= 2.9979e10!           	[cm/sec]
+      e 	= 4.8032e-10!        	[statcoul]
+c
+c Conversion factors
+c
+      convfac1 	= 1.6022e-16!      	[J/keV]
+      convfac2 	= 1.e-3!           	[kg/gm]
+      convfac3 	= 1.e4!            	[gauss/Tesla]
+      convfac4 	= 1.6605402e-27!   	[kg/amu]
+c
+c Coefficients
+c
+      alfa_be  =  8.00000000000000E-05  
+      alfa_bi  =  1.60000000000000E-04
+      alfa_gbe =  3.50000000000000E-02
+      alfa_gbi =  1.75000000000000E-02
+c
+      coef1    =  1.00000000000000E+00 
+      coef2    =  3.00000000000000E-01 
+      coef3    =  1.25000000000000E+00 
+      coef4    =  1.25000000000000E+00  
+c
+c Calculate chi0
+c
+      vte_sq 	= tekev * convfac1 / (el_mass * convfac2)
+      omega_ce 	= e * btor * convfac3 / (el_mass * c)
+      chi0 	= vte_sq / omega_ce
+c
+c Calculate chibohm
+c
+      edge 	= abs((te_p8 - te_edge) / te_edge)
+      chibe 	= abs(alfa_be * chi0 * rlpe * (q_safety**2) * edge) 
+      chibi 	= abs(alfa_bi * chi0 * rlpe * (q_safety**2) * edge)
+c
+c Calculate chi_gyrobohm
+c
+      em_i 	= amu * convfac4
+      v_sound 	= sqrt (tekev * convfac1 /em_i)!    		[m/sec]
+      omega_ci 	= zi * e * btor * convfac3 * convfac2 / (em_i * c)
+      rho 	= v_sound / omega_ci
+      chigbe 	= abs(alfa_gbe * chi0 * gradte * rho / tekev)
+      chigbi 	= abs(alfa_gbi * chi0 * gradte * rho / tekev)
+c
+c Calculate function for EXB and magnetic shear stabilization 
+c
+      vti 	= sqrt (2.0 * tikev * convfac1 / em_i)
+      gamma 	= vti / (q_safety * rmaj)
+      func 	= (0.1 + shear - cwexb * abs (wexb / gamma))
+c
+c
+c
+      if (func.lt.0) then
+          chibe = 0.0
+          chibi = 0.0
+      endif
+c
+c Now determine the actual electron and ion thermal and particle 
+c diffusivities.
+c
+      chie      = chibe + chigbe
+      chii      = chibi + chigbi
+      alfa_d    = coef1 + (coef2 - coef1) * ra
+      if (abs (chie + chii) .lt. 1e-10) then
+	dhyd = 0.0
+      else			
+        dhyd  = abs(alfa_d * chie * chii / (chie + chii))
+      endif
+c
+c..set the impurity particle diffusivity equal to the hydrogenic
+c  particle diffusivity (changed 27 July 2000)
+c
+      dimp = 0.0
+c
+cbate      dimp = dhyd
+c
+c The impurity diffusivity is not included in the mixed
+c model described in Ref. [1] but is defined here using a simple
+c empirical model.
+c
+cbate      dimp 	= abs(coef3 + coef4 * ra * ra)
+c
+      	return
+      	end
+\end{verbatim}
+%**********************************************************************c
+
+\begin{thebibliography}{99}
+\bibitem{tar94}
+A. Taroni, M. Erba, E. Springmann and Tibone F.,
+{\em Plasma Physics and Controlled Fusion,} {\bf 36} (1994) 1629.
+\bibitem{erb95}
+M. Erba, V. Parail, E. Springmann and A. Taroni,
+{\em Plasma Physics and Controlled Fusion,} {\bf 37} (1995) 1249.
+\bibitem{erb98}
+M. Erba, et al.,
+{\em Nuclear Fusion,} {\bf 38} (1998) 1013.
+\bibitem{erb97}
+M. Erba, et al.,
+{\em Plasma Physics and Controlled Fusion,} {\bf 39} (1997) 261.
+\bibitem{roa96}
+C.M. Roach, 
+{\em Plasma Physics and Controlled Fusion,} {\bf 38} (1996) 2187.
+\end{thebibliography}
+%**********************************************************************c
+\end{document}             % End of document.
+
+
+
+
+

@@ -1,0 +1,190 @@
+#!/bin/csh
+#   sprofcdf:  script to read profiles from 2-D data file
+# and write output lists in a form that xmgr can use.
+#
+#   To use this script, type:
+#
+# sprofcdf exp-file rplot-file-base-name time
+#
+#   where:
+# exp-file is the full name of the 2-D U-file with experimental data
+# sim-file is the base name of the 2-D RPLOT file with simulation data
+# time     is the time in seconds
+#
+#   for example:
+# sprofcdf ../exp/tftr_73268_2d.dat 73268a02 3.5
+#
+#   The output appears in the files:
+# exp-NE-<time>.dat
+# exp-TE-<time>.dat
+# exp-TI-<time>.dat
+# <simfile>-NE-<time>.dat
+# <simfile>-TE-<time>.dat
+# <simfile>-TI-<time>.dat
+#
+# Too few arguments
+#
+if ( $#argv < 3 ) then
+  echo sprofcdf: script to read profiles from 2-D data file
+  echo  and plot them at a given time
+  echo To use this script, type:
+  echo sprofcdf exp-file rplot-file-base-name time
+  echo where:
+  echo exp-file is the full name of the 2-D U-file with experimental data
+  echo sim-file is the base name of the 2-D RPLOT file with simulation data
+  echo time     is the time in seconds
+  echo for example:
+  echo sprofcdf ../exp/tftr_73268_2d.dat 73268a02 3.5
+  exit 1
+endif
+#
+# Check to see if the parameter files plot-NE.par, ... are there
+#
+if ( ! -e plot-NE.par ) then
+  if ( ! -e ~simruns/scripts/plot-NE.par ) then
+    echo Abort: could not find ~simruns/scripts/plot-NE.par
+    exit 1
+  endif
+  cp ~simruns/scripts/plot-NE.par .
+endif
+#
+if ( ! -e plot-TE.par ) then
+  if ( ! -e ~simruns/scripts/plot-TE.par ) then
+    echo Abort: could not find ~simruns/scripts/plot-TE.par
+    exit 1
+  endif
+  cp ~simruns/scripts/plot-TE.par .
+endif
+#
+if ( ! -e plot-TI.par ) then
+  if ( ! -e ~simruns/scripts/plot-TI.par ) then
+    echo Abort: could not find ~simruns/scripts/plot-TI.par
+    exit 1
+  endif
+  cp ~simruns/scripts/plot-TI.par .
+endif
+#
+# read TI profile from simulation data
+#
+getprofcdf << END
+ &nin
+ filein  = '$2XF.PLN',
+ lrplot = .TRUE.,
+ fileout = '$2-TI-$3.dat',
+ profname = 'TI',
+ rmajname = 'RMAJC',
+ rminname = 'RZON',
+ rnorname = 'XZONI',
+ time     = $3,
+ convrad  = 1.0e-2,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+# read TE profile from simulation data
+#
+getprofcdf << END
+ &nin
+ filein  = '$2XF.PLN',
+ lrplot = .TRUE.,
+ fileout = '$2-TE-$3.dat',
+ profname = 'TE',
+ rmajname = 'RMAJC',
+ rminname = 'RZON',
+ rnorname = 'XZONI',
+ time     = $3,
+ convrad  = 1.0e-2,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+# read NE profile from simulation data
+#
+getprofcdf << END
+ &nin
+ filein  = '$2XF.PLN',
+ lrplot = .TRUE.,
+ fileout = '$2-NE-$3.dat',
+ profname = 'NE',
+ rmajname = 'RMAJC',
+ rminname = 'RZON',
+ rnorname = 'XZONI',
+ time     = $3,
+ convrad  = 1.0e-2,
+ convprof = 1.0e+6,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+# read TI profile from experimental data
+#
+getprofcdf << END
+ &nin
+ filein  = '$1',
+ fileout = 'exp-TI-$3.dat',
+ profname = 'TI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ time     = $3,
+ convprof = 1.e-3,
+ convrad  = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+# read TE profile from experimental data
+#
+getprofcdf << END
+ &nin
+ filein  = '$1',
+ fileout = 'exp-TE-$3.dat',
+ profname = 'TE',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ time     = $3,
+ convprof = 1.e-3,
+ convrad  = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+# read NE profile from experimental data
+#
+getprofcdf << END
+ &nin
+ filein  = '$1',
+ fileout = 'exp-NE-$3.dat',
+ profname = 'NE',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ time     = $3,
+ convprof = 1.0,
+ convrad  = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
+#
+xmgr -noask \
+-graph 0 exp-NE-$3.dat $2-NE-$3.dat \
+-autoscale xy -p plot-NE.par \
+-graph 1 exp-TE-$3.dat $2-TE-$3.dat \
+-autoscale xy -p plot-TE.par \
+-graph 2 exp-TI-$3.dat $2-TI-$3.dat \
+-autoscale xy -p plot-TI.par
+#
+# Remove clutter
+rm plot-TI.par plot-TE.par plot-NE.par

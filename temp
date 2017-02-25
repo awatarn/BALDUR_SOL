@@ -1,0 +1,13 @@
+Simstat program by Glenn Bateman
+ 
+Indicate the type of input data file ndatype =
+0 for separate xmgr input files
+1 for lists of profiles from Kinsey
+2 TRANSP data  prepared using [BATEMAN.TRANSP.TOOLS]TEST.EXE
+3 from SNAP run using [BATEMAN.BPLOT]COMPARE.COM
+Name of the file containing data:
+Type conversion factor for radius
+Type conversion factor for data
+Conversion factors are:  convradius =  1.000000000000000   convdata =  1.000000000000000
+ Reading data from file exp-TI-3.80.dat                 
+Unable to open file cfile = exp-TI-3.80.dat                 

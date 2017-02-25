@@ -1,0 +1,5 @@
+c----------------------------------------------------------------------
+c This include file defines the input  grid sizes
+c----------------------------------------------------------------------
+	Integer kxdim, kydim
+	Parameter (kxdim = 60, kydim = 801)

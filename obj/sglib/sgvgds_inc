@@ -1,0 +1,21 @@
+c  communication block between sgvgds and sgiof
+c
+	integer iovgds	!vgds code: 0=not called, 1=file, 2=tty
+c			!3=file+tty
+	integer typdc	!char typed by user to upause
+	integer lgdsk	!length of gdsdsk
+	character gdsdsk*64	!disk name constructed by agvgds
+	integer lxnam
+	character xpndsk*124	!expanded file name
+	integer lxtrm	!length of xpntrm
+	character xpntrm*16	!translated terminal name
+	common /gds_com/ iovgds,typdc,lgdsk,lxnam,lxtrm
+     >		,gdsdsk,xpndsk,xpntrm
+cdec$	psect /gds_com/ noshr
+c
+c  communication block between sgvgds and vgds server
+c
+	character myterm*8,user*12
+	integer   ipid, nd
+	common /gds_lis/ nd,ipid,myterm,user !
+cdec$	psect /gds_lis/ noshr

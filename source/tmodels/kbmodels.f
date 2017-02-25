@@ -1,0 +1,776 @@
+!| %
+!| % 18:00 22-Jun-98  Aaron J Redd, Lehigh University
+!| %                  aredd@plasma.physics.lehigh.edu
+!| %
+!| \documentstyle{article}    % Specifies the document style.
+!| 
+!| \headheight 0pt
+!| \headsep 0pt
+!| \topmargin 0pt
+!| \oddsidemargin 0pt
+!| 
+!| \textheight 9.0in
+!| \textwidth 6.5in
+!| 
+!| \title{ {\tt kbmodels.tex} \\ Kinetic Ballooning Transport Models}
+!| 
+!| \author{Version 1.0: last edited August 26th, 1998 \\
+!| Implemented by Aaron J.~Redd, Lehigh University \\ \\
+!| For questions about this routine, please contact: \\
+!| Aaron J.~Redd, Lehigh:  {\tt aredd@plasma.physics.lehigh.edu} \\
+!| Arnold H.~Kritz, Lehigh:  {\tt kritz@plasma.physics.lehigh.edu} \\
+!| or Glenn Bateman, Lehigh:  {\tt bateman@plasma.physics.lehigh.edu}}
+!| 
+!| \date{typeset on \today}
+!| 
+!| \begin{document}            0.000000E+00nd of preamble and beginning of text.
+!| \maketitle                 % Produces the title.
+!| 
+!| \section{Initial Coding}
+!| 
+!| The routine begins as follows:
+!| 
+c
+c
+c     Kinetic ballooning transport models
+c     as implemented by Aaron J Redd, June 1998
+c
+c     For problems with this routine, please contact:
+c        Aaron Redd, Lehigh U:  aredd@plasma.physics.lehigh.edu
+c        Arnold Kritz, Lehigh U:  kritz@plasma.physics.lehigh.edu
+c     or Glenn Bateman, Lehigh U:  bateman@plasma.physics.lehigh.edu
+c
+c     Last revision:  August 26, 1998
+c
+      subroutine kbmodels( lthery, cthery,
+     &                    zq, zshat, zeps, zkappa, zdelta, zgbeta,
+     &                    zbeta, zbetac1, zbetac2,
+     &                    ztau, znbne, zncne,
+     &                    chifact,
+     &                    chii, chie, dh, dz,
+     &                    ierr)
+c
+c     Logical or control I/O variables:
+c
+c        lthery(j): Integer array that controls BALDUR calculations;
+c                   only one element of lthery(j) is used in this routine.
+c                   lthery(17) selects the KB transport model to be used:
+c                   lthery(17) = 0 for the default kinetic ballooning model
+c                              = 1 for 1995 kinetic ballooning model
+c                              = 2 for Redd KBM model (thesis model)
+c        cthery(j): Real-value array of coefficients used in calculations;
+c                   only two elements of cthery(j) is used in this routine.
+c                   cthery(8) is a factor used in default and 1995 models.
+c                   cthery(15) is the exponent of elongation scaling factor
+c                   In BALDUR, defaults are: cthery(8) = 6.0
+c                                            cthery(15) = 0.0
+c        ierr:      Integer flag set to 1 when there is a problem with the
+c                   calculations (outside range of validity, etc)
+c
+c     Dimensionless input parameters:
+c        zq:        Plasma safety factor
+c        zshat:     Magnetic shear (defined as r/q dq/dr)
+c        zeps:      Local inverse aspect ratio
+c        zkappa:    Local plasma elongation
+c        zdelta:    Local plasma triangularity
+c        zgbeta:    Normalized beta gradient
+c        zbeta:     Local beta, or normalized pressure
+c        zbetac1:   Critical value of beta for onset of instability
+c        zbetac2:   Critical value of beta for 'second stability'
+c        ztau:      Ratio of ion temperature to electron temperature
+c        znbne:     Ratio of beam ion density to electron density
+c        zncne:     Ratio of impurity (carbon) density to electron density
+c
+c     Dimensioned input parameters:
+c        chifact:   Dimensioned factor that multiplies the theoretically
+c                     calculated diffusivities (units of m*m/s).
+c                   This factor happens to have different definitions in
+c                     different KBM models.
+c
+c     Dimensioned outputs:
+c        chii:      Ion thermal diffusivity, in m^2/sec
+c        chie:      Electron thermal diffusivity, in m^2/sec
+c        dh:        Hydrogenic ion particle diffusivity, in m^2/sec
+c        dz:        Impurity (carbon) ion particle diffusivity, in m^2/sec
+c
+      IMPLICIT NONE
+c
+c     Declare variables
+c     NAMING CONVENTION: Dimensionless variables begin with a 'z'
+c
+      INTEGER lthery(*), ierr
+      REAL cthery(*), zncne, znbne, ztau, zq, zshat, zeps,
+     &    zkappa, zdelta, zgbeta, zbeta, zbetac1, zbetac2,
+     &    chifact, chii, chie, dh, dz, zkapfact,
+     &    zfonset, zh, zdkb, zcoeff, zbc1, zbc2,
+     &    chiechii, dhchii, dzchii, zchii,
+     &    zscriptk, zscriptf, zckb, zscriptfe, zscriptfh, zscriptbh
+c
+c     Set some initial values
+c
+      ierr = 0
+      chii = 0.0
+      chie = 0.0
+      dh = 0.0
+      dz = 0.0
+c
+!| 
+!| The inputs to the kinetic ballooning model can be summarized in three groups:
+!| control variables, dimensionless inputs and one dimensional input.
+!| The control variables are as follows:
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item {\bf lthery(j)} is an integer array that is used to control the
+!| BALDUR transport calculations.  Only one element ({\tt lthery(17)}) is
+!| relevant to the selection of a kinetic ballooning transport model.
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item {\tt lthery(17) = 0} for the default kinetic ballooning model
+!| \item {\tt lthery(17) = 1} for the 1995 kinetic ballooning model
+!| \item {\tt lthery(17) = 2} for Redd's 1998 KBM transport model
+!| (thesis model\cite{reddthes})
+!| \end{itemize}
+!| \item {\bf cthery(j)} is a real-valued array of coefficients that are used
+!| in the BALDUR calculations.  Only two elements ({\tt cthery(8)} and
+!| {\tt cthery(15)}) are relevant to calculations of the kinetic ballooning
+!| transport.
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item {\tt cthery(8)} is a scaling factor that appears in the various
+!| KBM transport models.  In BALDUR, this is defaulted to 6.0.
+!| \item {\tt cthery(15)} is the exponent in an empirical elongation scaling;
+!| literally, the diffusivities are multiplied by $\kappa^{c_{15}}$.
+!| In BALDUR, this factor is defaulted to 0.0.
+!| \end{itemize}
+!| \end{itemize}
+!| 
+!| The dimensionless inputs are as follows:
+!| 
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item {\bf zq} The plasma safety factor $q$
+!| \item {\bf zshat} Magnetic shear; ${\tt zshat} \equiv (r/q) (dq/dr)$
+!| \item {\bf zeps} Local inverse aspect ratio
+!| \item {\bf zkappa} Local plasma elongation
+!| \item {\bf zdelta} Local plasma triangularity
+!| \item {\bf zbeta} Normalized local pressure
+!| \item {\bf zgbeta} Normalized pressure gradient
+!| \item {\bf zbetac1} Onset threshold for the KB instability
+!| (calculated in another routine)
+!| \item {\bf zbetac2} Onset threshold for ``second stability''
+!| (calculated in another routine)
+!| \item {\bf ztau} Ratio of $T_i/T_e$
+!| \item {\bf zncne} The ratio of thermal carbon density to electron density;
+!| ${\tt zncne} = n_C/n_e$
+!| \item {\bf znbne} The ratio of beam deuterium density to electron density;
+!| ${\tt znbne} = n_{bD}/n_e$
+!| \end{itemize}
+!| 
+!| And, finally, the dimensioned input is:
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item {\bf chifact} is a dimensioned input that gives the right units to
+!| the theoretically-calculated kinetic ballooning results.
+!| The definition of {\tt chifact} (in terms of the basic physical quantities)
+!| varies, depending upon which KBM model the user has selected:
+!| \begin{itemize}
+!| \itemsep 0pt
+!| \item If {\tt lthery(17) = 0}, ${\tt chifact} \equiv \omega_{*e} \rho_i^2$,
+!| where $\omega_{*e}$ is the electron drift frequency and
+!| $\rho_i$ is the ion gyroradius.
+!| \item If {\tt lthery(17) = 1}, ${\tt chifact} \equiv \frac{c_s \rho_s^2}{L_p}$,
+!| where $c_s$ is the ion sound speed,
+!| $\rho_s$ is the thermal gyroradius and
+!| $L_p$ is the pressure gradient scale length.
+!| \item If {\tt lthery(17) = 2}, ${\tt chifact} \equiv \frac{c_s \rho_i^2}{R}$,
+!| where $R/c_s$ is roughly the toroidal transit time of an ion acoustic wave.
+!| \end{itemize}
+!| This ever-changing definition and usage is very cumbersome, but it was also
+!| the only realistic way to set up a useful KBM routine and
+!| maintain backward compatiability.
+!| \end{itemize}
+!| 
+!| Here, we check $q$, $\hat{s}$ and $\epsilon$ for validity; also, the
+!| parameter {\tt cthery(8)} and the thresholds $\beta_{c1}$ and $\beta_{c2}$
+!| are bounded away from zero:
+c
+c     Check some of the inputs for validity
+c
+      if (zq .lt. 0.01) then
+         zq = 0.01
+         ierr = 1
+      end if
+      if (zq .gt. 10.0) then
+         zq = 10.0
+         ierr = 1
+      end if
+      if (zshat .lt. 0.05) then
+         zshat = 0.05
+         ierr = 1
+      end if
+      if (zshat .gt. 5.0) then
+         zshat = 5.0
+         ierr = 1
+      end if
+      if (zeps .lt. 1.0e-6) then
+         zeps = 0.1
+         ierr = 1
+      end if
+      if (zeps .gt. 1.0) then
+         zeps = 1.0
+         ierr = 1
+      end if
+c
+      zcoeff = cthery(8)
+      if (cthery(8) .lt. 1.0e-6) then
+         zcoeff = 1.0e-6
+         ierr = 1
+      end if
+      zbc1 = zbetac1
+      if (zbetac1 .lt. 1.0e-4) then
+         zbc1 = 1.0e-4
+         ierr = 1
+      end if
+      zbc2 = zbetac2
+      if (zbetac2 .lt. 1.0e-4) then
+         zbc1 = 1.0e-4
+         ierr = 1
+      end if
+c
+!| 
+!| In order to save time, we will compute the empirical elongation factor
+!| only once:
+!| \[
+!| {\tt zkapfact} \equiv \kappa^{c_{15}}
+!| \]
+!| 
+!| The relevant coding is as follows:
+!| 
+c
+c     Initial calculations
+c
+      zkapfact = zkappa**cthery(15)
+c
+!| 
+!| \section{Kinetic Ballooning Models}
+!| 
+!| Kinetic ballooning is the kinetic analogue to the ideal MHD ballooning
+!| instability; it is basically a pressure-driven long-wavelength mode.
+!| 
+!| \subsection{The BALDUR Default Model}
+!| 
+!| The default model, by Singer, Tang and Rewoldt~\cite{singer88},
+!| is selected by setting {\tt lthery(17)=0}.
+!| The transport given by this model is calculated in a series of steps.
+!| First, find the onset function:
+!| $$
+!| f_{onset} = \frac{1}{1 + {\rm e}^{-h}}
+!| \eqno{\tt zfonset}
+!| $$
+!| where the exponent $h$ would be given in Ref.~\cite{singer88}
+!| by the expression:
+!| \[
+!| h = \frac{L_{p}}{c_{8}\rho_{\theta i}}(\beta ' -  \beta_{c1}')
+!| \]
+!| where $L_p$ is the local pressure scale length,
+!| $c_8$ is the coefficient {\tt cthery(8)},
+!| $\rho_{\theta i}$ is the poloidal ion gyroradius and
+!| a prime (') denotes a derivative with respect to the minor radius $r$.
+!| However, this expression must be reworked for two reasons:
+!| \begin{enumerate}
+!| \itemsep 0pt
+!| \item $h$ is expressed as a function of the difference between the local
+!| $\beta$-gradient and the critical $\beta$-gradient.
+!| In any expression, $d\beta/dr$ can be re-expressed in terms of $\beta$
+!| itself and the normalized gradient of $\beta$:
+!| $g_\beta \equiv - R/\beta d\beta/dr$.
+!| It has been shown that the theshold behavior is related only to the
+!| value of $\beta$, not $g_\beta$\cite{reddthes}.
+!| 
+!| Since it is the critical value of $\beta$ that is important, and not the
+!| normalized gradient, the difference of gradients should be reworked:
+!| \[
+!| \beta ' -  \beta_{c1}' =
+!| \beta \left( \frac{g_\beta}{R} \right) -
+!| \beta_{c1} \left( \frac{g_\beta}{R} \right)
+!| = \left( \beta - \beta_{c1} \right) \frac{1}{L_\beta}
+!| \]
+!| \item More seriously, this expression for $h$ is {\it not} unitless.
+!| Moreover, there is no guidance as to the correct functional form.
+!| \end{enumerate}
+!| 
+!| In order to fix these problems, I have neglected the poloidal ion gyroradius
+!| factor ($\rho_{\theta i}$) in the exponent.
+!| Once this factor is removed, the new unitless definition of $h$ can be
+!| rewritten compactly by noting that $L_p = L_\beta$:
+!| $$
+!| h = \frac{1}{c_{8}} \left( \beta - \beta_{c1} \right)
+!| \eqno{\tt zh}
+!| $$
+!| 
+!| Once the onset function has been calculated, compute the
+!| intermediate result $D^{KB}$.
+!| According to Ref.~\cite{singer88}, $D^{KB}$ is:
+!| \[
+!| D^{KB} = \left( \omega_{*e} \rho_{i}^{2} \right)
+!| f_{onset}
+!| \left(1 + \frac{\beta '}{\beta_{c1}'}\right)
+!| {\rm max} \left[ 1 - \frac{\beta '}{\beta_{c2}'} , 0 \right]
+!| \]
+!| where the first part ($\omega_{*e} \rho_{i}^{2}$) is analagous to the
+!| Bohm factor, providing some scalings and the correct units to $D^{KB}$.
+!| This factor is passed into the routine as {\tt chifact}.
+!| 
+!| The definition of $D^{KB}$ can be rewritten to eliminate the $\beta$-gradients,
+!| giving:
+!| $$
+!| D^{KB} = \left( \omega_{*e} \rho_{i}^{2} \right)
+!| f_{onset}
+!| \left( 1 + \frac{\beta}{\beta_{c1}} \right)
+!| {\rm max} \left[ 1 - \frac{\beta}{\beta_{c2}} , 0 \right]
+!| \eqno{\tt zdkb}
+!| $$
+!| 
+!| The ion thermal, electron thermal and particle diffusivities are all
+!| very closely related to the quantity $D^{KB}$, having only a numerical
+!| constant and the empirical elongation factor applied to each.
+!| So, the ion thermal diffusivity is given by:
+!| $$
+!| \chi_i^{KB} \equiv
+!| Q_{i}^{KB} \left( \frac{L_{Ti}}{n_{i}T_{i}} \right) =
+!| \left( \frac{5}{2} \right) D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt chii}
+!| $$
+!| The electron thermal diffusivity is given by:
+!| $$
+!| \chi_e^{KB} \equiv
+!| Q_{e}^{KB} \left( \frac{L_{Te}}{n_{e}T_{e}} \right) =
+!| \left( \frac{5}{2} \right) D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt chie}
+!| $$
+!| While the particle diffusivity (for all particle species) is given by:
+!| $$
+!| D_{h}^{KB} = D_{imp}^{KB} =
+!| D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt dh,dz}
+!| $$
+!| 
+!| In Ref.~\cite{singer88}, the suggested calibration for the kinetic ballooning
+!| model is {\tt cthery(8)=6.0}.
+!| Clearly, this new model will need a new calibration, which is in the process
+!| of being determined.
+!| 
+!| The relevant coding is:
+!| 
+c
+c     The default KBM model
+c
+      if (lthery(17) .eq. 0) then
+c
+         zh = (zbeta - zbc1)/zcoeff
+         if (zh .gt. 700.) zh = 700.0
+         if (zh .lt. -700.) zh = -700.0
+c
+         zfonset = 1.0/(1.0 + exp(-zh))
+         zdkb = chifact * zfonset * (1.0 + zbeta/zbc1) *
+     &      max( 1.0-zbeta/zbc2, 0.0 )
+c
+         chii = 2.5 * zdkb * zkapfact
+         chie = 2.5 * zdkb * zkapfact
+         dh = zdkb * zkapfact
+         dz = zdkb * zkapfact
+c
+      endif
+c
+!| 
+!| \subsection{The 1995 Kinsey-Singer-Rewoldt Model}
+!| 
+!| In 1995, Jon Kinsey, Cliff Singer and Gregory Rewoldt devised a new
+!| kinetic ballooning model, one which displayed certain useful characteristics
+!| (scalings with certain plasma parameters).
+!| This 1995 model is selected by setting {\tt lthery(17) = 1}.
+!| 
+!| The onset function of the 1995 model was originally given by the expression:
+!| \[
+!| f_{onset} =
+!| \exp \left[ c_{8} \left( \frac{\beta '}{\beta_{c1}'} -1 \right) \right]
+!| \]
+!| which can be re-expressed in the form:
+!| $$
+!| f_{onset} = {\rm e}^{h}
+!| \eqno{\tt zfonset}
+!| $$
+!| where the exponent $h$ is given by:
+!| $$
+!| h = c_{8} \left( \frac{\beta}{\beta_{c1}} -1 \right)
+!| \eqno{\tt zh}
+!| $$
+!| 
+!| Then, the intermediate step $D^{KB}$ is given by:
+!| $$
+!| D^{KB} = \left( \frac{c_s \rho_s^2}{L_p} \right) f_{onset}
+!| \eqno{\tt zdkb}
+!| $$
+!| where the first factor will be supplied to this routine by the input
+!| parameter {\tt chifact}.
+!| 
+!| Then the diffusivities can be calculated.
+!| Similar to the default model above, the ion thermal diffusivity is:
+!| $$
+!| \chi_i^{KB} \equiv
+!| Q_{i}^{KB} \left( \frac{L_{Ti}}{n_{i}T_{i}} \right) =
+!| D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt chii}
+!| $$
+!| The electron thermal diffusivity is:
+!| $$
+!| \chi_e^{KB} \equiv
+!| Q_{e}^{KB} \left( \frac{L_{Te}}{n_{e}T_{e}} \right) =
+!| D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt chie}
+!| $$
+!| Once again, all plasma species are assumed to have the same particle
+!| diffusivity:
+!| $$
+!| D_{h}^{KB} = D_{imp}^{KB} =
+!| D^{KB} \kappa^{c_{15}}
+!| \eqno{\tt dh, dz}
+!| $$
+!| Note that the 1995 version does not include a (5/2) factor in the thermal
+!| diffusivities (like the default model).
+!| 
+!| The relevant coding is as follows:
+!| 
+c
+c     The 1995 Kinsey-Rewoldt-Singer model
+c
+      if (lthery(17) .eq. 1) then
+c
+         zh = zcoeff * (zbeta/zbc1 - 1.0)
+         if (zh .gt. 700.) zh = 700.0
+         if (zh .lt. -700.) zh = -700.0
+c
+         zfonset = exp(zh)
+         zdkb = chifact * zfonset
+c
+         chii = zdkb * zkapfact
+         chie = zdkb * zkapfact
+         dh = zdkb * zkapfact
+         dz = zdkb * zkapfact
+c
+      endif
+!| 
+!| Notice that, unlike the default model, this kinetic ballooning model makes
+!| no provision for ``second stability'' effects.
+!| Also, all of the diffusivities (thermal and particle) are set equal to
+!| one another -- which seems quite suspect, even {\it a priori}.
+!| 
+!| Note also that {\tt cthery(8)} is being used in a rather different fashion
+!| than in the previous model.
+!| This model was calibrated in a series of time-dependent predictive simulations;
+!| it was found that the best fit was obtained when this coefficient is
+!| {\tt cthery(8)=3.5}.
+!| 
+!| \subsection{Redd 1998 Kinetic MHD Ballooning Model}
+!| 
+!| This model for kinetic MHD ballooning transport resulted from analysis of the
+!| plasma parameter space using a comprehensive kinetic stability code,
+!| called FULL\cite{rewoldt98,rewoldt87,rewoldt82}.
+!| The study, fully described in Ref.~\cite{reddthes}, was motivated by
+!| a need to more fully understand the kinetic ballooning instability,
+!| especially with regards to the effects of certain local parameters:
+!| $\kappa$ (local elongation), $\delta$ (local triangularity),
+!| $\epsilon$ (inverse aspect ratio), $\beta$ (normalized pressure),
+!| $g_\beta$ ($\equiv -R/\beta~d\beta/dr$, the gradient in $\beta$),
+!| safety factor $q$ and magnetic shear $\hat{s}$.
+!| Also of interest were the effects of unequal electron and ion temperatures,
+!| carbon impurity ion content ($n_c/n_e$) and the content of suprathermal
+!| ({\it i.e.}, neutral beam) hydrogenic ions.
+!| Of course, a complete transport model would separately calculate the
+!| electron and ion thermal diffusivities ($\chi_e^{\rm KB}$ and
+!| $\chi_i^{\rm KB}$), as well as the hydrogenic and carbon particle
+!| diffusivities ($D_h^{\rm KB}$ and $D_Z^{\rm KB}$).
+!| 
+!| The study began with the consideration of a simplified (two-species)
+!| hypothetical plasma, with a carefully calculated numerical MHD equilibrium.
+!| A single radial point (with its associated temperatures, densities and
+!| gradients) was then chosen to be the base case.
+!| From this, more than sixty numerical equilibria were constructed, each with
+!| systematic variations in a single parameter
+!| $(\kappa, \delta, \epsilon, \beta, g_\beta, q~{\rm or}~\hat{s})$
+!| at the chosen radial point.
+!| In each equilibrium, the horizontal minor radius was held fixed; furthermore,
+!| in the variations that required both $q$ and shear $\hat{s}$ to be constant,
+!| the $q(r)$-profile was held fixed throughout the plasma.
+!| Then, at the specified radial point in each equilibrium, the FULL code was
+!| used to analyze the kinetic MHD ballooning instability (find the linear
+!| spectrum of growth rate $\gamma$ vs $k_\theta \rho_i$) and calculate the
+!| quasilinear transport due to the KB mode.
+!| Hundreds of FULL code runs were used to characterize the spectra at the
+!| base-case radius in these equilibria, yielding 64 usable spectral peaks.
+!| These 64 points (scattered throughout the seven dimensional parameter space)
+!| were then used to compose an interpolation formula for $\chi_i^{\rm KB}$.
+!| Interpolation formulas were also derived for the ratios
+!| $\chi_e^{\rm KB}/\chi_i^{\rm KB}$ and $D_h^{\rm KB}/\chi_i^{\rm KB}$,
+!| where $D_h^{\rm KB}$ is the hydrogenic particle diffusivity.
+!| 
+!| The effects of unequal electron and ion temperature, impurity content and
+!| beam content were analyzed in three separate scans, each involving only
+!| the base case equilibrium.
+!| These scans yielded corrections both to $\chi_i^{\rm KB}$ and to the
+!| ratios $\chi_e^{\rm KB}/\chi_i^{\rm KB}$ and $D_h^{\rm KB}/\chi_i^{\rm KB}$.
+!| Furthermore, the impurity content scan allowed characterization of the ratio
+!| $D_Z^{\rm KB}/\chi_i^{\rm KB}$, where $D_Z^{\rm KB}$ is the impurity carbon
+!| particle diffusivity.
+!| 
+!| In all, over 650 FULL code runs were needed to characterize the kinetic
+!| ballooning mode!
+!| 
+!| In principle, this work was very much like the project that led up to the
+!| IFS/PPPL models for drift mode transport\cite{kotsch95model}:
+!| a comprehensive linear code was utilized to scan the parameter space,
+!| and then interpolation formulas were devised to fit the $\gamma/k_\theta^2$
+!| points.
+!| The difference, of course, lay in the calibration of the resulting model;
+!| in the case of the IFS/PPPL model, the linear results were calibrated to fit
+!| a gyrofluid turbulence simulation.
+!| At the time this KBM model was being composed, no nonlinear turbulence code
+!| had yet incorporated the full electron physics.
+!| Hence, this tranport model could not be calibrated to turbulence simulations.
+!| 
+!| Redd's 1998 kinetic MHD ballooning transport model begins by calculating
+!| the ion thermal diffusivity $\chi_i^{\rm KB}$, using the interpolation
+!| function
+!| $$
+!| \chi_i^{\rm KB} =
+!| \left( \frac{c_s \rho_i^2}{R} \right) C^{\rm KB} \hat{\chi}_i^{\rm KB}
+!| \eqno{\tt chii}
+!| $$
+!| where $C^{\rm KB}$ is a calibration constant and
+!| $\hat{\chi}_i^{\rm KB}$ is a dimensionless expression that best fits the
+!| kinetic stability runs.
+!| This model best fits the kinetic stability runs when $C^{\rm KB}$ has
+!| a value of 12300.
+!| However, as discussed in Ref.~\cite{rewoldt87}, the FULL code tends to
+!| overestimate the correct value of $\chi_i^{\rm KB}$ by a factor
+!| of at least 30-100, suggesting that this ``best fit'' value of $C^{\rm KB}$
+!| is too large by roughly two orders of magnitude.
+!| 
+!| The fitting function $\hat{\chi}_i^{\rm KB}$ is given by the expression
+!| $$
+!| \hat{\chi}_i^{\rm KB} =
+!| \left( \frac{R}{L_\beta} \right)^3 \left( 1 - \hat{s} \right)
+!| \left( q - 0.61 \right)^2
+!| \times {\rm e}^{(62.8)\beta} {\rm e}^{-(30)\delta} {\rm e}^{-(100)\epsilon}
+!| \mbox{$\mathcal{K}$}(\kappa)
+!| \mbox{$\mathcal{F}$} \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right)
+!| \eqno{\tt zchii}
+!| $$
+!| This definition includes two previously unknown functions, given by
+!| $$
+!| \mbox{$\mathcal{K}$}(\kappa) =
+!| \left\{
+!| \begin{array}{ll} \openup 4\jot
+!| (4.0 \times 10^6){\rm e}^{-(9.5)\kappa} &     \mbox{if $\kappa \le 1.6$} \\
+!| 1.0                                     &     \mbox{if $\kappa \ge 1.6$ }
+!| \end{array}  \right.
+!| \eqno{\tt zscriptk}
+!| $$
+!| and
+!| \begin{eqnarray}
+!| \mbox{$\mathcal{F}$} \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right)
+!| &=&        \left[ 0.848 - \frac{n_{bD}}{n_e} \right]
+!| \nonumber \\
+!| & & \times \left[ \left( \tau - 0.753 \right)^2 + 3.46 \right]
+!| \nonumber \\
+!| & & \times \left[ \left( 0.0516 - \frac{n_c}{n_e} \right)^2 + 0.0591 \right]
+!| \nonumber
+!| \end{eqnarray}
+!| 
+!| Note that this interpolation formula does {\it not} predict a stabilization
+!| at very large values of $\beta$.
+!| In the scans described in Ref.~\cite{reddthes}, there was no evidence
+!| of a ``second stability'' region, and so the interpolation formula reflects
+!| this absence.
+!| 
+!| The relevant coding is as follows:
+!| 
+c
+c     1998 Redd Kinetic Ballooning Model
+c
+      if (lthery(17) .eq. 2) then
+c
+         zscriptk = 1.0
+         if (zkappa .le. 1.6) zscriptk = 4.0e6 * exp(-9.5*zkappa)
+         zscriptf = ( 0.848 - znbne) *
+     &      ( (ztau-0.753)*(ztau-0.753) + 3.46 ) *
+     &      ( (0.0516-zncne)*(0.0516-zncne) + 0.0591 )
+cahk Insure that zgbeta is positive
+	 zgbeta = abs(zgbeta)
+         zchii = zgbeta*zgbeta*zgbeta *
+     &      (1.0 - zshat) * (zq-0.61)*(zq-0.61) *
+     &      exp(62.8*zbeta) * exp(-30.0*zdelta) * exp(-100*zeps) *
+     &      zscriptk * zscriptf
+c
+         zckb = 1.23e4
+c
+         chii = chifact * zckb * zchii
+c
+!| 
+!| The electron thermal, hydrogenic particle and impurity particle diffusivities
+!| are defined in terms of ratios with the ion thermal diffusivity.
+!| This is a reflection of the results obtained directly from the kinetic
+!| stability calculations (which consisted of a mixing-length estimate
+!| for $\chi_i$ and the ratios $\chi_e/\chi_i$, $D_h/\chi_i$ and $D_Z/\chi_i$).
+!| 
+!| The ratio between the electron thermal diffusivity and ion thermal diffusivity
+!| was interpolated by the expression
+!| $$
+!| \chi_e^{\rm KB}/\chi_i^{\rm KB} = ( 1.43 \times 10^5 )
+!| \left( 1.45     - \kappa  \right)
+!| \left( \beta    - 0.090   \right)
+!| \left( \epsilon - 0.111   \right)
+!| \left( q        - 0.576   \right)
+!| \left( \delta   - 0.00775 \right)
+!| \mbox{$\mathcal{F}$}_e \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right)
+!| \eqno{\tt chiechii}
+!| $$
+!| where the function $\mbox{$\mathcal{F}$}_e$ is defined by
+!| $$
+!| \mbox{$\mathcal{F}$}_e
+!| \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right) =
+!| \left( 2.42  - \frac{n_{bD}}{n_e} \right)
+!| \left( 17.7  + \tau               \right)
+!| \left( 0.299 - \frac{n_c}{n_e}    \right)
+!| \eqno{\tt zscriptfe}
+!| $$
+!| 
+!| Similarly, the ratio between the hydrogenic ion particle diffusivity and
+!| the ion thermal diffusivity was interpolated as
+!| $$
+!| D_h^{\rm KB}/\chi_i^{\rm KB} = 2430
+!| \left[ 0.134 - (\kappa - 1.1)^2 \right]
+!| \left( 0.153 - \epsilon \right)
+!| \left( q     - 0.293    \right)
+!| \mbox{$\mathcal{B}$}_h \left( \beta \right)
+!| \mbox{$\mathcal{F}$}_h \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right)
+!| \eqno{\tt dhchii}
+!| $$
+!| where the functions $\mbox{$\mathcal{B}$}_h$ and
+!| $\mbox{$\mathcal{F}$}_h$ are defined by
+!| $$
+!| \mbox{$\mathcal{B}$}_h \left( \beta \right) =
+!| \left\{
+!| \begin{array}{ll} \openup 4\jot
+!| (\beta - 0.088)^2 + 0.00113  &  \mbox{if $\beta \le 0.125$} \\
+!| 0.0025                       &  \mbox{if $\beta \ge 0.125$ }
+!| \end{array}  \right.
+!| \eqno{\tt zscriptbh}
+!| $$
+!| and
+!| $$
+!| \mbox{$\mathcal{F}$}_h
+!| \left( \tau, \frac{n_c}{n_e}, \frac{n_{bD}}{n_e} \right) =
+!| \left( 1.49 - \frac{n_{bD}}{n_e} \right)
+!| \left( 4.48 - \tau               \right)
+!| \left( 1.0  + \frac{n_c}{n_e}    \right)
+!| \eqno{\tt zscriptfh}
+!| $$
+!| 
+!| Clearly, the carbon ion particle diffusivity can only be calculated in
+!| cases that had a nonzero carbon content.
+!| Ideally, there would have been some small carbon content for all of the
+!| study cases, so that the effect of the KBM on carbon particle transport
+!| could be elucidated.
+!| However, in the interests of saving both computer time and human intervention,
+!| most of the cases in the KBM stability study were purely hydrogenic plasmas.
+!| As a result, the ratio between the carbon particle diffusivity and the
+!| ion thermal diffusivity is currently given only as a function of carbon
+!| content.
+!| This ratio has been interpolated as
+!| $$
+!| D_Z^{\rm KB}/\chi_i^{\rm KB} = (-0.60) \left( 0.25 - \frac{n_c}{n_e} \right)
+!| \eqno{\tt dzchii}
+!| $$
+!| Notice that this ratio is negative for all attainable values
+!| of $\frac{n_c}{n_e}$; this is a consequence of the fact that the kinetic
+!| calculations predicted that the KBM would drive a inward carbon pinch.
+!| The inward flux is rather weak when compared to the outward hydrogenic flux;
+!| however, this inward carbon flux could combine with inward neoclassical fluxes
+!| to produce rather peaked carbon density profiles.
+!| 
+!| Once $\chi_i^{\rm KB}$ is found, these three diffusivities can be calculated.
+!| The relevant coding is as follows:
+!| 
+c
+         zscriptfe = (2.42 - znbne) *
+     &      (17.7 + ztau) * (0.299 - zncne)
+         chiechii = 1.06e4 * (1.45 - zkappa) *
+     &      (zbeta - 0.090) * (zeps - 0.111) *
+     &      (zq - 0.576) * (zdelta - 0.00775) * zscriptfe
+c
+         zscriptbh = 0.0025
+         if (zbeta .le. 0.125)
+     &       zscriptbh = 0.00113 + (zbeta-0.088)*(zbeta-0.088)
+         zscriptfh = (1.49 - znbne) * (4.48 - ztau) * (1.0 + zncne)
+         dhchii = 2430.0 * ( 0.134 - (zkappa-1.1)*(zkappa-1.1) ) *
+     &       (0.153 - zeps) * (zq - 0.293) *
+     &       zscriptbh * zscriptfh
+c
+         dzchii = -0.60 * (0.25 - zncne)
+c
+         chie = chiechii * chii
+         dh   =   dhchii * chii
+         dz   =   dzchii * chii
+c
+      endif
+!| 
+!| \section{Final Calculations}
+!| 
+!| Nothing more to do.
+!| 
+c
+ 3000 continue
+      return
+      end
+c
+!| 
+!| 
+!| %**********************************************************************c
+!| 
+!| \begin{thebibliography}{99}
+!| 
+!| \bibitem{singer88} C. E. Singer,
+!| {\it Theoretical Particle and Energy Flux Formulas for Tokamaks},
+!| Comments on Plasma Physics and Controlled Fusion {\bf 11}, 165 (1988).
+!| 
+!| \bibitem{kotsch95model} M.~Kotschenreuther, W.~Dorland, M.~A.~Beer and
+!| G.~W.~Hammett,
+!| {\it Quantitative Predictions of Tokamak Energy Confinement from
+!| First-Principles Simulations with Kinetic Effects},
+!| Phys.~Plasmas {\bf 2}, 2381 (1995).
+!| 
+!| \bibitem{rewoldt82} G.~Rewoldt, W.~M.~Tang and M.~S.~Chance,
+!| {\it Electromagnetic kinetic toroidal eigenmodes for general
+!| magnetohydrodynamic equilibria},
+!| Physics of Fluids {\bf 25}, 480 (1982).
+!| 
+!| \bibitem{rewoldt87} G.~Rewoldt, W.~M.~Tang and R.~J.~Hastie,
+!| {\it Collisional Effects on Kinetic Electromagnetic Modes and Associated
+!| Quasilinear Transport},
+!| Physics of Fluids {\bf 30}, 807 (1987).
+!| 
+!| \bibitem{rewoldt98} G.~Rewoldt, M.~A.~Beer, M.~S.~Chance, T.~S.~Hahm,
+!| Z.~Lin and W.~M.~Tang,
+!| {\it Sheared Rotation Effects on Kinetic Stability in Enhanced Confinement
+!| Tokamak Plasmas, and Nonlinear Dynamics of Fluctuations and Flows in
+!| Axisymmetric Plasmas},
+!| Invited Paper for 1997 APS Meeting, to appear in Physics of Plasmas (May 1998).
+!| 
+!| \bibitem{reddthes} A.~J.~Redd,
+!| {\it Pressure-driven Transport in the Core of Tokamak Plasmas},
+!| PhD Dissertation, Lehigh University Department of Physics (1998).
+!| 
+!| \end{thebibliography}
+!| 
+!| \end{document}

@@ -1,0 +1,125 @@
+#!/bin/csh
+#   $0:  script to read profiles from 2-D data file
+# and write output lists in a form that xmgr can use.
+#
+#   The output appears in the files:
+# <simfile>-NE-<time>.dat
+# <simfile>-TE-<time>.dat
+# <simfile>-TI-<time>.dat
+#
+# Too few arguments
+#
+if ( $#argv < 5 ) then
+  echo "==========================================================================="
+  echo "| $0 - script to read profiles from 2-D exp. data file "   
+  echo "| and plot them at a given time "
+  echo "|-------------------------------------------------------------------------"
+  echo "|  To use this script, type:"
+  echo "| "
+  echo "|  $0 time time1 exp-file shot runid1 runid2 ... "
+  echo "|  "
+  echo "|   where: "
+  echo "|     time, time1 are the times in seconds "
+  echo "|     exp-file    is full name of 2d U-file with experimental data" 
+  echo "|     sim-file(s) is the name of the 2-D RPLOT file with simulation data "
+  echo "|-------------------------------------------------------------------------"
+  echo "|  for example: "
+  echo "|      $0 47.5 47.5 exp/PR96_cmod_960126007_2d.dat 40542 a02 b01"
+  echo "==========================================================================="
+  exit 1
+endif
+#
+# read TI, TE, and NE profile from experimental data
+#
+echo ' 0 ' > input.st
+set time1 = $1
+set norm1 = (1.e-3 1.e-3 1.e-19)
+set expdata = $3
+set shot = $4
+set sims = ($5 $6 $7 $8 $9 $10 $11 $12 $13)
+
+@ i = 0
+ foreach param (TI TE NE)
+  echo " $param - profile"
+  @ i = $i + 1
+getprofile << END
+ &nin
+ filein  = '$3',
+ fileout = 'exp-$param-$time1.dat',
+ profname = '$param',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ time     = $time1,
+ convrad  = 1.,
+ convprof = $norm1[$i],
+ lrmajor  = .FALSE.,
+ lrminor  = .TRUE.,
+ lrnorm   = .FALSE.,
+/
+END
+ echo exp-$param-$time1.dat  >> input.st
+ echo ' 1.0 ' >> input.st
+ echo ' 1.0 ' >> input.st
+ end
+#
+#
+# read TI, TE, and NE profile from simulation data
+#
+echo ' 0 ' >> input.st
+set time = $2
+set shot = $4
+set norm = (1. 1. 1.e-13)
+set stringNE = ""
+set stringTE = ""
+set stringTI = ""
+while ($#argv - 4)
+ echo " ======================================================"
+ echo " Input file $argv[5]/$shot$argv[5]XP.PLN is proceeding for time $time"
+ set stringNE = "$stringNE$argv[5]/$argv[5]-NE-$time.dat "
+ set stringTE = "$stringTE$argv[5]/$argv[5]-TE-$time.dat "
+ set stringTI = "$stringTI$argv[5]/$argv[5]-TI-$time.dat "
+ cp input.st $argv[5]/input.st
+ @ i = 0
+ foreach param (TI TE NE)
+  echo " $param - profile"
+  @ i = $i + 1
+getprofile << END
+ &nin
+ filein  = '$argv[5]/${shot}$argv[5]XF.PLN',
+ lrplot = .TRUE.,
+ fileout = '$argv[5]/$argv[5]-$param-$time.dat',
+ profname = '$param',
+ rmajname = 'RMAJC',
+ rminname = 'RZON',
+ rnorname = 'XZONI',
+ time     = $time,
+ convrad  = 1.0e-2,
+ convprof = $norm[$i],
+ lrmajor  = .FALSE.,
+ lrminor  = .TRUE.,
+ lrnorm   = .FALSE.,
+/
+END
+  echo $argv[5]/$argv[5]-$param-$time.dat  >> $argv[5]/input.st
+  echo ' 1.0 ' >> $argv[5]/input.st
+  echo ' 1.0 ' >> $argv[5]/input.st
+ end
+ simstat < $argv[5]/input.st
+ mv output $argv[5]/output-$time.st
+ shift
+end
+#
+#
+if ( ! -e "plot.par" ) then
+ perl $CODESYSDIR/csh/xmgrpar.pl $shot $time $sims
+ xmgr -noask -param plot.par\
+  -graph 0 -autoscale xy -nxy exp-NE-$time1.dat -nxy $stringNE \
+  -graph 1 -autoscale xy -nxy exp-TE-$time1.dat -nxy $stringTE \
+  -graph 2 -autoscale xy -nxy exp-TI-$time1.dat -nxy $stringTI 
+ rm -f plot.par
+else
+ xmgr -noask -param plot.par\
+  -graph 0 -autoscale xy -nxy exp-NE-$time1.dat -nxy $stringNE \
+  -graph 1 -autoscale xy -nxy exp-TE-$time1.dat -nxy $stringTE \
+  -graph 2 -autoscale xy -nxy exp-TI-$time1.dat -nxy $stringTI 
+endif

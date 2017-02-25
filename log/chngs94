@@ -1,0 +1,183 @@
+c.../baldur/code/chngs94  Changes to the BALDUR code in 1994  Bateman, PPPL
+c  To obtain this file, type           (use appropriate date for yymmdd)
+c cfs get /11040/bald94/byymmdd/wcode.tar
+c tar xf wcode.tar  (this creates directory .../code and subdirectories)
+c cd code/bald      (this moves to subdirectory .../code/bald)
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 19-oct-94 Smooth reciprocals of gradient scale lengths when 
+c    lthery(32) < 0 and gradient scale lengths when lthery(32) > 0
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 07-oct-94 No kinetic ballooning mode it zlpr < 0.0
+
+c@stripx   /baldur/code/bald  file DIO
+c  rgb 06-oct-94 changed line length from 80 to 132 characters
+
+c@imprad  .../baldur/code/bald/dimprad.f
+c  rgb 06-oct-94 commented out diagnostic printout
+c    always go through initialization with each call to sbrtn
+
+c@etawn7  .../baldur/code/etai/etawn7.tex
+c  rgb 05-oct-94 saved local variables
+
+c@cnvcof  .../baldur/code/bald/dsolver.f
+c  rgb 15-aug-94 compute flxtot and srctot as well as vftot
+
+c@cnvcof  .../baldur/code/bald/dsolver.f
+c  rgb 10-aug-94 save local variables that are initializ
+c@bounds  .../baldur/code/bald/dsolver.f
+c  rgb 10-aug-94 save local variables that are initializ
+c@reduce  .../baldur/code/bald/dsolver.f
+c  rgb 10-aug-94 save local variables that are initializ
+c@solve  .../baldur/code/bald/dsolver.f
+c  rgb 10-aug-94 save local variables that are initializ
+
+c@bounds  .../baldur/code/bald/dsolver.f
+c  rgb 10-aug-94  Installed a patch to skip pedestal boundary conditions
+c    when natomc > 2
+
+c@etawn8 .../baldur/code/etai/etawn8.tex
+c  rgb 10-aug-94 inserted save idim, zepsmach, zepsqrt, inital
+c    removed zepslon
+
+c@bounds  .../baldur/code/bald/dsolver.f
+c  rgb 08-aug-94 returned to bounds.940718
+
+c@beams   .../baldur/code/bald/dbeams.f
+c  rgb 07-aug-94 move call scaler(gblosi,mxhyd,uist*uisl**2*rmins)
+c    after 850 continue end of loop over species
+
+c  rgb 07-aug-94 return for now to cft without the -ev option
+
+c  rgb 05-aug-94 recompile everything using the -ev option in cft77
+c    This saves all local variables from one call to another of any routine.
+
+c@bounds
+c  rgb 05-aug-94 temporarily returned to bounds.old for testing
+
+c@bounds  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 17-jul-94 rewrote impurity boundary conditions
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 15-jul-94 revised computation of zepsns
+c  rgb 14-jul-94 compute zfnsne directly from fast particle densities
+c    had to include '../com/cd3he.m' for rh1fst and rh2fst
+
+c@convrt  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 14-jul-94 multiplied velthi by uisl / uist for proper units
+
+c@ncdifu  /11040/bald92/wbaldn1 file: DIMPRAD
+c  rgb 12-jul-94  added velthi(4,j) to vxemps  convective velocity
+
+c@trnsfrm  .../baldur/code/bald/trnsfrm.f
+c rgb 29-jun-94 no long printout if nlpomt(23) = .true.
+c@trcoefn  .../baldur/code/bald/trcoefn.f
+c rgb 29-jun-94 no long printout if nlpomt(23) = .true.
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 29-jun-94 replace negative diffusivities with convective
+c    velocity when lthery(27) > 0
+
+c@hprint   /baldur/code/bald  file DIO
+c  rgb 27-jun-94 print rhobis, rhobes, and hebems with ajbs
+
+c@beams   /11040/bald91/wbaldn1 DBEAMS
+c  rgb 27-jun-94 extrapolate to zone center just outside plasma
+c    for rhobis, rhobes, hebems, and ajbs
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 20-jun-94 include lcentr + 1 in printout of profiles as a 
+c    function of major radius
+
+c@bounds  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 10:15 07-jun-94  rewrote temperature boundary conditions
+c    temporarily remove uine and replace usnd -> usid
+
+c@coef  .../baldur/code/bald/dsolver.f
+c  rgb 04-jun-94 use old routines if ltrnsp(30) < 1
+c    (to make this backward compatible)
+
+c@mprint   /baldur/code/bald  file DIO
+c  rgb 31-may-94 allw ihreg to have 24 elements, fill blanks with 'zz'
+
+c@coef  .../baldur/code/bald/dsolver.f
+c       rgb 27-may-94 call trcoef and convrt if ltrnsp(30) .lt. 0
+c         othewise, call trcoefn, trnsfrm, and trcnvrt
+
+c@getchi    .../baldur/code/bald/dsolver.f
+c  rgb 24-may-94 compute azzz from cmean(ji,2,jb)
+c@solveb    .../baldur/code/bald/dsolver.f
+c     rgb 24-may-94 Convert dddd to normalized units
+c@cnvcof  .../baldur/code/bald/dsolver.f
+c  rgb 22-may-94 convert from chi(j1,jz) to normalized chn(j1,jz)
+c    use normalized units for aaaa, bbbb, cccc, and dddd
+c@bounds    .../baldur/code/bald/dsolver.f
+c  rgb 23-may-94 use normalized chn instead of chi
+c@reduce    .../baldur/code/bald/dsolver.f
+c  rgb 23-may-94 use normalized chn instead of chi
+c@solve    .../baldur/code/bald/dsolver.f
+c  rgb 23-may-94 use normalized chn instead of chi
+c    convert from chn(js,jz) to chi(js,jz)
+
+c@units  .../baldur/code/bald/default.f
+c rgb 22-may-94 added uind, uine, unid, unie, usnd, usne, unsd, unse
+
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 09-may-94 call prtheory rather than call theory(3)
+
+c@mprint   /baldur/code/bald  file DIO
+c  rgb 09-may-94 call prtheory instead of theory(3)
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 09-may-94 entry prtheory added
+c  rgb 25-apr-94 compute zlnz directly and limit zlnh and zlnz
+
+c@preset  .../baldur/code/bald/default.f
+c  rgb 21-apr-94 initialize cimprd(2) = 1.0 for zeff control
+c  rgb 17-apr-94 initialize ftzeff(jt) = 1.0, jt=1,20
+
+c@bounds    .../baldur/code/bald/dsolver.f
+c  rgb 14:00 15-apr-94  revised definition and use of lflxng(j)
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 02-apr-94 print out fluxes and sources as well as vftot
+
+c@cnvcof  .../baldur/code/bald/dsolver.f
+c  rgb 02-apr-94 compute flxtot and srctot as well as vftot
+c  rgb 30-mar-94 compute the total effective convective velocity
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 25-mar-94 compute effective convective velocities and print out
+
+c@trneo1  /11040/bald92/wbaldn1 DNEOCL
+c rgb 20-mar-94 move common /cmneo1/ to file com/cbaldr.m
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 20-mar-94 move common /cmneo1/ to file com/cbaldr.m
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 20-mar-94 print neoclassical and empirical diffusivity columns
+c  rgb 06-mar-94 compute zslnh(jz) = n_H / ( d n_H / dr )
+
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 25-feb-94 call theory(3) each step if lthery(28) < 0
+
+c@mprint   /baldur/code/bald  file DIO
+c  rgb 21-feb-94 more complete long printout when nstep = 0
+
+c@auxval  /11040/baldur/code/bald  DEFAULT
+c  rgb 07-feb-94 changed edge of parabolic profiles to xzoni(ledge+1)
+
+c@theory   /11040/bald94/... file: dtheory.tex
+c  rgb 25-feb-94 smooth diffusivities if lthery(28) > 0
+c    fixed smoothing when cthery(60) or cthery(61) > 0.0
+c  rgb 22-feb-94 diagnostic printout if iprint > 0
+c  rgb 02-feb-94 when lthery(8) > 20, use effective diffusivities
+c    and set the diffusivity matrix to zero
+c  rgb 29-jan-94 compute difthi and velthi from sbrtn etawn7
+c  rgb 11-jan-94 always print out gradient scale lengths
+c  rgb 06-jan-94 Use IMSL rather than NAG14 routine in sbrtn etawn6
+c  rgb 02-jan-94 set zimpz = max ( zimpz, cthery(120) )
+c    set iprint = lthery(29) - 10 before calling etawn6
+

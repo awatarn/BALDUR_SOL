@@ -1,0 +1,6 @@
+# cdfGenGet and cdfGenPut modules need to be globally accessible
+
+ezcdf.f90
+ezcdf_genget.f90
+ezcdf_genput.f90
+ezcdf_inqint.f90

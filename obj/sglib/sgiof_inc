@@ -1,0 +1,31 @@
+c  common blocks for sgiof for flags and buffers
+c
+	integer outflg	!0 if output undefined
+c			!else > 0
+	integer inflg	!0 if input undefined
+c			!1 if tty, 2 if disk, 3 if none, 5 if mbx
+	integer outdsk	!0 if no disk output
+c			!-1 if need to open, 1 if open
+c			!-2 if turned off for terminal only stuff
+	integer outtrm	!0 if no tty output
+c			!-1 if need to open, 1 if open
+	integer outaux	!0 if no auxiliary output
+c			!-1 if need to open, 1 if open
+	integer outps	!0 if tektronix *.plt file
+c			!1 if postscript *.ps file
+	common /SG_FLAG/ outflg,inflg,outdsk,outtrm,outaux,outps
+c
+	character*1, dimension(2048) :: tbuff
+	character*1, dimension(512)  :: dbuff
+	integer maxtb		!size of tty buffer
+	integer maxdb		!size of disk buffer in bytes
+	integer ktptr		!index into tty buffer
+	integer kdptr		!index into disk buffer
+	integer ktqio		!qio channel for terminal output
+	integer ktmbx		!mailbox channel for terminal broadcasts
+	integer kxqio		!qio channels for auxil tty output
+	integer kdqio		!qio channel for disk output
+	integer kdsav(2)	!disk address of start of last frame
+	integer keepc		!character to "keep" a disk frame
+	common /sg_buff/ maxtb,maxdb,ktptr,kdptr,
+     >		ktqio,ktmbx,kxqio,kdqio,kdsav,keepc,tbuff,dbuff

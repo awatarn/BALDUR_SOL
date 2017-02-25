@@ -1,0 +1,92 @@
+Message-ID: <3D487387.4010404@fusion.physics.lehigh.edu>
+Date: Wed, 31 Jul 2002 19:32:23 -0400
+From: Alex Pankin <pankin@fusion.physics.lehigh.edu>
+User-Agent: Mozilla/5.0 (Windows; U; Win 9x 4.90; en-US; rv:1.1b) Gecko/20020720
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: "Kritz, Arnold" <Arnold.Kritz@science.doe.gov>, 
+ kritz@fusion.physics.lehigh.edu, 
+ Glenn Bateman <bateman@fusion.physics.lehigh.edu>,
+ Thawatchai Onjun <tho3@lehigh.edu>, CANH NGUYEN <can9@lehigh.edu>
+Subject: new version of the BALDUR code
+Content-Type: multipart/mixed;
+ boundary="------------090707060101020706060706"
+
+This is a multi-part message in MIME format.
+--------------090707060101020706060706
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+I have created new repository and check the new version of the BALDUR 
+code in.
+The location of the repository is
+
+w3.physics.lehigh.edu:/var/cvs
+
+I have introduced new organization of the BALDUR code. It currently 
+includes
+all utilities, we are using to access rplot and U-files, and all test 
+cases.
+I have also included two NTCC module libraries, PortLib and EzCdf. The 
+later
+library use to access NETCDF files. I have also wrote several new utilities
+and included Fortran-90 interface modules to support NETCDF access. This
+allows to access experimental data in external netcdf files and to have the
+BALDUR output in the form of netcdf files. Currently, the BALDUR code 
+allows
+to overwrite calculated q-profile values with the experimental ones 
+provided
+through external netcdf file. The input variable sqprofile in the 
+equilibrium
+namelist, inpt, specifies the name of external netcdf file. For example,
+
+ sqprofile = '../../exp/prof-Q.nc';
+
+I have also wrote a new script to run the BALDUR code. Please, take a 
+look in
+the documentation section of the file csh/runxbaldur. It does not 
+require to
+have for22 data file in the directory, where the BALDUR code is running. 
+The
+script creates two output log file, run.log and notes. The second log file
+contains a copy of the last short printout from the file jobxlpt.
+
+To compile the code, please set the environment variables first. I will
+attach my settings for the variables as an example. The basic options for
+makefile are described in the file README.
+
+Please, also not that each directory contains file dir.inf with a brief
+description.
+
+Alexei Pankin.
+
+--------------090707060101020706060706
+Content-Type: application/x-java-applet;jpi-version=1.3.0_01;
+ name=".baldurrc"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename=".baldurrc"
+
+IwpleHBvcnQgQ1BVPUZVSklUU1UKZXhwb3J0IENWU1JPT1Q9cGFua2luQHczLnBoeXNpY3Mu
+bGVoaWdoLmVkdS92YXIvY3ZzCmV4cG9ydCBDVlNfUlNIPXNzaApleHBvcnQgQ1ZTRURJVE9S
+PWVtYWNzCiMKZXhwb3J0IEJBTERVUk9PVD1+L3Byb2plY3RzL2JhbGR1ci5uZXcKZXhwb3J0
+IExPR0RJUj0kQkFMRFVST09UL2xvZwpleHBvcnQgREJHRElSPSRCQUxEVVJPT1QvYmluL2Rl
+YnVnCmV4cG9ydCBXT1JLRElSPSRCQUxEVVJPT1Qvd29yawpleHBvcnQgQ09ORklHRElSPSRC
+QUxEVVJPT1QvY29uZmlnCmV4cG9ydCBDT0RFU1lTRElSPSRCQUxEVVJPT1QKZXhwb3J0IExP
+Q0FMPSRCQUxEVVJPT1QKZXhwb3J0IFRNUERJUj1+L3RtcAojCmV4cG9ydCBDQ0xJQl9JTkNM
+VURFPSIvdXNyL2luY2x1ZGUgLUkvdXNyL2xvY2FsL2luY2x1ZGUgIgpleHBvcnQgTE9BREVS
+X1RSQUlMRVI9Ii91c3IvbG9jYWwvbGliL2xpYm5ldGNkZi5hIC1ML3Vzci9sb2NhbC9sZjk1
+NjAvbGliLyAtbGxhcGFja210IC1sYmxhc210IgpleHBvcnQgUEFUSD0uOiRCQUxEVVJPT1Qv
+YmluOiRCQUxEVVJPT1QvY3NoOiRCQUxEVVJPT1QvZGVidWc6JExPQ0FML2V4ZTokUEFUSAoj
+CmV4cG9ydCBXT1JLU1RBVElPTl9UWVBFPUxJTlVYCmV4cG9ydCBGT1JUUkFOX1ZBUklBTlQ9
+TGFoZXlGdWppdHN1CiMKYWxpYXMgYmw9ImNkICRCQUxEVVJPT1QiCmFsaWFzIHNibD0iY2Qg
+JEJBTERVUk9PVC9zb3VyY2UiCmFsaWFzIGJibD0iY2QgJEJBTERVUk9PVC9zb3VyY2UvYmFs
+ZCIKYWxpYXMgZGJsPSJjZCAkQkFMRFVST09UL2Jpbi9kZWJ1ZyIKYWxpYXMgdHc9J3R3IC1z
+YiAnCmFsaWFzIGc9J2dyZXAgLWkgLW4gJyAKYWxpYXMgYXNjaD0nYWxsc2VhcmNoICcKIwpl
+eHBvcnQgQ1BQX1RSQUlMRVI9Ii1ML3Vzci9saWIvZ2NjLWxpYi9pMzg2LXJlZGhhdC1saW51
+eC8yLjk2IC1sc3RkYysrIgojCmV4cG9ydCBQQVRIPSRQQVRIOn50cmFuc3AvY29kZS9jb2Rl
+c3lzL2NzaDp+dHJhbnNwL2NvZGUvY29kZXN5cy9leGUKZXhwb3J0IFhFPX50cmFuc3AvY29k
+ZS9jb2Rlc3lzL2V4ZQpleHBvcnQgU0M9fnRyYW5zcC9jb2RlL2NvZGVzeXMvY3NoCmV4cG9y
+dCBTQj1+dHJhbnNwL2NvZGUvYmluCg==
+--------------090707060101020706060706--
+

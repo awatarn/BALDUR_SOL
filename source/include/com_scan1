@@ -1,0 +1,7 @@
+       integer imax1
+       parameter (imax1 = 35)
+       real    yy(kydim, imax1)
+       real    Vscan(kydim, imax1)
+       integer ny(imax1), it1           
+       character*20 cvnam1(imax1)
+       COMMON /SCAN1D/Vscan, yy, ny, it1, cvnam1

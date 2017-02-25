@@ -1,0 +1,283 @@
+c .../baldur/bald/changes2001  Changes to the BALDUR code in 2001  Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+
+
+rgb 20-dec-01 added callglf2d and glf2d to makefile
+added files callglf2d.f, f77_dcomplx.h, glf2d.F, and glf.m to .../bald
+modified makefile to compile and load these files
+
+c@wexbint.f wexbprof.f vpolprof.f
+c  rap 14-dec-01 array dimentions are fixed; 
+c                switch lthery for P.Strand/M.Erba/P.Zhu vpol model is introduced
+
+c@mmm95.tex
+c  rgb 13-dec-01 resistive ballooning diffusivities = abs ( ... )
+
+c@daytim, runtim, mclock .../baldur/bald/daytim.f
+c rap 26-nov-01 Standard FORTRAN ANSI functions SYSTEM_CLOCK and DAY_AND_TIME 
+c     are used instead of system specific ones
+
+c@ .../baldur/bald/dolymp.f
+c rap 26-nov-01 Initial value of cptime is set
+
+c@e2prec .../baldur/bald/deqmom2.f
+c rap 26-nov-01 sm(1) and sp1() were not initialized, but used. These 
+c     variables are set to zero.
+
+c@e2forc .../baldur/bald/deqmom2.f
+c rap 26-nov-01 czmn(nrzt+1), lt(.), gtz(.), gtt(.), gtts(.), gtz(.), 
+c     gtzs(.), gzz(.), and gzzc(.) were not initialized, but used. 
+c     These variables are set to zero.
+
+c@clear .../baldur/bald/clear.f
+c rap 26-nov-01 variables rliprw abd velhis are deleted as obsolete ones
+
+c@ .../baldur/bald/degbald.f 
+c rap 26-nov-01 Variable qhalf is deleted from namelist declaration
+
+c@ .../baldur/bald/lhmode.f and hmode.f
+c rap 26-nov-01 recurrent declarations of the variables current and aimass are
+c cleaned
+
+c@eqHR11  .../baldur/code/bald/deqbald.f
+c  rgb 26-nov-01 use zy0 = 0.0 as first argument in call realft
+c@eqHR12  .../baldur/code/bald/deqbald.f
+c  rgb 26-nov-01 use zy0 = 0.0 as first argument in call realft
+...
+
+c@vpolprof .../baldur/bald/vpolprof.f
+c rgb 06-sep-01 added maxs to the argument list and first dimensions
+c   used maxs as first dimension of den, temp, and vpol
+
+c@fpoloid  .../bald/neo_pol.f
+c rgb 19-sep-01 dynamically allocated arrays uq, awork, bwork, ipiv, kerr
+
+c@ptheory  .../baldur/code/bald/ptheory.f
+c rgb 19-sep-01 corrected serious error computing zimp and zmass
+c   when there are two or more impurity species
+c rgb 18-sep-01 set zthzmix = zthdmix after call to mixed_model
+c rgb 17-sep-01 changed arrays in call to vpolprof and wexbprof
+
+c@neugas  .../baldur/code/bald/dneugas.f
+c  rgb 19-sep-01 changed 0 to 0. in resetr(znei,mzones,0.)
+
+c@mmm2001.tex  .../baldur/code/bald/mmm2001.tex
+c  rgb 13-aug-01 initialized gamma and omega
+c@mmm95.tex
+c  rgb 13-aug-01 Fixed problems with gamma and omega
+
+c@nclass_int  .../baldur/bald/nclass_int.f
+c rgb 08-aug-01 changed the sign of vnneo1 to conform to BALDUR
+c@convrt  .../baldur/code/bald/convrt.f
+c  rgb 07-aug-01 implemented vnneo1(js,jb) together with vxemps(js,jb)
+c@mprint   /baldur/code/bald  file diof.
+c  rgb 07-aug-01 printed vnwars(jz)+vnneo1(1,jz), vewars(jz)+vnneo1(2,jz)
+
+c@nclass_int  .../baldur/bald/nclass_int.f
+c rgb 07-aug-01 implemented bootstrap current ajboot(jz)
+c@solveb  .../baldur/code/bald/solveb.f
+c  rgb 07-aug-01 recompute ajboot and ajtpbi only if lneocl(1) < 1
+
+c$cbaldr  .../baldur/com/cbaldr.m
+c  ton 1-aug-01 add lbound in the common black "cswtch"
+
+c@bounds  .../baldur/bald/bounds.f
+c  ton 1-aug-01 insert lbound to control edge boundary model
+c		lbound = 0 use boundary temperature from experimental data
+c               lbound = 1 use boundary temperature from subroutine hmode
+
+c@lhmode  .../baldur/bald/lhmode.f
+c  ton 1-aug-01 implement subroutine lhmode to determine L-H transition
+
+c@hmode  .../baldur/bald/hmode.f
+c  ton 1-aug-01 implement subroutine hmode to determine height of pedestal
+c               This model will call:
+c		hmode.f
+c		   - edge.f
+c			-height1.f
+c			    -collision.f	
+
+c@ftrapfn  .../baldur/bald/ftrapfn.f
+c  rgb 18-jul-01 trapped particle fraction based on min-max of |B|
+c    when kopt different from 0 or 1
+
+c@nclass_int  .../baldur/bald/nclass_int.f
+c rgb 18-jul-01 replace function ftrapfn with array trapbr(jz,1)
+
+c@trneo1  .../baldur/bald/dneocl.f
+c rgb 18-jul-01 replace function ftrapfn with array trapbr(jz,jb)
+c   where trapbr(jz,jb) is computed in subroutine ftrapfn
+c   note lneocl(3) controls trapped particle computation option
+c   unless cfutz(481) > 0.
+c@AVEQHR   .../baldur/bald/deqbald.f
+c  rgb 18-jul-01 remove call trapf, which is now renamed ftrap_hughes
+c@ftrap_hughes   .../baldur/bald/ftrap_hughes.f
+c  rgb 18-jul-01 move trapf to ftrap_hughes
+c@getchi  .../baldur/bald/getchi.f
+c  rgb 18-jul-01 implement call ftrapfn to compute trapbr(jz,js)
+c    trapped particle option controlled by either lneocl(3) or
+c    by cfutz(481) when cfutz(481) > 0
+c@ftrapfn  .../baldur/bald/ftrapfn.f
+c  rgb 18-jul-01 complete rewrite, changed from function to subroutine
+c    now computes trapbr(jz,js) over the entire range of jz, js=1,2
+
+c@AVEflx   .../baldur/bald/deqbald.f
+c rgb 17-jul-01 delth2d(1,jn) and delxi2d(1,jn) at magnetic axis set to
+c   the their averages one grid space away from the axis
+
+c@nclass_int  .../baldur/bald/nclass_int.f
+c rgb 13-jul-01 implemented z_grbm2=delxi27b2i, z_ngrth=bdotdeltheta
+
+c@trcoef  .../baldur/bald/dtransp.f
+c rgb 12-jul-01 removed comtrp
+
+c@AVEflx   .../baldur/bald/deqbald.f
+c rgb 12-jul-01 removed comtrp
+c@AVEpla   .../baldur/code/bald/deqbald.f
+c  rgb 12-jul-01 removed comtrp
+
+c@comtrp    .../baldur/com/comtrp.m
+c rgb 12-jul-01 removed rdrdth and rdydth from comtrp
+
+c@@AVEflx   .../baldur/bald/deqbald.f
+c rgb 11-jul-01 remove raj, rdrdth, and rdydth, remove ../com/comtrp.m
+
+c@trneo1  .../baldur/bald/dneocl.f
+c rgb 11-jul-01 replaced function ft with ftrapfn
+
+c@getchi  .../baldur/bald/getchi.f
+c  rgb 11-jul-01 function ft replaced with ftrapfn
+
+c@makefile
+c  rgb 11-jul-01 changed ft.o to ftrapfn.o, added field2d.o and trapf.o
+
+c@ftrapfn  .../baldur/bald/ftrapfn.f
+c  rgb 11-jul-01 changed ft.f to ftrapfn.f
+c  rgb 11-jul-01 removed comtrp.m and inserted cbaldr.m
+
+c@cbaldr    .../baldur/com/cbaldr.m
+c rgb 11-jul-01 moved trapbr(55,2) from comtrp.m to comdf2 in cbaldr.m
+c rgb 11-jul-01 started converting array dimensions to real and integer
+
+c@ptheory  .../baldur/code/bald/ptheory.f
+c rgb 10 Jul-01 removed if ( lthery(21) .eq. 10 ) ... call mmm95a
+
+c@@AVEflx   .../baldur/code/bald/deqbald.f
+c rgb 10-jul-01 compute delxi2d, delth2d, ejacob2d in common /come2d/
+c   on equilibrium flux surfaces
+c    changed delxib --> delxi2d, removed delxie
+
+c@mhdNEW   .../baldur/code/bald/deqbald.f
+c  rgb 10-jul-01  delxi2d, delth2d, ejacob2d in common /come2d/
+c    interpolated from equilibrium grid to baldur zone boundaries
+
+c@trcoef  .../baldur/bald/dtransp.f
+c rgb 27-jun-01 use lneocl(1) = 1 to call nclass_int
+c   lneocl(1) replaces cfutz(281) as neoclassical model switch
+
+c@ptheory  .../baldur/code/bald/ptheory.f
+c rgb 17-jun-01 added veltis(jz) and veltes(jz) to neoclassical printout
+c@convrt  .../baldur/code/bald/convrt.f
+c  rgb 17-jun-01 added veltis, veltes, velnhs, and velnis convection
+
+c@trcoef  .../baldur/bald/dtransp.f
+c rgb 17-jun-01 Added convective velocities
+c   changed from dneo1 to dnneo1(j1,j2,jz)
+c@trneo1  .../baldur/bald/dneocl.f
+c rgb 17-jun-01 changed from dneo1 to dnneo1(j1,j2,jz)
+c@clear   .../baldur/bald/clear.f
+c rgb 17-jun-01 added dnneo1 and vnneo1
+c   started to use fortran 90 array arithmetic dnneo1=0.0 and vnneo1=0.0
+c@cbaldr.m  .../com/cbaldr.m  common blocks
+c rgb 17-jun-01 changed dneo1(6,55) to dnneo1(6,6,55) matrix
+c   added vnneo1(6,55) for ion convective velocities
+
+c@trcoef  .../baldur/bald/dtransp.f
+c rgb 17-jun-01 Added convective velocities
+c   velthe, velthi, velnis, velnhs
+c@clear   .../baldur/bald/clear.f
+c rgb 17-jun-01 added velnhs, velnis, veltes, and veltis
+c@cbaldr.m  .../com/cbaldr.m  common blocks
+c rgb 17-jun-01 convective velocities [cm/sec]
+c  velnhs(ih,jz) convective velocity of hydrogenic ion ih, bndry jz
+c  velnis(ii,jz) convective velocity of impurity ion ii at bndry jz
+c  veltes(jz)    convective velocity of electron heat at bndry jz
+c  veltis(jz)    convective velocity of ion heat at bndry jz
+
+c@timint  .../baldur/bald/dintlib.f
+c rgb 21 feb 2001 set py=pybkp(iy,1) and return if itimax .lt. 2
+c   and cleaned up the routine
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+21 February 2001
+
+	The following changes were made by Alexei Pankin in subdirectory
+[Fusion.physics.lehigh.EDU|] ~pankin/projects/baldur
+and committed to the cvs repository
+
+~pankin/projects/baldur/bald/mmm95a.f
+~pankin/projects/baldur/bald/ptheory.f
+~pankin/projects/baldur/bald/theory.f
+MMM95a (lthery(21)=10), a modification of MMM95, was 
+introduced: 
+Absolute value of the pressure gradient is used.
+
+~pankin/projects/baldur/bald/nclass_int.f
+~pankin/projects/baldur/bald/nclass.f
+~pankin/projects/baldur/bald/u_elf.f
+~pankin/projects/baldur/bald/u_lu_backsub.f
+~pankin/projects/baldur/bald/u_lu_decomp.f
+~pankin/projects/baldur/bald/dneocl.f
+~pankin/projects/baldur/bald/dtransp.f
+~pankin/projects/baldur/com/cbaldr.m
+Draft implementation of NCLASS
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c@heat in ../baldur/code/bald/dauxheat
+c  rgb 10-feb-01 interpolate rlepwr over nrlepwr points if nrlepwr > 0
+c    and rlipwr over nrlipwr points if nrlipwr > 0
+c@auxval  .../baldur/code/bald/auxval.f
+c  rgb 10-feb-01 Count number of elements that are positive in the
+c     rlepwr and rlipwr arrays and use that count to set nrlepwr and
+c     nrlipwr in common block comtok in cbaldr.m
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+8 February 2001
+
+	The following changes were made by Glenn Bateman in subdirectory
+[Fusion.physics.lehigh.EDU|] ~bateman/Baldur/baldur
+and committed to the cvs repository
+[Fusion.physics.lehigh.EDU|] /disk4/cvsroot/baldur
+
+The python script
+~bateman/Python/trim.py
+was used to trim off the trailing blanks in .../baldur/bald/*.tex files
+
+~bateman/Python/s2tex.py
+was used to embed LaTeX documentation from *.tex to *.f files
+The .../baldur/bald/*.tex files were moved to subdirectory
+.../baldur/doc/bald_doc
+and the .../baldur/bald/*.tex files were removed
+The makefile was changed to remove all references to the *.tex files
+and to remove the utility xtverb.
+
+The resulting BALDUR source code was compiled and tested using
+~simruns/tftr/50911/sim_gb/50911x04
+That simulation agreed exactly with previous simulations on the fusion
+workstation
+
+The file xtverb.f and xtverb were moved to .../baldur/archive
+Notes files were moved to .../baldur/Notes
+
+All these changes were committed to cvs.
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c@preset  .../baldur/code/bald/preset.f
+c  rgb 08-jan-01 zeroed out all lthery, cthery, and theory coeffs
+

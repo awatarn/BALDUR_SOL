@@ -1,0 +1,546 @@
+#!/bin/csh
+# slistcdf: script to list values from data files as a function of time
+# me, 8-3-98 : add WTH 
+#
+#   To use this script, type:
+# slistcdf data-base-name
+#
+#   For example:
+# slistcdf tftr_73268
+#
+#   First read the 2-D concatenated U-file "$1_2d.dat"
+# extract the ion temperature profile (profname = 'TI',)
+# as a function of time at the 20th radial point (nindex = 20,)
+# convert from eV to keV (using convprof = 1.e-3,)
+# and list the profile as a function of time
+# in output file "edge-TI".
+#
+if ($#argv != 1 ) then
+    echo "slistcdf: script to list values from data files as a function of time"
+    echo "to use, type:"
+    echo "slistcdf data-base-name"
+    echo "for example:"
+    echo "slistcdf tftr_73268"
+    exit 1
+endif
+#
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-TI.dat',
+ profname = 'TI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-3,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  list edge TE
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-TE.dat',
+ profname = 'TE',
+ profncdf = 'TE',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-3,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge NE
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-NE.dat',
+ profname = 'NE',
+ profncdf = 'NE',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge RMINOR
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-RMINOR.dat',
+ profname = 'RMINOR',
+ profncdf = 'RMINOR',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge RMAJOR
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-RMAJOR.dat',
+ profname = 'RMAJOR',
+ profncdf = 'RMAJOR',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#
+#
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex  = 1,
+ fileout = 'list-Q.dat',
+ profname = 'Q',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge Rmajor
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-RMAJOR.dat',
+ profname = 'RGEO',
+ profncdf = 'RGEO',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge Rminor
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-RMINOR.dat',
+ profname = 'AMIN',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf KAPPA from 1-D file
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-KAPPA.dat',
+ profname = 'KAPPA',
+ profncdf = 'KAPPA',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'list-KAPPAR.dat',
+ profname = 'KAPPAR',
+ profncdf = 'KAPPAR',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf PNBI from 1-D file
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-PNBI.dat',
+ profname = 'PNBI',
+ profncdf = 'PNBI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf PICRH from 1-D file
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-PICRH.dat',
+ profname = 'PICRH',
+ profncdf = 'PICRH',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 1,
+ fileout = 'list-QICRHI.dat',
+ profname = 'QICRHI',
+ profncdf = 'QICRHI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 1,
+ fileout = 'list-QICRHE.dat',
+ profname = 'QICRHE',
+ profncdf = 'QICRHE',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#  listcdf DELTA from 1-D file
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-DELTA.dat',
+ profname = 'DELTA',
+ profncdf = 'DELTA',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf toroidal field in tesla
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-BT.dat',
+ profname = 'BT',
+ profncdf = 'BT',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf current in MA
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-IP.dat',
+ profname = 'IP',
+ profncdf = 'IP',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-6,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf line averaged Z_eff
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-ZEFF.dat',
+ profname = 'ZEFF',
+ profncdf = 'ZEFF',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf beam power - shine through
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-PNBI.dat',
+ profname = 'PNBI',
+ profncdf = 'PNBI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-6,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf radiated power
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-PRAD.dat',
+ profname = 'PRAD',
+ profncdf = 'PRAD',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-6,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf fusion power
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-PFUSION.dat',
+ profname = 'PFUSION',
+ profncdf = 'PFUSION',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.e-6,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf line-averaged density
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-NEL.dat',
+ profname = 'NEL',
+ profncdf = 'NEL',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf WTOT in Joules
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-WTOT.dat',
+ profname = 'WTOT',
+ profncdf = 'WTOT',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf WTH in Joules
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-WTH.dat',
+ profname = 'WTH',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf TE0 in keV
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-TE0.dat',
+ profname = 'TE0',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0e-3,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf TI0 in keV
+listcdf << END
+ &nin
+ filein  = './$1_1d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 1,
+ nindex = 20,
+ fileout = 'list-TI0.dat',
+ profname = 'TI0',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0e-3,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge KAPPA
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-KAPPA.dat',
+ profname = 'KAPPAR',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END
+#
+#  listcdf edge DELTA
+listcdf << END
+ &nin
+ filein  = './$1_2d.dat',
+ lrplot  = .FALSE.,
+ ndimin  = 2,
+ nindex = 20,
+ fileout = 'edge-DELTA.dat',
+ profname = 'DELTAR',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ convrad  = 1.0,
+ convprof = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ /
+END

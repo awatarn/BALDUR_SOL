@@ -1,0 +1,8 @@
+       integer imax2
+       parameter (imax2 = 73)
+       real    xx2(kxdim, imax2),yy2(kydim, imax2)
+       real    Vscan2(kxdim,kydim, imax2)
+       integer nx(imax2),ny(imax2), it2
+       character*20 cvnam2(imax2)
+c
+       COMMON /SCAN2D/Vscan2,xx2, yy2 ,nx, ny, it2, cvnam2

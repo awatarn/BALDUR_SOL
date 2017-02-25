@@ -1,0 +1,909 @@
+c .../baldur/code/chngs96  Changes to the BALDUR code in 1996  Bateman, Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+
+
+
+
+
+c@neugas  .../baldur/code/bald/dneugas.f
+c  rgb 28-aug-96 zr = 2.0 * ahalfs(jz,2) * rndup
+
+c@resolv  .../baldur/code/bald/resolv.f
+c  rgb 28-aug-96 corrected call ivar('timestep,nstep')
+
+c@stripx   /baldur/code/bald/stripx.f
+c  rgb 25-aug-96 clean the data set to conform to namelist requirements
+
+c@changes  baldur/code/bald/dscrunch.f
+c rgb 25-aug-96 force more than one iteration with if (iter .gt. 1 )...
+
+c@stripx   /baldur/code/bald/dio.f
+c  rgb 16-aug-96 insert commas as needed in namelist data
+
+c@MHD   .../baldur/code/bald/deqbald.f
+c  rgb 14-aug-96 avti(1) + zdavti ---> (avti(1) + zdavti)*rndup
+c    to control round off error in decision to compute equilibrium
+
+c@etaw14  .../baldur/code/bald/etaw14.tex
+c  rgb 14-aug-96 surrounded write zgns with if ( lprint .gt. 0 ) ...
+
+c@nfile   .../baldur/code/bald/doutput
+c  rgb 14-aug-96 corrected fuzz ---> rndup ---> rndeps
+
+c@pdrive  .../baldur/code/bald/dpellet.f
+c@nfile   .../baldur/code/bald/doutput
+c@neugas  .../baldur/code/bald/dneugas.f
+c@mprint   /baldur/code/bald  file DIO
+c  rgb 14-aug-96 replaced fuzz with rndeps
+
+c@beams   .../baldur/code/bald/dbeams.f
+c  rgb 14-aug-96 replaced fuzz and round with rndeps
+
+c@cmpres  .../baldur/code/bald/dauxheat.f
+c  rgb 14-aug-96 replaced fuzz with rndeps
+
+c@auxval  .../baldur/code/bald/auxval.f
+c  rgb 14-aug-96 replaced zfuzz with rndup = 1.0 + rndeps
+
+c@preset  .../baldur/code/bald/preset.f
+c  rgb 14-aug-96 round ---> rndeps, fuzz removed
+
+c@commsc  .../baldur/code/com/cbaldur.m
+c  rgb 14-aug-96  fuzz  , round ---> rndeps, rndup
+c  rndeps = small real number used for rounding up
+c  rndup  = 1.0 + rndeps
+
+c@data   /baldur/code/bald  file DIO
+c  rgb 14-aug-96 added rndeps to first namelist
+
+c@e2rsid /11040/bald91/wbaldn1  wsequil  DEQMOM2
+c  rgb 11-aug-96 if ( nmax .lt. 1 ) then  n = nmax ...
+
+c@plabel   .../baldur/code/bald/doutput.f
+c  rgb 07-aug-96 removed idate and call date
+
+c@eqINIT  .../baldur/code/bald/deqbald.f
+c rgb 24-jul-96 removed rewind 1 and installed read (1,inpt,err=90,end=90)
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 01-jul-96 force zero gradients to round up
+
+c@.cshrc    .../baldur/.cshrc
+c  setenv XLFRTEOPTS namelist=old  to allow old style namelists
+
+c@makefile  .../baldur/bald/code/bald/makefile
+c  rgb 25-jun-96 removed -1 from compiler options
+c    put library libbald.a in baldur/bald/code/bald1 current directory
+
+c@smooth  /11040/baldur/code/bald/dtransp.f
+c  rgb 25-jun-96 return if korder < 1 and abs(prlow*plwcyc) < 1.e-10
+
+c@auxval  /11040/baldur/code/bald  DEFAULT
+c  ahk 24-jun-96 forced izones = nzones after 418
+
+
+c@mhdBAL   .../baldur/code/bald/deqbald.f
+c  rgb 23-jun-96 compute dvoli(j) from j=1,mjbal-1, not to mjbal
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 18-jun-96 set iletai(10) = -1 to force complex nag routine f02gje
+
+c@etaw13d.f
+c rgb 17-jun-96 real*8 --> real (ie let -r8 --> double precision)
+
+c@ran2   .../baldur/code/util/random.f
+c rgb 17-jun-96 modified range of results to  rm .le. ran2 .le. 1.0
+
+c@timei  .../baldur/code/bald/dneugas.f
+c rgb 16-jun-96 set zeps=0.0 when small enough
+
+c@ran2   .../baldur/code/util/random.f
+c rgb 14-jun-96 added diagnostic printout
+
+c@neugas  /11040/bald92/wbaldn1   DNEUGAS
+c  rgb 13-jun-96 ranf --> ranz everywhere
+c  rgb 02-jun-96 save ilinit, set maxgas = 2
+cbate if(tai.le.0.0.or.rplsma.le.0.0) ilinit = .false. (reinstated)
+
+c@tBALFX   .../baldur/code/bald/deqbald.f
+c rgb 13-jun-96 removed call link and write(nprt statements
+
+c@sawmix  .../baldur/code/bald/dsawmix.f
+c  rgb 13-jun-96 commented out call sawavg and call sawamp
+
+c@ran1   .../baldur/code/util/random.f
+c  implemented random number generators from Numerical Recipies
+
+May 9, 1996
+Made the following changes to the makefile in bald directory before 
+running make.
+
+Removed -w0 flag because complaint about 0 flag , that is the line
+replaced
+	FFLAGS = -g -w0 -C
+by 
+	FFLAGS = -g -C
+
+Ran make xtverb which seemed to proceed without problem.
+
+Running make had difficult with xtverb so I ran xtverb by hand on the
+.tex files to extract the .f files.  Then I commented out the line
+#	$(XTVERB) < $< > $*.f
+in the makefile.  
+
+Next encountered problems with the -r8 flag in the make file.  I replaced
+this flag with the appropriate flag for the IBM.  That is,
+
+#FCFLAGS = -g -w0 -C -r8
+
+was replaced by
+
+FCFLAGS = -g -C -qautodbl=dblpad
+
+This promotes all single and double precision variables to double
+and extended precision.  Perhaps this should also be done for the
+files in the util directory.  Also there is a flag on the IBM for
+promoting floating point constants and integers to higher precision.
+Perhaps this is also required.
+
+I also added the flags that allow override of the the default compiler
+table sizes.  That is, the FCFLAGS line becomes
+
+FCFLAGS = -g -C -qautodbl=dblpad -NA50000 -NQ30000
+
+Then running make required that the line
+              zevec(j1,j2) = cmplx( zeigenv(j2,j1), 0.0 )
+be replaced by 
+              zevec(j1,j2) = cmplx( zeigenv(j2,j1), 0.0D0 )
+
+I also made this change in etaw13.tex 
+
+The code seemed to compile ok until I reached dadpak.f Then
+encountered many problems with DATA statements and indicated that
+variables that appear in common blocks should be set by calls to BLOCK
+DATA subprograms.  I will check fortran documentation and will discuss
+with Glenn.
+
+May 17, 1996
+
+Replaced all the data statements in dadpak.f that are in common blocks
+with block data subsubprograms.
+ 
+Compilation of dadpak.f failed with complaint of constant subscript out 
+of bounds.  The complaint was about       
+dimension psigma(1)
+I replaced this with       
+dimension psigma(*)  
+which seems to work fine.
+
+Extra commas in format statements in ptheory.f and theory.f were removed.
+These were commas at the end of the format statements.  Also fixed 
+ptheory.tex and theory.tex tex files.
+
+In the the file dauxheat.f, in two format statements x was replaced by 1x.
+
+Added required commas in format statements in dbeams.f
+
+In dbeams subroutine gethfr data statment is moved to a block data subprogram
+
+In deqmom2.f constant subscript out of bounds problems fixed by replacing
+1 in Dimension statement by * for wint(1) and pres(1) in subroutine
+e2qfor and for wt(1) in subroutine e2curr.
+
+Also in deqmom2.f a number of block data subprograms were introduced as required.
+
+May 19, 1996
+
+In deqvmom.f file to eliminate subscript out of bounds messages, in
+the dimension statement 
+rmb(mjdim,1), ymb(mjdim,1) were changed to rmb(mjdim,*), ymb(mjdim,*)
+
+Also slpr0, slpe, hh0, and initm were moved to a block data subsubprogram.
+However there appeared to be problems with the inclusion 
+      include '../com/tvmcom1.cmm'
+so only common blocks vcom4, vcom6 and vcom8 were included.
+
+In dio.f ihblnk was declared as a character variable, ihblnk(1)*4.
+Also a number of x were replaced by 1x in format statements and missing
+commas in fortran statements were added.
+
+In divertor.f, the data statement 
+        data bk/1.6e-12/, c/3.e10/, amp/1.67e-24/, ameltn/9.11e-27/,
+     1  evtmw/1.6e-25/
+was moved to a block data statement.
+
+Compiled thorugh doutput.f
+
+May 20, 1996
+
+In dpellet.f Replaced x by 1x.
+Replaced 
+        call abortb (6,'out of range in sbrtn psolth')
+and
+        call abortb (6,'out of range in sbrtn psolth')
+and
+      call abort(6,' error in psolth ')
+by      
+      call abortb(6,' error in psolth ')
+NOTE!  However, I do not find the subroutine or function abortb
+
+Also in dpellet.f a block data subsubprogram. 
+
+In dripple.f it appears that inital is initialized twice in different
+subroutines, but it may be ok.
+
+In dscrunch.f, fixed subscript out of bounds and added block data 
+subprogram.
+
+Introduced in labrun.f block data subprogram.
+
+Compiled through ncdifu.f with the exception of blockdta.f
+
+May 20, 1996
+
+Converted blockdta.f into a block data subprogram 
+
+Added in synch.f block data subprogram
+
+Fixed in synch2.f missing delimiter in fortran statement
+
+In solveb.f, required to move location of namelist declaration
+
+Note potential problem in DO-loop in deqmom2.f  
+made following change:
+
+        if (nmax2 .eq. 0) then
+          arg = argj*float(n)
+          cosnv (j,n) = cos(arg)*nscale(n)
+          sinnv (j,n) = sin(arg)*nscale(n)
+          if ( n .gt. nmax ) go to 20
+          cosnvn(j,n) = cosnv(j,n)*float(n*nfp)
+          sinnvn(j,n) =-sinnv(j,n)*float(n*nfp)
+          else
+        do n = 0,nmax2
+          arg = argj*float(n)
+          cosnv (j,n) = cos(arg)*nscale(n)
+          sinnv (j,n) = sin(arg)*nscale(n)
+          if ( n .gt. nmax ) go to 20
+          cosnvn(j,n) = cosnv(j,n)*float(n*nfp)
+          sinnvn(j,n) =-sinnv(j,n)*float(n*nfp)
+          endo
+          endif
+ 20       continue
+
+Fixed make file to find libnag.a but could not find library libU77.a.
+
+At Glenn's suggestion, I removed library libU77.a
+
+Then compile showed problems in unsatisfied externals etime and
+blockdta.  etime appears in dolymp.f.  I am not certain what this
+function does so for the moment I have commented this line out
+although this may lead to an incorrect calculation of cptime.  I
+believe the calls to blockdta (dolymp.f and master.f) can be commented
+out because the subroutine blockdta has been turned into a block data
+subprogram.
+
+Also eliminated the call to etime in second.f and in temp.f in the
+util directory.
+
+May 22, 1996
+
+Note nzones in jobxdat file MUST NOT exceed 51.
+
+Made change in cnvcof.f from 
+       do j = 1, i2
+          aaaa(j,1,jz) = aaaa(j,1,jz) * zconva(j)
+          bbbb(j,1,jz) = bbbb(j,1,jz) * zconva(j)
+          cccc(j,1,jz) = cccc(j,1,jz) * zconvc(j)
+        enddo
+to 
+
+        do j = 1, mxchi
+          do j2 = 1, mxchi
+            j3 = j + (j2-1)*mxchi
+            aaaa(j,j2,jz) = aaaa(j,j2,jz) * zconva(j3)
+            bbbb(j,j2,jz) = bbbb(j,j2,jz) * zconva(j3)
+            cccc(j,j2,jz) = cccc(j,j2,jz) * zconvc(j3)
+          enddo
+        enddo
+
+Change in boots.f 1 to * in  dimension   pjboot(*), pjtpbi(*)
+
+Change doutput.f 1 to * in  dimension prin(*),pravg(*) and
+1 to * in dimension pin(k1dim,*),pout(*)
+1 to * in dimension prin(*),pravg(*),prout(*)
+
+Made chande to deqmom2.f near line 1896
+
+        if ( nmax .lt. 2 ) then
+          n = 1
+          do 10 js= 2,ns
+ 10       gcz(js,n,1,1) = 0.
+        else
+          do 10 n = 1,nmax
+          do 10 js= 2,ns
+ 10       gcz(js,n,1,1) = 0.
+        endif
+      endif
+
+Changed etaw13d.f to protect against j2-1 < 1 and j2+1 > ieq
+
+Change in deqvmom.f 1 to * in 
+      dimension phalfm(*), ppresm(*), pcurrm(*), xpinit(6)
+     & , ahalf(*), shift(*), elong(*), triang(*)
+     & , r0b(*), rmb(mjdim,*), ymb(mjdim,*)
+
+May 28, 1996
+
+Combined block data programs 9, 10, 11, 12, and 13 into 
+block data program 9 and programs 18 and 19 into block data
+19.
+
+May 29, 1996
+
+Moved the statements from block data 19 into assignment statements
+in preset.
+
+May 30, 1996
+
+Checked in ofit.f and then overwrote ofit.f with Glenn's version.
+Checked in auxval.f and then overwrote auxval.f with Glenn's version.
+	Note it = 0 deleted in Glenn's version.
+
+The files below were replaced with Glenn's version of the files.
+
+auxval.f     dadpak.f     divertor.f   dsawold.f    ncdifu.f     sawamp.f
+             dauxheat.f   dneocl.tex   getchi.f     ncrats.f     sawavg.f
+convrt.f     dfusion.f    dneugas.f    imprad.f     ofit.f       solveb.f
+d3hefus.f    dio.f        dpellet.f    labrun.f     ptheory.tex
+
+Fixed save line too long in sawavg.f
+
+Changed in dtransp.f in two locations
+DIMENSION   PY(1),    PYWORK(1) [to] DIMENSION   PY(*),    PYWORK(*) 
+
+Changed in dadpak.f 
+dimension pbfi(1), pbfil(1)    [to]  dimension pbfi(*), pbfil(*)
+dimension pbfi(1), pbfil(1)    [to]  dimension pbfi(*), pbfil(*)
+dimension pygri(1), pygrl(1)   [to]  dimension pygri(*), pygrl(*)
+dimension pnneut(1), pvneut(1) [to]  dimension pnneut(*), pvneut(*)
+
+Changed in deqmom2.f
+        dimension gcx(ns,0:nmax,0:mpol1,2),ax(ns,0:nmax,0:mpol1),gm(1),
+     >  bx(ns,0:nmax,0:mpol1),dx(ns,0:nmax,0:mpol1),in(0:mpol),alf(1),
+     >  axm(nsd1,2),axd(nsd1,2),cx(1),bxm(nsd1,2),bxd(nsd1,2)
+
+to 
+
+        dimension gcx(ns,0:nmax,0:mpol1,2),ax(ns,0:nmax,0:mpol1),gm(*),
+     >  bx(ns,0:nmax,0:mpol1),dx(ns,0:nmax,0:mpol1),in(0:mpol),alf(*),
+     >  axm(nsd1,2),axd(nsd1,2),cx(*),bxm(nsd1,2),bxd(nsd1,2)
+
+Changed in dolymp.f
+dimension  pa(1)   [to]  dimension  pa(*)
+dimension kname(2), ka(1)  [to]  dimension kname(2), ka(*)
+dimension kname(2), kha(1) [to]  dimension kname(2), kha(*)
+dimension kname(2), kla(1) [to]  dimension kname(2), kla(*)
+
+Changed in dpellet.f
+dimension snthtk(1),csthtk(1) [to] dimension snthtk(*),csthtk(*) 
+
+Changed in dsawold.f
+dimension px(1),py(1)  [to]  dimension px(*),py(*)
+dimension px(1),py(1),pqx(1),pqy(1),zd(10,10),za(10) [to]
+dimension px(*),py(*),pqx(*),pqy(*),zd(10,10),za(10
+
+Changed in d3h3fus.f
+dimension zf(1),zpf(1)  [to]  dimension zf(*),zpf(*)
+
+Changed in deqbald.f 
+do 9 j=3*kmhrm  [to]  do 9 j=1,3*kmhrm
+
+Changed in dscrunch.f
+
+        real yc(mu),ys(mu),gcon(nu),gtt(nu),r1(nu),
+     &  z1(nu),rt1(nu),zt1(nu),arg(nu),rcon(nu),
+     &  zcon(nu),cosa(nu,mu),sina(nu,mu),rmc(1),rms(1),
+     &  zmc(1),zms(1),xpts(1),grc(*),grs(*),gzc(*),gzs(1),gpts(1),
+     &  xin(1),yin(1)
+
+to
+
+        real yc(mu),ys(mu),gcon(nu),gtt(nu),r1(nu),
+     &  z1(nu),rt1(nu),zt1(nu),arg(nu),rcon(nu),
+     &  zcon(nu),cosa(nu,mu),sina(nu,mu),rmc(*),rms(*),
+     &  zmc(*),zms(*),xpts(*),grc(*),grs(*),gzc(*),gzs(*),gpts(*),
+     &  xin(*),yin(*)
+
+Changed in deqmom2.f
+
+      dimension  r0(krdim), rm(kmdim,krdim), ym(kmdim,krdim)
+     &  , eqxi(1)         , epress(1)      , eiota(1)
+     &  , rmb(kmdim)      , ymb(kmdim)
+     &  , ztempr(mpol)    , ztempy(mpol)   , ztempl(mpol)
+
+to
+
+      dimension  r0(krdim), rm(kmdim,krdim), ym(kmdim,krdim)
+     &  , eqxi(*)         , epress(*)      , eiota(*)
+     &  , rmb(kmdim)      , ymb(kmdim)
+     &  , ztempr(mpol)    , ztempy(mpol)   , ztempl(mpol)
+
+Glenn chnaged in deqmom2 do j=1,mpol2+1 --> do j=1,mpol2, etc
+
+Changed in deqmom2.f
+
+      do 10 l=1,nrzt
+        r(l,1,1)  = 0.
+        rt(l,1,1) = 0.
+c3d     rz(l,1,1) = 0.
+        z(l,1,1)  = 0.
+        zt(l,1,1) = 0.
+c3d     zz(l,1,1) = 0.
+        rcon(l,1,1)=0.
+        zcon(l,1,1)=0.
+  10  continue
+c
+
+[to]
+
+      do 12 l=1,ns
+	do 11 m=1,nzeta
+	  do 10 n=1,ntheta2 
+            r(l,m,n)  = 0.
+            rt(l,m,n) = 0.
+c3d         rz(l,m,n) = 0.
+            z(l,m,n)  = 0.
+            zt(l,m,n) = 0.
+c3d         zz(l,m,n) = 0.
+            rcon(l,m,n)=0.
+            zcon(l,m,n)=0.
+  10  continue
+  11  continue
+  12  continue
+
+Changed in deqmom2.f
+
+        do 15 l = 1,12*ns*nzeta*mpol
+ 15     work(l,1,0,1) = 0.
+        do 20 l=1,nrzt
+        lt(l,1,1) = 1.
+ 20     lz(l,1,1) = iota(l)
+
+[to]
+
+	do 16 k = 1, ns
+        do 15 l = 1, nzeta
+	do 14 m = 0, mpol1
+	do 13 n = 1, 12
+        work(k,l,m,n) = 0.
+ 13  	continue
+ 14  	continue
+ 15  	continue
+ 16  	continue
+c	
+	do 21 n=1, ntheta2
+        do 20 m=1, nzeta
+	do 19 l=1, ns
+        lt(l,m,n) = 1.
+        kz = l+ns*(m-1)+ns*nzeta*(n-1)
+        lz(l,m,n) = iota(kz)
+ 19     continue
+ 20     continue
+ 21     continue
+
+Changed in deqmom2.f
+
+        real r(1),zs(1),rs(1),gsqrt(1),z(1),rodd(1),zodd(1),r12(1),
+     >  rtodd(1),ztodd(1),rt12(1),zt12(1),zt(1),rt(1),shalf(1),
+     >  tau(1),wint(1)
+
+[to]
+
+        real r(*),zs(*),rs(*),gsqrt(*),z(*),rodd(*),zodd(*),r12(*),
+     >  rtodd(*),ztodd(*),rt12(*),zt12(*),zt(*),rt(*),shalf(*),
+     >  tau(*),wint(*)
+
+
+Changed in deqmom2.f
+
+        real mass(1),gsqrt(ns,1),bsq(ns,1),vp(1),pres(1),wint(ns,1)
+[to]
+        real mass(*),gsqrt(ns,*),bsq(ns,*),vp(*),pres(*),wint(ns,*)
+
+Changed in deqmom2.f
+
+        real lmatrix((2*mnd+1)*(2*mnd+1)),worka(1),ar(nsd),gsqrt(1),
+     >  az(nsd),bsq(1),btheta(1),bzeta(1),r12(1),rt12(1),zt12(1),
+     >  rs(1),zs(1),bsubs(1),gtt(1),gtz(1),gzz(1),br(1),bphi(1),bz(1)
+[to]
+
+        real lmatrix((2*mnd+1)*(2*mnd+1)),worka(*),ar(nsd),gsqrt(*),
+     >  az(nsd),bsq(*),btheta(*),bzeta(*),r12(*),rt12(*),zt12(*),
+     >  rs(*),zs(*),bsubs(*),gtt(*),gtz(*),gzz(*),br(*),bphi(*),bz(*)
+
+Changed in deqmom2.f
+
+        real bsq(ns,1),gsqrt(ns,1),r12(ns,1),gzz(ns,1),xt12(ns,1),
+     >  xte(ns,1),xto(ns,1),xodd(ns,1),xs(ns,1),wint(ns,1),shalf(1),
+     >  pres(1),ax(nsd1,4),bx(nsd1,4),sm(nsd1),sp(0:nsd1),ptau(nznt),
+     >  axm(nsd1,2),axd(nsd1,2),bxm(nsd1,2),bxd(nsd1,2),cx(1)
+[to]
+        real bsq(ns,*),gsqrt(ns,*),r12(ns,*),gzz(ns,*),xt12(ns,*),
+     >  xte(ns,*),xto(ns,*),xodd(ns,*),xs(ns,*),wint(ns,*),shalf(*),
+     >  pres(*),ax(nsd1,4),bx(nsd1,4),sm(nsd1),sp(0:nsd1),ptau(nznt),
+     >  axm(nsd1,2),axd(nsd1,2),bxm(nsd1,2),bxd(nsd1,2),cx(*)
+
+Changed in deqmom2.f
+
+        real lt(ns,nzeta,1),lz(ns,nzeta,1),gtt(ns,nzeta,1),
+     >  gtz(ns,nzeta,1),gzz(ns,nzeta,1),ltemp(2*mnd+1),
+     >  lmatrix(matrd,matrd),worka(nzeta,0:mpol2,6),
+     >  gttc(0:nmax2,0:mpol2),gtts(0:nmax2,0:mpol2),
+     >  gtzc(0:nmax2,0:mpol2),gtzs(0:nmax2,0:mpol2),
+     >  gzzc(0:nmax2,0:mpol2),gzzs(0:nmax2,0:mpol2),
+     >  lmncs(ns,0:nmax,0:mpol1),lmnsc(ns,0:nmax,0:mpol1)
+        real gsqrt(ns,nzeta,1),tsign(0:nmax,0:nmax),ym(mnd),yn(mnd)
+        real phip1(ns,nzeta,1),i1(0:nmax,0:mpol1),i2(0:nmax,0:mpol1),
+     >  i3(0:nmax,0:mpol1),i4(0:nmax,0:mpol1),workb(ns,nzeta,0:mpol1,4)
+
+[to]
+        real lt(ns,nzeta,*),lz(ns,nzeta,*),gtt(ns,nzeta,*),
+     >  gtz(ns,nzeta,*),gzz(ns,nzeta,*),ltemp(2*mnd+1),
+     >  lmatrix(matrd,matrd),worka(nzeta,0:mpol2,6),
+     >  gttc(0:nmax2,0:mpol2),gtts(0:nmax2,0:mpol2),
+     >  gtzc(0:nmax2,0:mpol2),gtzs(0:nmax2,0:mpol2),
+     >  gzzc(0:nmax2,0:mpol2),gzzs(0:nmax2,0:mpol2),
+     >  lmncs(ns,0:nmax,0:mpol1),lmnsc(ns,0:nmax,0:mpol1)
+        real gsqrt(ns,nzeta,*),tsign(0:nmax,0:nmax),ym(mnd),yn(mnd)
+        real phip1(ns,nzeta,*),i1(0:nmax,0:mpol1),i2(0:nmax,0:mpol1),
+     >  i3(0:nmax,0:mpol1),i4(0:nmax,0:mpol1),workb(ns,nzeta,0:mpol1,4)
+
+
+Changed in deqmom2.f
+
+        real lz(ns,1),iota(1),phip(1),bze(ns,1),bth(ns,1),wt(*)
+[to]
+        real lz(ns,*),iota(*),phip(*),bze(ns,*),bth(ns,*),wt(*)
+
+Changed in deqmom2.f
+
+        real rbsq(1),gtt(1),gtz(1),gzz(1),gtts(nrztd),
+     >  gtzs(nrztd),gzzs(nrztd),shalf(1),sqrts(1)
+[to]
+        real rbsq(*),gtt(*),gtz(*),gzz(*),gtts(nrztd),
+     >  gtzs(nrztd),gzzs(nrztd),shalf(*),sqrts(*)  
+
+Changed in deqmom2.f
+
+        real r12(1),rs(1),zs(1),rt12(1),zt12(1),shalf(1),
+     >  bsubs(1),br(1),bphi(1),bz(1),gsqrt(1)
+
+[to]
+        real r12(*),rs(*),zs(*),rt12(*),zt12(*),shalf(*),
+     >  bsubs(*),br(*),bphi(*),bz(*),gsqrt(*)
+
+
+Changed in deqmom2.f
+
+        real bmod(nznt),bsq(ns,1),gsqrt(ns,1),bsubt(ns,1),bsubz(ns,1),
+     >  bsubs(ns,1),br(1),bphi(1),bz(1),phi(nsd),rmnc(mnmax),
+     >  zmns(mnmax),lmns(mnmax),xm(mnmax),xn(mnmax),bmodmn(mnmax)
+
+[to]
+        real bmod(nznt),bsq(ns,*),gsqrt(ns,*),bsubt(ns,*),bsubz(ns,*),
+     >  bsubs(ns,*),br(*),bphi(*),bz(*),phi(nsd),rmnc(mnmax),
+     >  zmns(mnmax),lmns(mnmax),xm(mnmax),xn(mnmax),bmodmn(mnmax)
+
+
+Changed in deqmom2.f
+
+        real rmnc(1),zmns(1),lmns(1),xm(1),xn(1),
+     >  rmncc(ns,0:nmax,0:mpol1),rmnss(ns,0:nmax,0:mpol1),
+     >  zmncs(ns,0:nmax,0:mpol1),zmnsc(ns,0:nmax,0:mpol1),
+     >  lmncs(ns,0:nmax,0:mpol1),lmnsc(ns,0:nmax,0:mpol1)
+
+[to]
+        real rmnc(*),zmns(*),lmns(*),xm(*),xn(*),
+     >  rmncc(ns,0:nmax,0:mpol1),rmnss(ns,0:nmax,0:mpol1),
+     >  zmncs(ns,0:nmax,0:mpol1),zmnsc(ns,0:nmax,0:mpol1),
+     >  lmncs(ns,0:nmax,0:mpol1),lmnsc(ns,0:nmax,0:mpol1)
+
+Changed in deqmom2.f
+
+        real bp(ns,1),bz(ns,1),bsq(ns,1),bpco(1),bzco(1),wint(*),
+     >  equif(1),pres(*),phips(1),vp(1),iotas(1),specw(1),jp(1),jz(1),
+     >  raxis(ns,0:nmax),zaxis(ns,0:nmax),mscal(0:mpol2),nscal(0:nmax2)
+
+[to]
+        real bp(ns,*),bz(ns,*),bsq(ns,*),bpco(*),bzco(*),wint(*),
+     >  equif(*),pres(*),phips(*),vp(*),iotas(*),specw(*),jp(*),jz(*),
+     >  raxis(ns,0:nmax),zaxis(ns,0:nmax),mscal(0:mpol2),nscal(0:nmax2)
+
+Changed in deqmom2.f
+
+c        do 10 l = 1,12*ns*nzeta*mpol
+c          work(l,1,0,1) = 0.
+c  10    continue
+
+[to]
+
+	do 13 k = 1, ns
+        do 12 l = 1, nzeta
+	do 11 m = 0, mpol1
+	do 10 n = 1, 12
+        work(k,l,m,n) = 0.
+ 10  	continue
+ 11  	continue
+ 12  	continue
+ 13     continue
+
+Changed in deqmom2.f
+
+      do 15 l = 1,nrzt
+        brmn(l,1,1) = brmn(l,1,1) + brcon(l)
+        bzmn(l,1,1) = bzmn(l,1,1) + bzcon(l)
+  15  continue
+
+[to]
+
+	do 16 n=1, ntheta2
+        do 15 m=1, nzeta
+	do 14 l=1, ns
+        kz = l+ns*(m-1)+ns*nzeta*(n-1)
+        brmn(l,m,n) = brmn(l,m,n) + brcon(kz)
+        bzmn(l,m,n) = bzmn(l,m,n) + bzcon(kz)
+ 14     continue
+ 15     continue
+ 16     continue
+
+Changed in deqmom2.f
+
+        dimension frcc(ns,0:nmax,0:mpol1), frss(ns,0:nmax,0:mpol1),
+     >  fzcs(ns,0:nmax,0:mpol1),fzsc(ns,0:nmax,0:mpol1),jmin(0:mpol ),
+     >  flcs(ns,0:nmax,0:mpol1),flsc(ns,0:nmax,0:mpol1),
+     >  armn(ns,nzeta,1),brmn(ns,nzeta,1),crmn(ns,nzeta,1),
+     >  azmn(ns,nzeta,1),bzmn(ns,nzeta,1),czmn(ns,nzeta,1),
+     >  blmn(ns,nzeta,1),clmn(ns,nzeta,1),arcon(ns,nzeta,1),
+     >  azcon(ns,nzeta,1),brcon(1),bzcon(1),work(ns,nzeta,0:mpol1,12)
+
+[to]
+
+        dimension frcc(ns,0:nmax,0:mpol1), frss(ns,0:nmax,0:mpol1),
+     >  fzcs(ns,0:nmax,0:mpol1),fzsc(ns,0:nmax,0:mpol1),jmin(0:mpol ),
+     >  flcs(ns,0:nmax,0:mpol1),flsc(ns,0:nmax,0:mpol1),
+     >  armn(ns,nzeta,*),brmn(ns,nzeta,*),crmn(ns,nzeta,*),
+     >  azmn(ns,nzeta,*),bzmn(ns,nzeta,*),czmn(ns,nzeta,*),
+     >  blmn(ns,nzeta,*),clmn(ns,nzeta,*),arcon(ns,nzeta,*),
+     >  azcon(ns,nzeta,*),brcon(*),bzcon(*),work(ns,nzeta,0:mpol1,12)
+
+Changed in deqmom2.f
+
+        do 10 l = 1,ns*mnd
+        gcs(l,0,0) = 0.
+ 10     gsc(l,0,0) = 0.
+        do 15 l = 1,nrzt
+ 15     gcon(l,1,1) = 0.
+        do 20 l = 1,4*ns*nzeta*mpol
+ 20     work(l,1,0,1) = 0.
+
+[to]
+
+	do 12 n = 0, mpol1	
+	do 11 m = 0, nmax
+        do 10 l = 1,ns
+        gcs(l,m,n) = 0.
+        gsc(l,m,n) = 0.
+ 10	continue
+ 11	continue
+ 12 	continue
+	do 15 n = ntheta2
+	do 14 m = nzeta
+        do 13 l = 1,ns
+        gcon(l,m,n) = 0.
+ 13	continue
+ 14	continue
+ 15 	continue
+	do 20 n = 1,4
+	do 19 m = 0, mpol1
+	do 18 l = 1, nzeta
+        do 17 k = 1, ns
+        work(k,l,m,n) = 0.
+ 17	continue
+ 18	continue
+ 19 	continue
+ 20 	continue
+
+Changed in deqmom2.f
+
+          do 10 mn = 0,mpol1
+            xint=(sj-s1)/hsold
+            xnew(js,mn,0,ntype) = ((1.-xint)*xold(js1,mn,0,ntype)
+     >                      + xint*xold(js2,mn,0,ntype))/scale(js,mn,0)
+  10    continue
+
+[to]
+
+          do 10 mn = 0,mpol1
+            xint=(sj-s1)/hsold
+            xnew(js,0,mn,ntype) = ((1.-xint)*xold(js1,0,mn,ntype)
+     >                      + xint*xold(js2,0,mn,ntype))/scale(js,0,mn)
+  10    continue
+
+Jun 1, 1996
+
+Fixed segmentation error in deqmom2.f by including in subroutine
+eqmom2 the following statement.  
+
+        real gtt(nrztd),gtz(nrztd),gzz(nrztd),rmnc(mnmax),
+     >  zmns(mnmax),lmns(mnmax),xm(mnmax),xn(mnmax),rax(nznt),
+     >  zax(nznt),work1(12*nrztd),work2(12*nrztd)
+
+Added in dadpak.f in subroutine adshen
+      external case1
+
+Added in dadpak.f in subroutine admayr
+      external case2
+
+Added in dadpak.f in subroutine adfnm
+      external case3
+
+Added in dadpak.f in subroutine adbfi
+      external case4
+
+Added in dadpak.f in subroutine adygr
+      external case5
+
+Added in dadpak.f in subroutine adecex
+      external case6
+
+Added in dadpak.f in subroutine adcxxs
+      external case7
+
+Added in dbeams.f in subroutine gethfr
+       external case8
+
+Added in deqvmom.f in subroutine vmhdeq
+      external case14
+
+Added in divertor.f in subroutine diver
+        external case15
+
+Added in dpellet.f in subroutine pellet
+      external case16
+
+Added in dscrunch.f in subroutine scrunch
+        external case17
+
+Added in synch.f in subroutine synch
+      external case20
+
+c@frandm   .../baldur/code/bald/dneugas.f
+c rgb 04-may-96 use ran1 in file random.f from Numerical Recipies
+c@ranf   .../baldur/code/util/randf.f
+c rgb 04-may-96 changed ranf to ran1
+
+c@daytim  .../baldur/code/bald/dolymp.f
+c rgb 25-apr-96 need to fix date( )
+
+c@plabel   .../baldur/code/bald/doutput.f
+c  rgb 25-apr-96 had to comment out call date for now
+
+c@recon1  .../baldur/code/bald/dsawmix.f
+c  rgb 25-apr-96 replaced svrgn with sort1
+c@sawmx0   .../baldur/code/bald/dsawold.f
+c  rgb 25-apr-96 replaced svrgn with sort1
+
+c@etaw13d.f
+c rgb 25-apr-96 etaw13 --> etaw13d with double precision
+
+c@e2lamc   .../baldur/code/bald/deqmom2.f
+c rgb 25-apr-96 replace call sgefa with call matrx1 in BALDUR
+c   replace sgesl with matrx2
+
+c@ixmode  .../baldur/code/bald/disland2.f
+c rgb 24-apr-96 replaced zbren with zzero = zeroin(...)
+c@recon1  .../baldur/code/bald/dsawmix.f
+c  rgb 24-apr-96 replace zbren with zero = zeroin(zt1,zt2,fpoly1,zerrel)
+
+c@changes  11040/baldur/code/bald/deqvmom
+c rgb 23-apr-96 removed function spmpar, not being used
+
+c rgb 22-apr-96 removed call second from file deqmom2.f
+
+c@clear  .../baldur/code/bald/dolymp.f
+c rgb 22-apr-96 remove call iclear
+
+c  rgb 22-apr-96  .../baldur/code/bald/dolymp.f
+c  There were two duplicate copies of sbrtn inital in dolymp.f and inital.f
+c  I eliminated the copy in file dolymp.f
+
+c  rgb 22-apr-96  .../baldur/code/bald/dripple.f
+c  There were two duplicate copies of sbrtn xscale in dtransp.f and dripple.f
+c  I eliminated the copy in file dripple.f
+
+c  rgb 22-apr-96  .../baldur/code/bald/doutput.f
+c  there were two copies of sbrtn mfwrt1 in file doutput.f
+c  I got rid of the second copy
+
+c@hrmtht   .../baldur/code/bald/deqbald.f
+c rgb 22-apr-96 changed Fourier transform routine from crfft2 to realft
+
+c@hclear   .../baldur/code/bald/dbeams.f
+c rgb 22-apr-96 clear each array in common comfok
+c@hrecrd  .../baldur/code/bald/dbeams.f
+c rgb 22-apr-96 copied contents of ../com/cfokkr.m comfok to write
+
+c@getchi  .../baldur/code/bald/dsolver.f
+c  rgb 06-mar-96 use sbrtn smooth on fast ion densities if lnumer(31)>0
+c@getchi  .../baldur/code/bald/dsolver.f
+c  rgb 03-mar-96 lnumer(31) controls smoothing of fast ion densities
+c       remove redundancy in computation of rhoels
+c@start .../baldur/code/bald/dolymp.f
+c  rgb 04-mar-96 call fusdrv(1) after call icrf(1)
+c@coef  .../baldur/code/bald/coef.f
+c  rgb 04-mar-96 call fusdrv -> fusdrv(2)
+c@fusdrv   ---   les version for d 3he   --- .../baldur/code/d3hefus.f
+c  rgb  04-mar-96  introduce integer argument for sbrnt fusdrv
+c    fusdrv(1) -> initialize arrays rh1fst and rh2fst
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 21-feb-96 revised printout for kinetic ballooning mode
+
+c@theory   .../baldur/code/bald/theory.tex
+c     compute L_p using smoothed density and temperature gradient scale lengths
+c
+c@theory   .../baldur/code/bald/theory.tex, etaw13.tex
+c  jek 18-feb-96 * added cetain(15)=cthery(124) to switch on/off effect of
+                   collisions in etaw12.f ( c_128=1.0 on (default), c_128=0.0 off )
+                 * added switch cetain(10)=cthery(123) for parallel ion motion
+                 * added switch cetain(20)=cthery(119) for finite beta (betae,betah,betaz)
+
+c@theory   .../baldur/code/bald/preset.f
+c  jek 18-feb-96 default many cthery's for DW and Carreras-Diamond models
+
+c@theory   .../baldur/code/bald/ptheory.tex
+c  jek 18-feb-96 added printout of hydrogenic, impurity, and fast ion densities
+
+c@theory   .../baldur/code/bald/dbeams.f
+c  jek 18-feb-96 increased maximum number of beams to 12
+
+c@theory   .../baldur/code/bald/dio.f
+c  jek 18-feb-96 added transport coeff to reread namelist via J. Kesner
+                 and added new version of dpellet.f via W. Houlberg
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 14-feb-96 smooth the relative superthermal ion density
+c    if lthery(19) > 0
+
+c@makefile
+c  rgb 13-feb-96 etaw12 --> etaw13
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 13-feb-96 etaw12 --> etaw13  and changed order of arguments
+c    zgnh, zgnz, zgns --> zgne, zgnh, zgnz
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 12-feb-96 zgrdns = ....  / max ( zfnsne, 1.e-6 )
+c    zgrdns may be 0.0 and remove zepsns
+c@etaw12.f
+c rgb 12-feb-96 zgp* = zgp* + zgn*  -->  zgp* = zgt* + zgn*
+c   (this should have no effect on the results)
+c   corrected header for Eleven eqns
+
+c@makfile
+c  rgb 05-feb-96 segldr $(IMSL) $(NAG14) -l $(LIBS) -o $(X)  replaces
+#       segldr $(IMSL) $(NAG14) -l $(LIBS) -o $(X) etaw12.o theory.o ptheory.o
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 05-feb-96 lthery(26) timestep for diagnostic printout for etaw*
+c     remove use of cthery(125) fro this purpose
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 21-jan-96 corrected zovfkb = amax1(zexkb,-abs(zlgeps)) ...
+c    fixed zdk = abs( zsound * zrhos**2 * zfbthn / zlpr )
+c  jek 18-jan-96 added new kinetic ballooning mode model
+
+c@ptheory  Bateman, PPPL
+c rgb 21-jan-96 changed common /cnvect/ from (55,12) to (55,9)
+
+

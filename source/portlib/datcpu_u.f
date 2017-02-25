@@ -1,0 +1,19 @@
+C******************** START FILE DATCPU.FOR ; GROUP DATCPU ******************
+      SUBROUTINE DATCPU(ZTIME)
+C
+C  THIS ROUTINE RETURNS THE AMOUNT OF CPU TIME USED UP UNTIL
+C  THIS TIME IN SECONDS.
+C
+C  THIS VERSION FOR USE OUTSIDE OF TRANSP
+C
+C--------------------------------------
+C
+      ZCONV=1.0
+C
+      CALL CPTIMI(ZTIME)
+C
+      ZTIME=ZTIME*ZCONV*1.E-2
+C
+      RETURN
+      END
+C******************** END FILE DATCPU.FOR ; GROUP DATCPU ******************

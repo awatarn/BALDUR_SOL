@@ -1,0 +1,37 @@
+#
+export CPU=FUJITSU
+export CVSROOT=onjun@w3.physics.lehigh.edu/var/cvs
+export CVS_RSH=ssh
+export CVSEDITOR=emacs
+#
+export BALDUROOT=/home/simruns/codes/baldur_SOL
+export LOGDIR=$BALDUROOT/log
+export DBGDIR=$BALDUROOT/bin/debug
+export WORKDIR=$BALDUROOT/work
+export CONFIGDIR=$BALDUROOT/config
+export CODESYSDIR=$BALDUROOT
+export LOCAL=$BALDUROOT
+export TMPDIR=/home/apiwat/tmp
+#
+export CCLIB_INCLUDE="/usr/include -I/usr/local/include "
+export LOADER_TRAILER="/usr/local/lib/libnetcdf.a -L/usr/local/lf9560/lib/ -llapackmt -lblasmt"
+export PATH=.:$BALDUROOT/bin:$BALDUROOT/csh:$BALDUROOT/debug:$LOCAL/exe:$PATH
+#
+export WORKSTATION_TYPE=LINUX
+export FORTRAN_VARIANT=LaheyFujitsu
+#
+alias bl="cd $BALDUROOT"
+alias sbl="cd $BALDUROOT/source"
+alias bbl="cd $BALDUROOT/source/bald"
+alias dbl="cd $BALDUROOT/bin/debug"
+alias tw='tw -sb '
+alias g='grep -i -n ' 
+alias asch='allsearch '
+#
+export MAIL_ADDRESS="apiwat.wis@kmutt.ac.th"
+export CPP_TRAILER="-L/usr/lib/gcc/i686-linux-gnu/4.8 -lstdc++"
+#
+#export PATH=$PATH:~transp/code/codesys/csh:~transp/code/codesys/exe
+#export XE=~transp/code/codesys/exe
+#export SC=~transp/code/codesys/csh
+#export SB=~transp/code/bin

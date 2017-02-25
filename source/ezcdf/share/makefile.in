@@ -1,0 +1,64 @@
+include makeinclude
+SRCDIR=./src
+LIBDIR=./lib
+DOCDIR=./doc
+
+all: ajax xplasma
+
+ajax:
+	cd ./src; \
+	make ajax
+
+xplasma: 
+	cd ./src; \
+	make xplasma
+
+atestnstx: ajax
+	cd dat; \
+	cp nml_track_nstx.dat nml_track.dat; \
+	echo "running drive program...";\
+	../bin/track_ajax_dr; \
+	echo "comparing results...";\
+	diff sum_track.dat sum_track_nstx_8.dat > ../results/ajax_nstx8.diff ;\
+	echo "differences are saved in results/ajax_nstx8.diff";\
+	echo "done!";
+
+
+xtestnstx: xplasma
+	cd dat; \
+	cp nml_trackx_nstx.dat nml_track.dat; \
+	echo "running drive program...";\
+	../bin/track_xplasma_dr; \
+	echo "comparing results...";\
+	diff sum_track.dat sum_trackx_nstx_8.dat > ../results/xplasma_nstx8.diff ;\
+	echo "differences are saved in results\xplasma_nstx8.diff";\
+	echo "done!";
+
+atesttok: ajax
+	cd dat; \
+	cp nml_track_tok.dat nml_track.dat; \
+	echo "running drive program...";\
+	../bin/track_ajax_dr; \
+	echo "comparing results...";\
+	diff sum_track.dat sum_track_tok_8.dat > ../results/ajax_tok8.diff ;\
+	echo "differences are saved in results/ajax_tok8.diff";\
+	echo "done!";
+
+
+atestncsx: ajax
+	cd dat; \
+	cp nml_track_ncsx.dat nml_track.dat; \
+	echo "running drive program...";\
+	../bin/track_ajax_dr; \
+	echo "comparing results...";\
+	diff sum_track.dat sum_track_ncsx_8.dat > ../results/ajax_ncsx8.diff ;\
+	echo "differences are saved in results/ajax_ncsx8.diff";\
+	echo "done!";
+
+
+clean:
+	rm -f src/*.o src/*.mod 
+
+realclean:
+	rm -f  src/*.o src/*.mod lib/*.a bin/track*
+

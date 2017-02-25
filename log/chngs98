@@ -1,0 +1,210 @@
+c .../baldur/code/chngs98  Changes to the BALDUR code in 1998  Bateman, Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+
+c@mmm98.tex  .../baldur/code/bald/mmm98.tex
+c  rgb 11-oct-98 fig, frb, and fkb must be passed through argument list
+c    zepm = max ( zep, 0.05 )
+c  rgb 08-oct-98 started with mmm95 to write sbrtn mmm98
+c    added delta to argument list, implemented kbmodels routine
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c rgb 30-sep-98 implemented limit on time rate of change of ITG
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c rgb 29-sep-98 if lthery(24) = 1, set zdesnsi = zdensh + zdensimp
+c   and zgrdni = zgrdnh + zgrdnz
+c   and zgrdpr computed from zgrdti + zgrdni + zgrdte + zgrdne
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c rgb 28-sep-98 zero out diffusivities at magnetic axis
+
+c@clear  .../baldur/code/bald/dolymp.f
+c rgb 26-sep-98 real63(24081) -> real63(9561)
+c   because difthi(20,20,55) -> difthi(12,12,55), 
+c   velthi(20,55) -> velthi(12,55) 
+
+c@cbaldr   .../baldur/code/com/cbaldr.m
+c  rgb 19-sep-98 difthi(20,20,55) --> difthi(12,55)...
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c rgb 19-sep-98 added call mmm95 and removed arrays that were not used
+
+c@makefile  .../baldur/code/bald/makefile
+c  rgb 16-sep-98 added mmm95.tex and weiland14.tex
+c    added section *.f : *.tex so that we can keep the *.f files
+c    commented out rm -f $*.f
+
+c@theory   .../baldur/code/bald/theory.tex
+c  pis 16-jul-98 added cthery(129) as multiplier to wexbs
+c  pis 16-jul-98 added cthery(130) as multiplier to impurity heat flux
+
+c@theory   .../baldur/code/bald/theory.tex
+c  pis 07-jul-98 added diagnostics for wexb
+c  pis 07-jul-98 corrected def of omegde(jz) and moved it to before etaw17
+
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c pis 02-jul-98 added zvrotxb for toroidal rotation
+
+
+c@preset  .../baldur/code/bald/preset.f
+c  pis 02-jul-98 added initialization of vrota array
+
+c@data   /baldur/code/bald  file DIO
+c  pis 02-jul-98 added vrota to nurun2 namelist
+
+c@clear  .../baldur/code/bald/dolymp.f
+c pis 02-jul-98 updated comth3 to include vrota real66(1175)->real(2275)
+
+c@cbaldr.m 11:00 22-may-94
+c  pis 02-jul-98 added vrota to the comth3 common block
+
+c@sawtst  .../baldur/code/bald/dsawtst.tex
+c  pis 23-jun-98 changed swton to swton(1) in one place
+
+c@fft1  Fast Fourier Transform,  Glenn Bateman
+c  pis 18-jun-98 Actually implemented the changes described below
+c  rgb 03-jun-96 dsin --> sin, sngl(wr) --> wr, sngl(wi) --> wi
+c    real*8 --> real  (use -r8 option on 32 bit workstations)
+
+c@d3hefus
+c  pis 18-jun-98 truncation real -> integer resolved for idum
+
+
+c@sawmix  .../baldur/code/bald/dsawmix.f
+c  rgb 16-jun-98 swton --> swton(1)
+
+c@clsaw.m  .../com/clsaw.m
+c  rgb 16-jun-98 added kswmax = 32 and swton --> swton(32)
+
+c@ncinfl  .../baldur/code/bald/ncinfl.f
+c  rgb 25-mar-97 zgain2/(dtmax*uest) --> zgain2
+c  rgb 24-mar-97 use zflimp(ii) = interpolated value of flimp(ii,it)
+c    as maximum influx rate for zeff monitor
+
+c@matrx2  .../baldur/code/bald/matrx2.f
+c  pis 12-jun-98 removed kdim = kdim
+
+c@x03aaEb  11040/bald89/weqvmom DEQVMOM
+c  pis 12-jun-98 changed declarations double precision --> real
+c    and changed casts dble --> real
+
+c@e2alia /11040/bald91/wbaldn1  wsequil  DEQMOM2
+c  pis 12-jun-98 do 15 n= ntheta2 --> do 15 n = 1, ntheta2
+c    do 14 m = nzeta --> do 14 m = 1, nzeta
+
+c@eqHR11  .../baldur/code/bald/deqbald.f
+c  pis 12-jun-98 changed from do 9 j=3*kmhrm
+
+c@hclear   .../baldur/code/bald/dbeams.f
+c pis 11-jun-98 changed 0.0 to 0 in reseti in two places
+
+c  rgb 13-jun-98 added files tomsqz.f, wexbint.f and int1d.f
+
+c@makefile
+c  rgb 13-jun-98 added wexbint.o, etaw17a.o and tomsqz.o
+c    removed /usr/local/lib/libnag.a from LIBS
+
+c@etaw17a.f
+c pis 12-jun-98 removed  if ( zfns .lt. zepsmach) zgns = 0
+c pis  5-may-98 removed some uneccessary loops and unused variables.
+c pis  5-may-98 relabelled routine etaw17a.tex and introduced tomsqz instead of 
+c               tomslz. QZ algorithm more stable and exact than LZ.
+c pis 29-apr-98 added wexb shearing rate to argument list, currently this
+c               is implemented in two different ways defined by the value of 
+c                   letain(15) = 0 (default) matrices redifened
+c                   letain(15) = 1 shearing rate subtracted from growth rates
+c                                  (this implementationwill produce err mess.)
+c pis 28-apr-98 replaced nag library routines with tomsqz (wrapper for lzhes
+c               and lzit)
+
+c@ptheory  .../baldur/code/bald/ptheory.tex
+c pis 12-jun-98 added wexbxb for flow shear
+
+c@theory   .../baldur/code/bald/theory.tex
+c  pis 15-may-98 added ExB shearing rate (wexbs) to argument list
+c  pis 15-may-98 replaced etaw17 with etaw17diff, order of diagnostic 
+c    output have been changed
+c  pis 15-may-98 switches pertaining to choice of eigensolvers obsolete 
+c    with introduction of etaw17 i.e. iletai(6) and iletai(10)
+c  pis 14-may-98 etaw16 replaced by etaw17 using non-proprietary solvers 
+c    for generalized eigenvalue equation, allowing for ExB shearing rate 
+c    reduction of growthrates
+
+c@clear  .../baldur/code/bald/dolymp.f
+c pis 11-jun-98 reseti(nint79,..) - > reseti(nint78,..), for cmdim2
+c pis 11-jun-98 comtok: real21(474)  -> real21(585)
+c pis 11-jun-98 comsta: real22(495)  -> real22(935)
+c pis 11-jun-98 comdif: real24(20570)-> real24(29535)
+c pis 11-jun-98 comtim: real25(84)   -> real25(504)
+c pis 11-jun-98 comdf2: real26(6531) -> real26(6532)
+c pis 11-jun-98 comneu: real27(427)  -> real27(437)
+c pis 11-jun-98 comcnv: real32(77)   -> real27(85)
+c pis 11-jun-98 comin : real51(1402) -> real51(1460)
+c pis 11-jun-98         nint51(107)  -> nint51(87)
+c pis 11-jun-98 comthe: real63(976)  -> real63(24081)
+c pis 11-jun-98 comth1: real64(160)  -> real64(170), nint64(50)
+c pis 11-jun-98         (The comth1 has been redefined in cbaldr.m)
+c pis 11-jun-98 comth2: real65(1320) -> real65(3245)
+c pis 11-jun-98 comth3: real66(715)  -> real66(1175), nint66(2) (new)
+c pis 11-jun-98 comin2: nint71(8)    -> nint71(9)
+c pis 11-jun-98 reset commsc
+
+c@preset  .../baldur/code/bald/preset.f
+c  pis 11-jun-98 initialized xwexba, wexba, texba arrays
+c    and nxwexba, ntwexba scalars
+c  alh 30-oct-97 make tcold & tcoldp time dependent arrays
+
+c@data   /baldur/code/bald  file DIO
+c  pis  8-jun-98 compressed nurun2 namelist def to 15 continuation lines
+c  pis 15-may-98 added wexba, xwexba, twexba to nurun2 namelist
+
+c@vmcom1  .../baldur/code/com/tvmcom1.cmm
+c  rgb 12-jun-98 moved vcom17 -> vcom18 and vcom16 -> vcom17
+
+c@cbaldr   .../baldur/code/com/cbaldr.m
+c  pis 11-jun-98 Changed order of comth1 to adhere to bigendian standards!!!
+c  pis 11-jun-98 added comth3 to include flow shear variables
+c  pis 11-jun-98 moved nlxxx from within common comin
+c  pis 11-jun-98 moved comments from within common comin2
+
+c@preset  .../baldur/code/bald/preset.f
+c  alh 30-oct-97 make tcold & tcoldp time dependent arrays
+
+c@neugas  .../baldur/code/bald/dneugas.f
+c  alh  6-nov-97 called timint to interpolate intermediate and end
+c                values for tcold array 
+
+c@auxval  .../baldur/code/bald/auxval.f
+c  alh 30-oct-97 ensure time dependent tcold & tcoldp value make sense
+
+c@data   /baldur/code/bald  file DIO
+c  alh 16-jan-98 interpolate value for tcold
+
+c@cbaldr  .../baldur/code/com/cbaldr.m
+c  alh 18-oct-97 made tcold & tcoldp arrays
+c    tcold & tcoldp are arrays keyed to breakpoint times, bdtime
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 30-mar-98 diagnostic output added for drift Alfven mode
+c    controlled by cthery(88)
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 02-mar-98 call sda01dif for Bruce Scott's Drift Alfven model
+
+c@sda02flx  .../baldur/code/bald/sda02flx.tex
+c  rgb 09-mar-98 added Bruce Scott's drift Alfven model to BALDUR
+
+c@sda01dif  .../baldur/code/bald/sda01dif.tex
+c  rgb 09-mar-98 computes diffusion coefficients from sda02flx
+
+c rgb 26-feb-98 replaced etaw14.tex with etaw16.tex
+
+c@theory   .../baldur/code/bald/theory.tex
+c  rgb 24-feb-98 etaw14 --> etaw16, cetain(25) = cthery(122), 
+c    zelong added to argumentl list of etaw16
+
+c@theory   .../baldur/code/bald/theory.tex
+c  ajr 17-feb-98 updated IFS/PPPL eta-i mode threshold
+c    re-organized all the eta-i mode threshold section

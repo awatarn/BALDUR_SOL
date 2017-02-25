@@ -1,0 +1,3 @@
+      integer klog
+      Common /logunit/ klog
+

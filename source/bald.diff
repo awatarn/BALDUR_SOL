@@ -1,0 +1,134 @@
+Index: bounds.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/bounds.f,v
+retrieving revision 1.4
+diff -r1.4 bounds.f
+314d313
+< cap!
+316,317c315
+<      &    ) then	
+< !     &    .and. natomc .lt. 3 ) then
+---
+>      &    .and. natomc .lt. 3 ) then
+350c348,352
+<            znebar = enlaes(mzones) * 1.e6
+---
+>            if (lbound(6) .eq. 2) then
+>               znebar = denmont * 1.e6
+>            else
+>               znebar = enlaes(mzones) * 1.e6
+>            endif
+Index: deqbald.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/deqbald.f,v
+retrieving revision 1.7
+diff -r1.7 deqbald.f
+620c620
+<      &  , ftol, relerr, deltin, gam, gamma, itmax, itmom, nskip
+---
+>      &  , ftol, relerr, deltin, gam, gamma, itmom, nskip
+757a758,759
+>       modem     = 0
+>       moden     = 0
+759a762,767
+> 
+>       qmode     = 0.
+>       qpeakc    = 0.
+>       qshldc    = 0.
+>       qwexc     = 0.
+> 
+760a769,770
+>       qb1amp    = 0.
+>       qb1scl    = 0.
+4260a4271,4273
+> 
+>       eqrsjm = 0.
+>       eqycjm = 0.
+Index: dio.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/dio.f,v
+retrieving revision 1.5
+diff -r1.5 dio.f
+1831c1831
+< 10301   format(2x,i4,1x,0p2f8.2,4x,0p8f11.2)
+---
+> 10301   format(2x,i4,1x,0p2f8.2,4x,0p20(f11.2:))
+5202a5203
+>         write (nprint,'(1A)') 'Particle source rates 1'
+5208,5209d5208
+<           zsrch2 = shions(2,j) + shbems(2,j) - shchxs(2,j)
+<      &      - shfus(2,j) + shblos(2,j)
+5211,5212c5210,5211
+<      &      , zsrch1, zsrch2
+<      &      , siions(1,j), shions(2,j)
+---
+>      &      , zsrch1
+>      &      , siions(1,j)
+5215a5215,5227
+> !ap
+>         write (nprint,'(1A)') 'Particle source rates 2'
+>         write (nprint,10606)
+>         do j=lcentr,mzones
+>           zrad = 0.5*(avi(j+1,15,1)+avi(j,15,1))*uiel
+>           zsrch2 = shions(2,j) + shbems(2,j) - shchxs(2,j)
+>      &      - shfus(2,j) + shblos(2,j)
+>           write (nprint,10607) j, zrad
+>      &      , zsrch2
+>      &      , shions(2,j)
+>      &      , shions(2,j), shbems(2,j), shchxs(2,j)
+>      &      , shfus(2,j),  shblos(2,j)
+>         enddo
+6372,6373c6384,6385
+<      &  /' zone',t8,'radius',6x,'S_Hyd1',6x,'S_Hyd2'
+<      &  ,6x,'S_imp1',6x,'S_imp2'
+---
+>      &  /' zone',t8,'radius',6x,'S_Hyd'
+>      &  ,6x,'S_imp'
+6375c6387
+< 10607 format (1x,i4,1x,f7.3,1p9e12.3)
+---
+> 10607 format (1x,i4,1x,f7.3,1p9(e12.3:))
+Index: dneugas.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/dneugas.f,v
+retrieving revision 1.3
+diff -r1.3 dneugas.f
+177a178
+> c
+211c212
+<       write (ntychl,9000)
+---
+>          write (ntychl,9000)
+240c241,242
+<       maxgas = 2
+---
+>         denmont = 0.
+>         maxgas = 2
+431a434
+>         denmont = znel0
+Index: dolymp.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/dolymp.f,v
+retrieving revision 1.4
+diff -r1.4 dolymp.f
+56c56
+<         if (altime.le.0.0) altime=1.0e+30
+---
+>         altime=1.0e+30
+Index: inital.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/inital.f,v
+retrieving revision 1.2
+diff -r1.2 inital.f
+30a31,32
+> !ap
+>       integer :: itmax = 1.
+Index: preset.f
+===================================================================
+RCS file: /var/cvs/baldur/source/bald/preset.f,v
+retrieving revision 1.3
+diff -r1.3 preset.f
+796c796
+<       twexba(j2) = 0.0
+---
+>       twexba = 0.0

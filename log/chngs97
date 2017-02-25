@@ -1,0 +1,12 @@
+c .../baldur/code/chngs97  Changes to the BALDUR code in 1997  Bateman, Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c@ncinfl  .../baldur/code/bald/ncinfl.f
+c  rgb 25-mar-97 zgain2/(dtmax*uest) --> zgain2
+
+c@sawtst  .../baldur/code/bald/dsawtst.tex
+c  rgb 07-jul-97 reset tbsaws=-1./epslon if ztime .lt. swton
+
+c@theory  .../baldur/code/bald/theory.tex
+c  rgb 07-jul-97 zomegde(jz) = zkyrho * zrhos * zsound / zrmaj
+c           -->  zomegde(jz) = 2.0 * zkyrho * zsound / zrmaj

@@ -1,0 +1,250 @@
+testa01
+Start time: Wed Apr 25 16:54:04 EDT 2007
+Finish time: Wed Apr 25 16:55:11 EDT 2007
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa01 Bateman 16-Dec-96 TFTR #50911_23,204
+ Low rho* 17.68 MW NBI
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ nebar=4.5,Zeff=2.45,t=3.93,3.956 secs
+time-step= 310 te-axis= 3.231E+00 ti-axis= 4.004E+00 ne-axis= 5.542E+13 ni-axis= 4.224E+13 z-axis= 2.096E+00
+t= 3946.679 ms te-avg.= 1.919E+00 ti-avg.= 2.321E+00 ne-avg.= 4.059E+13 ni-avg.= 3.027E+13 z-avg.= 2.342E+00
+dt= 1.000 ms a= 0.786 R= 2.449 elong= 1.000 delta= 0.000 B= 4.226 I= 1.780 vloop= 4.103E-01 q-axis= 7.699E-01
+t= 3.946679 s Wtot = 1.467460 Weth = 0.559300 With = 0.504531 Wbeam= 0.403629 Walpha= 0.000000 MJ
+t= 3.946679 s Petot= 1.659171 Peaux= 4.422853 Pealpha= 0.000000 Peohm= 1.080484 Peloss= 4.905868 MW
+t= 3.946679 s Pitot= 2.935233 Piaux= 6.018259 Pialpha= 0.000000 Piequ= -1.061702 Piloss= 2.021324 MW
+t= 3.946679 s Ptot = 4.594404 Pheat= 11.521596 Ploss = 6.927192 dW/dt= 0.611108 MW
+t= 3.946679 s taue = 0.10773 = ( 0.915)* 0.11778 GL, = ( 0.977)* 0.11024 ITER89-P, ( 0.237)* 0.45539 NA
+t= 3.946679 s ne-bar= 4.605E+13 cm-3, beta = 0.461% qcyl= 2.996
+      4.2 terminate the run                        
+ 
+ 
+     date    2007-04-25        time    16:55:11
+     cpu time used so far =     66.80 secs
+====================================================================================
+testa02
+Start time: Wed Apr 25 16:55:12 EDT 2007
+Finish time: Wed Apr 25 16:56:11 EDT 2007
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa02 Bateman 12-Sept-97 DIII-D #81499 Low kappa #1 H-mode
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ NBI = 5.92 MW B=1.9 I=1.35 nebar=4.81 Zeff=2.33
+ ITER Database shot @ t=4.00 secs
+time-step= 249 te-axis= 1.420E+00 ti-axis= 1.688E+00 ne-axis= 5.435E+13 ni-axis= 3.702E+13 z-axis= 2.260E+00
+t= 4003.232 ms te-avg.= 1.341E+00 ti-avg.= 1.380E+00 ne-avg.= 4.646E+13 ni-avg.= 3.579E+13 z-avg.= 2.276E+00
+dt= 5.000 ms a= 0.596 R= 1.693 elong= 1.681 delta= 0.322 B= 1.910 I= 1.350 vloop= 4.380E-01 q-axis= 9.175E-01
+t= 4.003232 s Wtot = 0.647617 Weth = 0.289918 With = 0.229852 Wbeam= 0.127848 Walpha= 0.000000 MJ
+t= 4.003232 s Petot= 1.797979 Peaux= 2.600263 Pealpha= 0.000000 Peohm= 0.644055 Peloss= 1.595049 MW
+t= 4.003232 s Pitot= 2.953482 Piaux= 3.000030 Pialpha= 0.000000 Piequ= -0.148709 Piloss= -0.102161 MW
+t= 4.003232 s Ptot = 4.751461 Pheat= 6.244349 Ploss = 1.492888 dW/dt= -0.019901 MW
+t= 4.003232 s taue = 0.08301 = ( 1.049)* 0.07916 GL, = ( 1.233)* 0.06730 ITER89-P, ( 0.509)* 0.16292 NA
+t= 4.003232 s ne-bar= 4.809E+13 cm-3, beta = 1.536% qcyl= 2.835
+      4.2 terminate the run                        
+ 
+ 
+     date    2007-04-25        time    16:56:11
+     cpu time used so far =     58.32 secs
+====================================================================================
+testa03
+Start time: Wed Apr 25 16:56:12 EDT 2007
+Finish time: Wed Apr 25 16:59:42 EDT 2007
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa03 Bateman 11 Nov 97 TFTR #73265
+ DD Supershot TRANSP A19
+ 29.7 MW NBI from 3.0 sec,  Carbon Zeff=2.6
+ Weiland ITG + Guzdar-Drake RB model (11 eqns w/ collisions)
+time-step= 853 te-axis= 1.178E+01 ti-axis= 3.028E+01 ne-axis= 6.298E+13 ni-axis= 4.331E+13 z-axis= 1.874E+00
+t= 3601.485 ms te-avg.= 4.959E+00 ti-avg.= 1.154E+01 ne-avg.= 3.259E+13 ni-avg.= 1.916E+13 z-avg.= 2.712E+00
+dt= 2.000 ms a= 0.846 R= 2.525 elong= 1.000 delta= 0.000 B= 4.989 I= 1.975 vloop= 7.205E-02 q-axis= 5.973E-01
+t= 3.601485 s Wtot = 5.158962 Weth = 1.383979 With = 1.894112 Wbeam= 1.880871 Walpha= 0.000000 MJ
+t= 3.601485 s Petot= 6.306073 Peaux= 5.588801 Pealpha= 0.000000 Peohm= 0.309893 Peloss= 3.502285 MW
+t= 3.601485 s Pitot= 12.895492 Piaux= 21.632860 Pialpha= 0.000000 Piequ= -3.909664 Piloss= 4.827705 MW
+t= 3.601485 s Ptot = 19.201564 Pheat= 27.531554 Ploss = 8.329990 dW/dt= 0.810018 MW
+t= 3.601485 s taue = 0.12475 = ( 1.437)* 0.08681 GL, = ( 1.478)* 0.08440 ITER89-P, ( 0.225)* 0.55363 NA
+t= 3.601485 s ne-bar= 4.103E+13 cm-3, beta = 0.975% qcyl= 3.576
+      4.2 terminate the run                        
+ 
+ 
+     date    2007-04-25        time    16:59:41
+     cpu time used so far =    209.47 secs
+====================================================================================
+testa04
+Start time: Wed Apr 25 16:59:43 EDT 2007
+Finish time: Wed Apr 25 17:01:34 EDT 2007
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa04 Bateman 17:00 31-Mar-97 ITER
+ T_edge=1.00, n_e_edge/ne-bar = 0.75, <n_e20> = 1.1
+ 100 MW NBI, 90-150 sec, Bt=5.7T, Ip=24MA
+ D + T w/ Carbon + Helium, Zeff=1.5
+time-step= 557 te-axis= 2.559E+01 ti-axis= 2.404E+01 ne-axis= 1.282E+14 ni-axis= 1.152E+14 z-axis= 1.384E+00
+t=250102.753 ms te-avg.= 1.190E+01 ti-avg.= 1.152E+01 ne-avg.= 1.100E+14 ni-avg.= 9.866E+13 z-avg.= 1.414E+00
+dt= 200.000 ms a= 2.800 R= 8.140 elong= 1.600 delta= 0.239 B= 5.680 I= 21.000 vloop= 4.668E-02 q-axis= 5.904E-01
+t=250.102753 s Wtot = 1305.930650 Weth = 611.460681 With = 531.028642 Wbeam= 0.000000 Walpha= 163.441327 MJ
+t=250.102753 s Petot= 207.719170 Peaux= 0.000000 Pealpha= 324.923627 Peohm= 1.160614 Peloss= 88.147097 MW
+t=250.102753 s Pitot= 182.222481 Piaux= 0.000000 Pialpha= 152.012201 Piequ= 30.217974 Piloss= 0.007694 MW
+t=250.102753 s Ptot = 389.941651 Pheat= 478.096442 Ploss = 88.154791 dW/dt= 0.840375 MW
+t=250.102753 s taue = 2.38733 = ( 1.531)* 1.55948 GL, = ( 1.679)* 1.42170 ITER89-P, ( 0.067)* 35.63535 NA
+t=250.102753 s ne-bar= 1.183E+14 cm-3, beta = 3.489% qcyl= 2.319
+      4.2 terminate the run                        
+ 
+ 
+     date    2007-04-25        time    17:01:34
+     cpu time used so far =    110.83 secs
+====================================================================================
+testa01
+Start time: Mon Jul 28 16:47:11 ICT 2014
+Finish time: Mon Jul 28 16:47:34 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa01 Bateman 16-Dec-96 TFTR #50911_23,204
+ Low rho* 17.68 MW NBI
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ nebar=4.5,Zeff=2.45,t=3.93,3.956 secs
+time-step= 310 te-axis= 3.231E+00 ti-axis= 4.004E+00 ne-axis= 5.542E+13 ni-axis= 4.224E+13 z-axis= 2.096E+00
+t= 3946.679 ms te-avg.= 1.919E+00 ti-avg.= 2.321E+00 ne-avg.= 4.059E+13 ni-avg.= 3.027E+13 z-avg.= 2.342E+00
+dt= 1.000 ms a= 0.786 R= 2.449 elong= 1.000 delta= 0.000 B= 4.226 I= 1.780 vloop= 4.103E-01 q-axis= 7.699E-01
+t= 3.946679 s Wtot = 1.467460 Weth = 0.559300 With = 0.504531 Wbeam= 0.403629 Walpha= 0.000000 MJ
+t= 3.946679 s Petot= 1.659171 Peaux= 4.422853 Pealpha= 0.000000 Peohm= 1.080484 Peloss= 4.905868 MW
+t= 3.946679 s Pitot= 2.935233 Piaux= 6.018259 Pialpha= 0.000000 Piequ= -1.061702 Piloss= 2.021324 MW
+t= 3.946679 s Ptot = 4.594404 Pheat= 11.521596 Ploss = 6.927192 dW/dt= 0.611108 MW
+t= 3.946679 s taue = 0.10773 = ( 0.915)* 0.11778 GL, = ( 0.977)* 0.11024 ITER89-P, ( 0.237)* 0.45539 NA
+t= 3.946679 s ne-bar= 4.605E+13 cm-3, beta = 0.461% qcyl= 2.996
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:47:34
+     cpu time used so far =     22.78 secs
+====================================================================================
+testa02
+Start time: Mon Jul 28 16:47:34 ICT 2014
+Finish time: Mon Jul 28 16:47:53 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa02 Bateman 12-Sept-97 DIII-D #81499 Low kappa #1 H-mode
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ NBI = 5.92 MW B=1.9 I=1.35 nebar=4.81 Zeff=2.33
+ ITER Database shot @ t=4.00 secs
+time-step= 249 te-axis= 1.420E+00 ti-axis= 1.688E+00 ne-axis= 5.435E+13 ni-axis= 3.702E+13 z-axis= 2.260E+00
+t= 4003.232 ms te-avg.= 1.341E+00 ti-avg.= 1.380E+00 ne-avg.= 4.646E+13 ni-avg.= 3.579E+13 z-avg.= 2.276E+00
+dt= 5.000 ms a= 0.596 R= 1.693 elong= 1.681 delta= 0.322 B= 1.910 I= 1.350 vloop= 4.380E-01 q-axis= 9.175E-01
+t= 4.003232 s Wtot = 0.647617 Weth = 0.289918 With = 0.229852 Wbeam= 0.127848 Walpha= 0.000000 MJ
+t= 4.003232 s Petot= 1.797979 Peaux= 2.600263 Pealpha= 0.000000 Peohm= 0.644055 Peloss= 1.595049 MW
+t= 4.003232 s Pitot= 2.953482 Piaux= 3.000030 Pialpha= 0.000000 Piequ= -0.148709 Piloss= -0.102161 MW
+t= 4.003232 s Ptot = 4.751461 Pheat= 6.244349 Ploss = 1.492888 dW/dt= -0.019901 MW
+t= 4.003232 s taue = 0.08301 = ( 1.049)* 0.07916 GL, = ( 1.233)* 0.06730 ITER89-P, ( 0.509)* 0.16292 NA
+t= 4.003232 s ne-bar= 4.809E+13 cm-3, beta = 1.536% qcyl= 2.835
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:47:53
+     cpu time used so far =     18.80 secs
+====================================================================================
+testa03
+Start time: Mon Jul 28 16:47:53 ICT 2014
+Finish time: Mon Jul 28 16:48:49 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa03 Bateman 11 Nov 97 TFTR #73265
+ DD Supershot TRANSP A19
+ 29.7 MW NBI from 3.0 sec,  Carbon Zeff=2.6
+ Weiland ITG + Guzdar-Drake RB model (11 eqns w/ collisions)
+time-step= 490 te-axis= 1.153E+01 ti-axis= 3.078E+01 ne-axis= 6.431E+13 ni-axis= 4.448E+13 z-axis= 1.843E+00
+t= 3601.958 ms te-avg.= 4.868E+00 ti-avg.= 1.147E+01 ne-avg.= 3.226E+13 ni-avg.= 1.876E+13 z-avg.= 2.725E+00
+dt= 2.000 ms a= 0.846 R= 2.525 elong= 1.000 delta= 0.000 B= 4.989 I= 1.975 vloop= 9.287E-02 q-axis= 5.541E-01
+t= 3.601958 s Wtot = 5.104352 Weth = 1.344734 With = 1.842606 Wbeam= 1.917012 Walpha= 0.000000 MJ
+t= 3.601958 s Petot= 6.477949 Peaux= 5.807423 Pealpha= 0.000000 Peohm= 0.321631 Peloss= 3.557915 MW
+t= 3.601958 s Pitot= 12.182839 Piaux= 21.899305 Pialpha= 0.000000 Piequ= -3.906811 Piloss= 5.809654 MW
+t= 3.601958 s Ptot = 18.660789 Pheat= 28.028359 Ploss = 9.367570 dW/dt= 2.460587 MW
+t= 3.601958 s taue = 0.12548 = ( 1.458)* 0.08605 GL, = ( 1.501)* 0.08361 ITER89-P, ( 0.228)* 0.55124 NA
+t= 3.601958 s ne-bar= 4.085E+13 cm-3, beta = 0.964% qcyl= 3.576
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:48:49
+     cpu time used so far =     56.43 secs
+====================================================================================
+testa04
+Start time: Mon Jul 28 16:48:49 ICT 2014
+Finish time: Mon Jul 28 16:49:29 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa04 Bateman 17:00 31-Mar-97 ITER
+ T_edge=1.00, n_e_edge/ne-bar = 0.75, <n_e20> = 1.1
+ 100 MW NBI, 90-150 sec, Bt=5.7T, Ip=24MA
+ D + T w/ Carbon + Helium, Zeff=1.5
+time-step= 549 te-axis= 2.513E+01 ti-axis= 2.360E+01 ne-axis= 1.282E+14 ni-axis= 1.153E+14 z-axis= 1.383E+00
+t=250194.915 ms te-avg.= 1.186E+01 ti-avg.= 1.148E+01 ne-avg.= 1.100E+14 ni-avg.= 9.868E+13 z-avg.= 1.414E+00
+dt= 200.000 ms a= 2.800 R= 8.140 elong= 1.600 delta= 0.239 B= 5.680 I= 21.000 vloop= 4.721E-02 q-axis= 6.166E-01
+t=250.194915 s Wtot = 1300.539123 Weth = 609.672331 With = 529.411254 Wbeam= 0.000000 Walpha= 161.455538 MJ
+t=250.194915 s Petot= 206.341791 Peaux= 0.000000 Pealpha= 323.642573 Peohm= 1.167486 Peloss= 88.097341 MW
+t=250.194915 s Pitot= 181.036590 Piaux= 0.000000 Pialpha= 150.774419 Piequ= 30.370928 Piloss= 0.108756 MW
+t=250.194915 s Ptot = 387.378381 Pheat= 475.584478 Ploss = 88.206097 dW/dt= 0.727888 MW
+t=250.194915 s taue = 2.39172 = ( 1.530)* 1.56363 GL, = ( 1.678)* 1.42552 ITER89-P, ( 0.067)* 35.64572 NA
+t=250.194915 s ne-bar= 1.184E+14 cm-3, beta = 3.475% qcyl= 2.319
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:49:29
+     cpu time used so far =     39.17 secs
+====================================================================================
+testa01
+Start time: Wed Oct 8 21:17:35 ICT 2014
+Finish time: Wed Oct 8 21:17:35 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa01 Bateman 16-Dec-96 TFTR #50911_23,204
+ Low rho* 17.68 MW NBI
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ nebar=4.5,Zeff=2.45,t=3.93,3.956 secs
+time-step= 310 te-axis= 3.231E+00 ti-axis= 4.004E+00 ne-axis= 5.542E+13 ni-axis= 4.224E+13 z-axis= 2.096E+00
+t= 3946.679 ms te-avg.= 1.919E+00 ti-avg.= 2.321E+00 ne-avg.= 4.059E+13 ni-avg.= 3.027E+13 z-avg.= 2.342E+00
+dt= 1.000 ms a= 0.786 R= 2.449 elong= 1.000 delta= 0.000 B= 4.226 I= 1.780 vloop= 4.103E-01 q-axis= 7.699E-01
+t= 3.946679 s Wtot = 1.467460 Weth = 0.559300 With = 0.504531 Wbeam= 0.403629 Walpha= 0.000000 MJ
+t= 3.946679 s Petot= 1.659171 Peaux= 4.422853 Pealpha= 0.000000 Peohm= 1.080484 Peloss= 4.905868 MW
+t= 3.946679 s Pitot= 2.935233 Piaux= 6.018259 Pialpha= 0.000000 Piequ= -1.061702 Piloss= 2.021324 MW
+t= 3.946679 s Ptot = 4.594404 Pheat= 11.521596 Ploss = 6.927192 dW/dt= 0.611108 MW
+t= 3.946679 s taue = 0.10773 = ( 0.915)* 0.11778 GL, = ( 0.977)* 0.11024 ITER89-P, ( 0.237)* 0.45539 NA
+t= 3.946679 s ne-bar= 4.605E+13 cm-3, beta = 0.461% qcyl= 2.996
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:47:34
+     cpu time used so far =     22.78 secs
+====================================================================================
+testa01
+Start time: Wed Oct 8 21:17:44 ICT 2014
+Finish time: Wed Oct 8 21:17:44 ICT 2014
+XBALDUR v. 21.01 1Aug02 12:00
+------------
+F  0  0  0
+ testa01 Bateman 16-Dec-96 TFTR #50911_23,204
+ Low rho* 17.68 MW NBI
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, no collisions)
+ nebar=4.5,Zeff=2.45,t=3.93,3.956 secs
+time-step= 310 te-axis= 3.231E+00 ti-axis= 4.004E+00 ne-axis= 5.542E+13 ni-axis= 4.224E+13 z-axis= 2.096E+00
+t= 3946.679 ms te-avg.= 1.919E+00 ti-avg.= 2.321E+00 ne-avg.= 4.059E+13 ni-avg.= 3.027E+13 z-avg.= 2.342E+00
+dt= 1.000 ms a= 0.786 R= 2.449 elong= 1.000 delta= 0.000 B= 4.226 I= 1.780 vloop= 4.103E-01 q-axis= 7.699E-01
+t= 3.946679 s Wtot = 1.467460 Weth = 0.559300 With = 0.504531 Wbeam= 0.403629 Walpha= 0.000000 MJ
+t= 3.946679 s Petot= 1.659171 Peaux= 4.422853 Pealpha= 0.000000 Peohm= 1.080484 Peloss= 4.905868 MW
+t= 3.946679 s Pitot= 2.935233 Piaux= 6.018259 Pialpha= 0.000000 Piequ= -1.061702 Piloss= 2.021324 MW
+t= 3.946679 s Ptot = 4.594404 Pheat= 11.521596 Ploss = 6.927192 dW/dt= 0.611108 MW
+t= 3.946679 s taue = 0.10773 = ( 0.915)* 0.11778 GL, = ( 0.977)* 0.11024 ITER89-P, ( 0.237)* 0.45539 NA
+t= 3.946679 s ne-bar= 4.605E+13 cm-3, beta = 0.461% qcyl= 2.996
+      4.2 terminate the run                        
+ 
+ 
+     date    2014-07-28        time    16:47:34
+     cpu time used so far =     22.78 secs
+====================================================================================

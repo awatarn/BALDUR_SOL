@@ -1,0 +1,131 @@
+c.../baldur/code/chngs93  Changes to the BALDUR code in 1992  Bateman, PPPL
+c  To obtain this file, type           (use appropriate date for yymmdd)
+c cfs get /11040/bald93/byymmdd/wcode.tar
+c tar xf wcode.tar  (this creates directory .../code and subdirectories)
+c cd code/bald      (this changes to subdirectory .../code/bald)
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+
+c@etawn6.f .../baldur/code/etai/etawn6.tex
+c  rgb 29-dec-93 option to call IMSL routines gvcrg and gpirg
+c    note that the NAG14 routine f02bje sometimes fails when gvcrg succeeds
+
+c@preset  /11040/bald92/wbaldn1  DEFAULT
+c  rgb 26-dec-93 added tcoef(jt) and coeft(jt,jc) general purpose coefs
+c@data   /baldur/code/bald  file DIO
+c  rgb 26-dec-93 added tcoef(jt) and coeft(jt,jc) general purpose coefs
+c    removed lstart(j) and cstart(j)
+
+c@theory   /11040/bald93/... file: dtheory.tex
+c  rgb 23-nov-93 Print out diffusivity matrix from Weiland model
+c    set zcetai(32) = cthery(39)  or = 1.e-6 if cthery(39) < epslon
+c  rgb 22-nov-93 protected etae mode from overflow 
+c    control etae mode using lthery(20)
+c  rgb 21-nov-93 changed zcetai(32) from sqrt(epslon) to 1.e-6
+c    fixed computation of difthi, zgmeti, and zgmtem
+c    skip trapped electron mode models if lthery(6) < 0
+
+c@output  .../baldur/code/bald/doutput.f
+c  rgb 08:50 13-nov-93 remove call plabel, call nfile, and call mfile
+c      to save space temporarily
+c@mhdNEW /11040/bald92/wbaldn1 DEQBALD Bateman
+c  rgb 08:30 14-nov-93 comment out call trpest to save space
+c@clparm  /11040/baldur/code/com/clparm.m
+c  rgb 13-nov-93 reduced kpmode from 11 to 5 to save space
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 13-nov-93 temporarily removed call tripl1 to save space
+c@dsawmix  /11040/bald91/wbaldn1 DSAWMIX
+c  rgb 18:00 11-nov-93 commented out calls to sawmx0 and sawmx1
+c@recon1  /11040/bald91/wbaldn1 DSAWMIX
+c  rgb 17:15 12-nov-93 used x(*) rather then x(1) in dummy dimension
+c@balgam1 /11040/bald92/wbaldn1 DEQBALD Bateman
+c  rgb 17:15 12-nov-93 used x(*) rather then x(1) in dummy dimension
+c@getchi  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 13:50 12-nov-93 changed ftrap(3,1) to ftrap(1,3)
+
+c@island  /11040/bald93/code/isl/disland2
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@cisland2  /11040/bald93/code/isl/cisland2
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@main  11040/bald93/code/equil deqvmom
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@eqmom1  /11040/bald89/wbaldn1 wsequil DEQMOM
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@cotrol/11040/bald91/wbaldn1  DSOLVER
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@getchi  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@recon1  /11040/bald91/wbaldn1 DSAWMIX
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@pdrive  /11040/bald89/wbaldn1  file: DPELLET
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@ file doutput.f
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@nccoef  /11040/bald92/wbaldn1 file: DIMPRAD
+c  rgb 14:40 11-nov-93 replaced call pdx(scroff,6,52) with call pdx
+c@ncrats  /11040/bald92/wbaldn1 file: DIMPRAD
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@ file deqbald.f
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+c@dposit   /11040/bald91/wbaldn1 DBEAMS
+c  rgb 14:28 11-nov-93 changed call abort to call abortb
+
+c@theory   /11040/bald93/... file: dtheory.tex
+c  rgb 07-nov-93 set zcetai(32) = sqrt ( epslon )
+
+c@convrt  /11040/bald91/wbaldn1  DSOLVER
+c  rgb 14-oct-93 add contributions from diffusivity matrix difthi
+c    computed in sbrtn theory to zphi, zpsi, zmu, and znu
+c    (moved here temporarily from sbrtn trcoef)
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 11-oct-93 move the Weiland diffusivity matrix to sbrtn convrt
+c   for now until I revise the structure of dnhis, dnihs, ...
+c   which have peculiarities of the Rutherford neoclassical transport
+c   model built into them.  Sort this out later.
+
+c@cbaldr.m
+c rgb 11-sep-93 changed dimension of difthi from (4,4,55) to (9,9,55)
+
+c@trcoef  /11040/bald93/wbaldn1 DTRANSP
+c rgb 11-sep-93 new diffusivity matrix from Weiland model sbrtn etawn6
+
+c@theory   /11040/bald93/... file: dtheory.tex
+c  rgb 04-sep-93 implement sbrtn etawn6 to compute Weiland model
+c    with the effect of impurities, trapped electrons and FLR effects
+c  jek 04-sep-93 corrections to the Carreras-Diamond resistive
+c    ballooning mode based on comments by Dave Ross
+c  rgb 20-feb-93 replaced zlne with zln for Nordman-Weiland model
+c  rgb 20-feb-93 print out profiles as a function of major radius
+c  rgb 18-feb-93 print out effective particle diffisivities
+c  rgb 10-feb-93 implemented matrix form of Nordman-Weiland Model
+
+
+
+
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+----:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+
+	  Where to find the BALDUR code at ...nersc.gov
+cfs get dir=/11040/bald93/byymmdd/*    to get the following tar files:
+wcode.tar  all source files
+wex.tar    executables
+wlib.tar   compiled libraries constructed using the bld utility at nersc
+wrun.tar   input and run files
+
+   After typing  tar xf wcode.tar   the following files are put into .../code
+wadpak.tar	source file for adpak (impurity radiation package)
+wappl.tar  stand alone programs used with BALDUR
+wbald.tar	 source files for most of the BALDUR code
+wbaldoc.tar  documentation
+wcom.tar	  common blocks referred to by include statements 
+              in BALDUR source files
+wequil.tar	source files for the equilibrium packages
+wetai.tar  source files for eta_i mode routines
+wisl.tar	  source files for the saturated tearing mode package
+wutil.tar	 source files for utility routines 
+              (which do not use common block data)
+
+   The following files in .../run  are needed to run the BALDUR code;
+xbaldur		  BALDUR executable file
+for22		    coronal data set needed to run BALDUR

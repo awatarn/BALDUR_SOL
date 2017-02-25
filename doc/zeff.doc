@@ -1,0 +1,88 @@
+Programs to compute boundary conditions in BALDUR
+by Glenn Bateman, Lehigh University, 26 March 1997
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7-c
+
+The programs zeff.f and denzeff.f are intended to help set the
+time-dependent density boundary conditions in BALDUR.
+
+Use the zeff program if you know the electron density and Z_eff
+as a function of time and you want to compute the densities of the
+individual species (hydrogenic and impurity) as a function of time.
+
+The following is the input and output for the zeff program:
+c  Given in namelist zin:
+c  zeff(i)   = 1 + sum_j Z_j^2 n_Zj / n_e, at breakpoint time i
+c  scalezeff(i) = scale factor for zeff(i)
+c  nimpset   = index of impurity density to determine from Z_eff
+c  zimp(i,j) = charge state of j-th impurity, j=1,N_Z
+c  dene(i)   = electron density
+c  scalene(i) = scale factor for dene(i) (default all 1.0)
+c  rimp(i,j) = denz(j) / dene, ratio of impurity to electron density
+c              (for j .ne. nimpset)
+c  rhyd(i,j) = denh(j) / denh(1), ratio of jth to 1st hydrogen density
+c  cdenh     = output name of denh (default bdhyde)
+c  cdenz     = output name of denz (default bdimpe)
+c
+c  Compute:
+c  nhyd      = number of hydrogen ions
+c  nimp      = number of impurities
+c  denz(i,j) = impurity densities, j=1,nimp
+c  denh(i,j) = hydrogenic densities, j=1,nhyd
+c
+c  Input data given in namelist zin in the standard input file
+c  Output to standard output in a format suitable for insertion
+c  directly into the BALDUR namelist input file
+c
+c  ntmax = number of breakpoint times, is determined by
+c    zeff(i) > 1.0 and dene(i) > 1.0 for 1 .le. i .le. ntmax
+c  nhyd = number of hydrogen ions, is determined by
+c    rhyd(i,j) > epslon for 1 .le. j .le. nhyd
+c    for at least one value of 1 .le. i .le. ntmax
+c  nimp = number of impurities, is determined by
+c    zimp(i,j) > 1.0 for all i with 1 .le. i .le. ntmax
+c    1 .le. j .le. nimp
+
+Use the denzeff program if you know the densities of the individual
+species (hydrogenic and impurity) as a function of time and you want
+to compute the electron density and Z_eff as a function of time.
+
+The following is the input and output for the denzeff program:
+c  Given in namelist zin:
+c  denh(i,j) = hydrogenic densities, j=1,nhyd
+c  denz(i,j) = impurity densities, j=1,nimp
+c  zimp(i,j) = charge state of j-th impurity, j=1,N_Z
+c  aveden(i) = average density to compute relden(i)
+c
+c  In order to use BALDUR namelist input directly, we include:
+c  bdhyde(i,j) = another name for denh(i,j)
+c  bdimpe(i,j) = another name for denz(i,j)
+c  denmon(i)   = another name for aveden(i)
+c
+c  Compute:
+c  dene(i)   = electron density
+c  zeff(i)   = 1 + sum_j Z_j^2 n_Zj / n_e, at breakpoint time i
+c  nhyd      = number of hydrogen ions
+c  nimp      = number of impurities
+c  ntmax     = max for index i
+c  relden(i) = dene(i) / aveden(i)
+c
+c  Input data given in namelist zin in the standard input file
+c  Output to standard output in a format suitable for insertion
+c  directly into the BALDUR namelist input file
+c
+c  ntmax = number of breakpoint times, is determined by
+c    zeff(i) > 1.0 and dene(i) > 1.0 for 1 .le. i .le. ntmax
+c  nhyd = number of hydrogen ions, is determined by
+c    rhyd(i,j) > epslon for 1 .le. j .le. nhyd
+c    for at least one value of 1 .le. i .le. ntmax
+c  nimp = number of impurities, is determined by
+c    zimp(i,j) > 1.0 for all i with 1 .le. i .le. ntmax
+c    1 .le. j .le. nimp
+c
+c Note:
+c
+c n_e = sum_{j=1}^{nhyd} nhyd(j) + sum_{j=1}^{nimp} Z_j nimp(j)
+c
+c Z_eff - 1 = sum_{j=1}^{nimp} Z_j ( Z_j - 1 ) n_Zj / n_e
+c
+c  Routines used:  ctrim, stripx

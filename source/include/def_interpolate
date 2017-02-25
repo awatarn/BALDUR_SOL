@@ -1,0 +1,9 @@
+c------------------------------------------------------------------------
+c This include file provides the definitions for the interpolations
+c needs to be called after kxdim has been defined (include: dim_readvec)
+c------------------------------------------------------------------------
+	
+	Integer ierr, intpol, lw, lwmin
+        Parameter (lw = 9*max(kxdim,kydim)+5)
+	real    w(lw)
+	Parameter (INTPOL = 3) !CUBIC interpolations

@@ -1,0 +1,78 @@
+c .../baldur/bald/changes2002  Changes to the BALDUR code in 2002  Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---
+c rap 28-aug-02  clsaw.m deqbald.f dio.f dolymp.f 
+c                - maximum number of sawtooth times is increased to 320
+c                - some variables are initialized in dio.f
+
+c rap 1-aug-02  -1- new parameter mj for maximum number of radial zones is introduced.
+c                   the parameter is included in new include file cparm.m
+c               -2- include files cbaldr.m and commhd.m were changed to use 
+c                   new parameter mj: all explicitly specified number of zones, 55, changed to mj
+c               -3- all source files were changed; in addition to cbaldr.m and commhd.m,
+c                   new file cparm.m is included
+c               -4- subroutines mhdini and solveb are changed to allow access to externally provided
+c                   netcdf file with q-profiles. New namelist varibale sqprofile, which specified
+c                   the name of external netcdf file with qprofile, is introduced. 
+
+c rap 31-jul-02 -1- include statements changed everywhere from 
+c                   include '../com/<incfile>' to include '<incfile>'
+c               -2- new directories neoclass, mlib, tmodels, sawtooth are
+c                   created. The source files, related to neoclassical transport
+c                   math libraries, transport models, and sawtooth are moved to that
+c                   directories
+c               -3- all makefiles are changed and new one created
+c               -4- the code was cleaned: functions DIMAG were changed to AIMAG, 
+c                   MAX0 to MAX, MIN0 to MIN
+c               -5- some used but not initialized variables were initialized
+c               -6- utilities used with the baldur code were included in the 
+c                   distribution
+c               -7- new modules ncprofile_mod and netcdf_output_mod added
+c                   to provide an interface with netcdf files
+c               -8- utilites list and profile were modified to provide access to the netcdf
+c                   files
+c               -9- directories bin, lib, data, test, work, mod, obj were created
+c               -10- test cases were placed in the directory test
+c               -11- new script run.sh to run the buldur code was added
+c               -12- NTCC modules portlib and ezcdf were included  
+c               -13- include file cbaldr.m was modified to be compartible with the 
+c                    Fortran-90 standards; some undeclared varibales were declared 
+
+
+c@mmm95  .../baldur/bald/mmm95.f
+c@mmm98  .../baldur/bald/mmm98.f
+c@mmm98b  .../baldur/bald/mmm98b.f
+c@mmm98c  .../baldur/bald/mmm98c.f
+c@mmm98d  .../baldur/bald/mmm98d.f
+c@mmm99  .../baldur/bald/mmm99.f
+c@mmm2001  .../baldur/bald/mmm2001.f
+c rgb 2-may-02 added diagnostic arrays thitem ... thzitg to agument list
+
+c@weiland14  .../baldur/bald/weiland14.f
+c rgb 2-may-02 added diagnostic arrays chieffitg and chiefftem to agument list
+
+c@ptheory  .../baldur/code/bald/ptheory.f
+c rgb 30-apr-02 added diagnostic output for chi from TEM (zchitem, ...)
+
+c@tfilsn   .../baldur/code/bald/doutput.f
+c  rgb 25-mar-02 changed dimension to iuntsb(*),iuntsr(*),iuntst(*)
+
+c@output  .../baldur/code/bald/doutput.f
+c  rgb 25-mar-02 commented out call hetprt
+
+c@gprint   /baldur/code/bald  file DIO
+c  rgb 25-mar-02 initialized zvtot
+
+c@sprint   /baldur/code/bald  file DIO
+c  rgb 25-mar-02 commented out call impprt
+
+c@imprad  /11040/baldur/code/imprad.f
+c  rgb 25-mar-02 changed local dimensions from 2 to numimp
+c    where numimp is located in cbparm.m
+
+c@dneugas ~/code/bald/dneugas.f
+c  rap 22-mar-02 namelist degas is not used 
+c     corresponding lines are commented out
+c
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:---

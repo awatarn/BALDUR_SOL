@@ -1,0 +1,185 @@
+   1-1/2-D BALDUR   BALDPN S    version 
+ testa01 Bateman 16-Dec-96 TFTR #50911_23,204   
+ Low rho* 17.68 MW NBI                          
+ Weiland ITG + Guzdar-Drake RB Model (10 eqns, n
+ nebar=4.5,Zeff=2.45,t=3.93,3.956 secs          
+
+    1 update equilibrium in sbrtn mhdNEW at time  0.0000E+00 sec
+
+    2 update equilibrium in sbrtn mhdNEW at time  0.0000E+00 sec
+
+    3 update equilibrium in sbrtn mhdNEW at time  0.0000E+00 sec
+1
+
+          *** warning: dummy icrf routine loaded ***
+ nstep =    0 time  =   2.000000 sec, next dt = 0.001000 sec
+ te-axis =  1.500 ti-axis =  1.500 ne-axis =2.870E+13 ne-bar =2.045E+13
+ sbrtn nuegas modified by Bateman, 20 Jan 86
+
+    4 update equilibrium in sbrtn mhdNEW at time  2.0932E+00 sec
+
+    5 update equilibrium in sbrtn mhdNEW at time  2.1884E+00 sec
+
+    6 update equilibrium in sbrtn mhdNEW at time  2.2484E+00 sec
+
+    7 update equilibrium in sbrtn mhdNEW at time  2.3084E+00 sec
+
+    8 update equilibrium in sbrtn mhdNEW at time  2.3684E+00 sec
+ nstep =   20 time  =   2.398379 sec, next dt = 0.060000 sec
+ te-axis =  2.743 ti-axis =  1.784 ne-axis =3.762E+13 ne-bar =2.150E+13
+
+    9 update equilibrium in sbrtn mhdNEW at time  2.4284E+00 sec
+
+   10 update equilibrium in sbrtn mhdNEW at time  2.4884E+00 sec
+
+   11 update equilibrium in sbrtn mhdNEW at time  2.5484E+00 sec
+
+   12 update equilibrium in sbrtn mhdNEW at time  2.6084E+00 sec
+
+   13 update equilibrium in sbrtn mhdNEW at time  2.6684E+00 sec
+ nstep =   30 time  =   2.698379 sec, next dt = 0.060000 sec
+ te-axis =  2.579 ti-axis =  1.713 ne-axis =3.978E+13 ne-bar =2.294E+13
+
+   14 update equilibrium in sbrtn mhdNEW at time  2.7284E+00 sec
+
+   15 update equilibrium in sbrtn mhdNEW at time  2.7884E+00 sec
+
+   16 update equilibrium in sbrtn mhdNEW at time  2.8484E+00 sec
+
+   17 update equilibrium in sbrtn mhdNEW at time  2.9084E+00 sec
+
+   18 update equilibrium in sbrtn mhdNEW at time  2.9684E+00 sec
+ nstep =   40 time  =   2.998379 sec, next dt = 0.060000 sec
+ te-axis =  2.631 ti-axis =  1.785 ne-axis =3.938E+13 ne-bar =2.330E+13
+
+   19 update equilibrium in sbrtn mhdNEW at time  3.0284E+00 sec
+ nstep =   45 time  =   3.025712 sec, next dt = 0.008717 sec
+ te-axis =  3.945 ti-axis =  3.683 ne-axis =3.839E+13 ne-bar =2.314E+13
+
+   20 update equilibrium in sbrtn mhdNEW at time  3.0902E+00 sec
+ nstep =   50 time  =   3.160841 sec, next dt = 0.060000 sec
+ te-axis =  4.387 ti-axis =  4.879 ne-axis =4.205E+13 ne-bar =2.799E+13
+
+   21 update equilibrium in sbrtn mhdNEW at time  3.1908E+00 sec
+
+   22 update equilibrium in sbrtn mhdNEW at time  3.2508E+00 sec
+
+   23 update equilibrium in sbrtn mhdNEW at time  3.3108E+00 sec
+ nstep =   55 time  =   3.362841 sec, next dt = 0.018138 sec
+ te-axis =  3.222 ti-axis =  2.843 ne-axis =5.564E+13 ne-bar =4.181E+13
+
+   24 update equilibrium in sbrtn mhdNEW at time  3.3913E+00 sec
+ nstep =   60 time  =   3.467679 sec, next dt = 0.022000 sec
+ te-axis =  4.225 ti-axis =  4.068 ne-axis =5.960E+13 ne-bar =4.277E+13
+
+   25 update equilibrium in sbrtn mhdNEW at time  3.4787E+00 sec
+ nstep =   65 time  =   3.541679 sec, next dt = 0.015000 sec
+ te-axis =  3.937 ti-axis =  4.355 ne-axis =5.541E+13 ne-bar =4.124E+13
+
+   26 update equilibrium in sbrtn mhdNEW at time  3.5642E+00 sec
+ nstep =   70 time  =   3.616679 sec, next dt = 0.015000 sec
+ te-axis =  4.711 ti-axis =  5.543 ne-axis =5.636E+13 ne-bar =4.191E+13
+
+   27 update equilibrium in sbrtn mhdNEW at time  3.6542E+00 sec
+ nstep =   75 time  =   3.676679 sec, next dt = 0.001000 sec
+ te-axis =  3.620 ti-axis =  4.268 ne-axis =5.366E+13 ne-bar =4.297E+13
+ nstep =   80 time  =   3.681679 sec, next dt = 0.001000 sec
+ te-axis =  3.716 ti-axis =  4.460 ne-axis =5.434E+13 ne-bar =4.370E+13
+ nstep =   85 time  =   3.686679 sec, next dt = 0.001000 sec
+ te-axis =  3.815 ti-axis =  4.644 ne-axis =5.494E+13 ne-bar =4.375E+13
+ nstep =   90 time  =   3.691679 sec, next dt = 0.001000 sec
+ te-axis =  3.913 ti-axis =  4.814 ne-axis =5.551E+13 ne-bar =4.377E+13
+ nstep =   95 time  =   3.696679 sec, next dt = 0.001000 sec
+ te-axis =  4.011 ti-axis =  4.966 ne-axis =5.605E+13 ne-bar =4.380E+13
+ nstep =  100 time  =   3.701679 sec, next dt = 0.001000 sec
+ te-axis =  4.111 ti-axis =  5.100 ne-axis =5.648E+13 ne-bar =4.382E+13
+ nstep =  105 time  =   3.706679 sec, next dt = 0.001000 sec
+ te-axis =  4.211 ti-axis =  5.217 ne-axis =5.678E+13 ne-bar =4.384E+13
+ nstep =  110 time  =   3.711679 sec, next dt = 0.001000 sec
+ te-axis =  4.302 ti-axis =  5.311 ne-axis =5.696E+13 ne-bar =4.382E+13
+ nstep =  115 time  =   3.716679 sec, next dt = 0.001000 sec
+ te-axis =  4.376 ti-axis =  5.384 ne-axis =5.710E+13 ne-bar =4.381E+13
+ nstep =  120 time  =   3.721679 sec, next dt = 0.001000 sec
+ te-axis =  4.432 ti-axis =  5.443 ne-axis =5.723E+13 ne-bar =4.380E+13
+ nstep =  125 time  =   3.726679 sec, next dt = 0.001000 sec
+ te-axis =  4.475 ti-axis =  5.497 ne-axis =5.737E+13 ne-bar =4.379E+13
+ nstep =  130 time  =   3.731679 sec, next dt = 0.001000 sec
+ te-axis =  4.510 ti-axis =  5.547 ne-axis =5.750E+13 ne-bar =4.380E+13
+ nstep =  135 time  =   3.736679 sec, next dt = 0.001000 sec
+ te-axis =  4.540 ti-axis =  5.595 ne-axis =5.763E+13 ne-bar =4.380E+13
+ nstep =  140 time  =   3.741679 sec, next dt = 0.001000 sec
+ te-axis =  4.567 ti-axis =  5.641 ne-axis =5.774E+13 ne-bar =4.380E+13
+ nstep =  145 time  =   3.746679 sec, next dt = 0.001000 sec
+ te-axis =  4.592 ti-axis =  5.699 ne-axis =5.783E+13 ne-bar =4.382E+13
+
+   28 update equilibrium in sbrtn mhdNEW at time  3.7482E+00 sec
+ nstep =  150 time  =   3.751679 sec, next dt = 0.001000 sec
+ te-axis =  4.616 ti-axis =  5.754 ne-axis =5.787E+13 ne-bar =4.379E+13
+ nstep =  155 time  =   3.756679 sec, next dt = 0.001000 sec
+ te-axis =  4.637 ti-axis =  5.802 ne-axis =5.788E+13 ne-bar =4.378E+13
+ nstep =  160 time  =   3.761679 sec, next dt = 0.001000 sec
+ te-axis =  4.654 ti-axis =  5.842 ne-axis =5.787E+13 ne-bar =4.378E+13
+ nstep =  165 time  =   3.766679 sec, next dt = 0.001000 sec
+ te-axis =  4.668 ti-axis =  5.869 ne-axis =5.784E+13 ne-bar =4.373E+13
+ nstep =  170 time  =   3.771679 sec, next dt = 0.001000 sec
+ te-axis =  4.679 ti-axis =  5.893 ne-axis =5.784E+13 ne-bar =4.378E+13
+ nstep =  175 time  =   3.776679 sec, next dt = 0.001000 sec
+ te-axis =  4.690 ti-axis =  5.920 ne-axis =5.785E+13 ne-bar =4.379E+13
+ nstep =  180 time  =   3.781679 sec, next dt = 0.001000 sec
+ te-axis =  4.701 ti-axis =  5.947 ne-axis =5.786E+13 ne-bar =4.379E+13
+ nstep =  185 time  =   3.786679 sec, next dt = 0.001000 sec
+ te-axis =  4.715 ti-axis =  5.985 ne-axis =5.782E+13 ne-bar =4.381E+13
+ nstep =  190 time  =   3.791679 sec, next dt = 0.001000 sec
+ te-axis =  4.726 ti-axis =  6.014 ne-axis =5.777E+13 ne-bar =4.379E+13
+ nstep =  195 time  =   3.796679 sec, next dt = 0.001000 sec
+ te-axis =  4.733 ti-axis =  6.032 ne-axis =5.772E+13 ne-bar =4.379E+13
+ nstep =  200 time  =   3.801679 sec, next dt = 0.001000 sec
+ te-axis =  4.738 ti-axis =  6.043 ne-axis =5.767E+13 ne-bar =4.379E+13
+ nstep =  205 time  =   3.805679 sec, next dt = 0.001000 sec
+ te-axis =  3.306 ti-axis =  4.184 ne-axis =5.343E+13 ne-bar =4.357E+13
+ nstep =  210 time  =   3.810679 sec, next dt = 0.001000 sec
+ te-axis =  3.423 ti-axis =  4.358 ne-axis =5.410E+13 ne-bar =4.398E+13
+ nstep =  215 time  =   3.815679 sec, next dt = 0.001000 sec
+ te-axis =  4.831 ti-axis =  4.533 ne-axis =5.475E+13 ne-bar =4.392E+13
+ nstep =  220 time  =   3.820679 sec, next dt = 0.001000 sec
+ te-axis =  4.294 ti-axis =  4.702 ne-axis =5.534E+13 ne-bar =4.385E+13
+ nstep =  225 time  =   3.827679 sec, next dt = 0.001500 sec
+ te-axis =  4.059 ti-axis =  4.913 ne-axis =5.618E+13 ne-bar =4.391E+13
+ nstep =  230 time  =   3.835179 sec, next dt = 0.001500 sec
+ te-axis =  4.073 ti-axis =  5.115 ne-axis =5.699E+13 ne-bar =4.392E+13
+
+   29 update equilibrium in sbrtn mhdNEW at time  3.8419E+00 sec
+ nstep =  235 time  =   3.842679 sec, next dt = 0.001500 sec
+ te-axis =  4.180 ti-axis =  5.292 ne-axis =5.750E+13 ne-bar =4.399E+13
+ nstep =  240 time  =   3.850179 sec, next dt = 0.001500 sec
+ te-axis =  4.305 ti-axis =  5.432 ne-axis =5.771E+13 ne-bar =4.411E+13
+ nstep =  245 time  =   3.857679 sec, next dt = 0.001500 sec
+ te-axis =  4.414 ti-axis =  5.549 ne-axis =5.774E+13 ne-bar =4.427E+13
+ nstep =  250 time  =   3.865179 sec, next dt = 0.001500 sec
+ te-axis =  4.489 ti-axis =  5.623 ne-axis =5.775E+13 ne-bar =4.437E+13
+ nstep =  255 time  =   3.872679 sec, next dt = 0.001500 sec
+ te-axis =  4.534 ti-axis =  5.667 ne-axis =5.781E+13 ne-bar =4.449E+13
+ nstep =  260 time  =   3.880179 sec, next dt = 0.001500 sec
+ te-axis =  4.562 ti-axis =  5.693 ne-axis =5.791E+13 ne-bar =4.462E+13
+ nstep =  265 time  =   3.887679 sec, next dt = 0.001500 sec
+ te-axis =  4.582 ti-axis =  5.717 ne-axis =5.802E+13 ne-bar =4.474E+13
+ nstep =  270 time  =   3.895179 sec, next dt = 0.001500 sec
+ te-axis =  4.598 ti-axis =  5.736 ne-axis =5.811E+13 ne-bar =4.485E+13
+ nstep =  275 time  =   3.902679 sec, next dt = 0.001500 sec
+ te-axis =  4.608 ti-axis =  5.745 ne-axis =5.820E+13 ne-bar =4.498E+13
+ nstep =  280 time  =   3.910179 sec, next dt = 0.001500 sec
+ te-axis =  4.611 ti-axis =  5.743 ne-axis =5.828E+13 ne-bar =4.511E+13
+ nstep =  285 time  =   3.917679 sec, next dt = 0.001500 sec
+ te-axis =  4.608 ti-axis =  5.730 ne-axis =5.842E+13 ne-bar =4.523E+13
+ nstep =  290 time  =   3.925179 sec, next dt = 0.001500 sec
+ te-axis =  4.604 ti-axis =  5.718 ne-axis =5.857E+13 ne-bar =4.537E+13
+ nstep =  295 time  =   3.932679 sec, next dt = 0.001000 sec
+ te-axis =  4.601 ti-axis =  5.709 ne-axis =5.873E+13 ne-bar =4.551E+13
+
+   30 update equilibrium in sbrtn mhdNEW at time  3.9362E+00 sec
+ nstep =  300 time  =   3.937679 sec, next dt = 0.001000 sec
+ te-axis =  4.600 ti-axis =  5.704 ne-axis =5.882E+13 ne-bar =4.566E+13
+ nstep =  305 time  =   3.941679 sec, next dt = 0.001000 sec
+ te-axis =  3.108 ti-axis =  3.830 ne-axis =5.481E+13 ne-bar =4.509E+13
+ nstep =  310 time  =   3.946679 sec, next dt = 0.001000 sec
+ te-axis =  3.231 ti-axis =  4.004 ne-axis =5.542E+13 ne-bar =4.586E+13

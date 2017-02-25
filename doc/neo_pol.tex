@@ -1,0 +1,719 @@
+\documentstyle {article}    % Specifies the document style.
+\headheight 0pt \headsep 0pt  \topmargin 0pt  \oddsidemargin 0pt
+\textheight 9.0in \textwidth 6.5in
+
+\title{ {\tt neo\_pol}: a BALDUR Subroutine \\
+ Computes Plasma Poloidal Velocity \\
+ Using NEO model}     % title.
+\author{
+        Ping Zhu \\ UT Austin}
+                           % Declares the author's name.
+                           % Deleting the \date{} produces today's date.
+\begin{document}           % End of preamble and beginning of text.
+\maketitle                 % Produces the title.
+
+This report documents a subroutine called {\tt neo\_pol}, which computes plasma
+poloidal velocity using a neoclassical theory based model reported in Houlberg~{\it et al}\cite{houlberg97}, Ernst~{\it et al}\cite{ernst98}, Zhu~{\it et al}\cite{zhu99}. 
+
+\begin{verbatim}
+c@neo_pol ../code/baldur/bald/neo_pol.tex
+c pzhu 06-Sep-99 included the NEO model
+c   See rest of changes list at end of file
+c--------1---------2---------3---------4---------5---------6---------7-c
+\end{verbatim}
+
+\begin{verbatim}
+c
+c ------------------------------------------------------------------------
+c Numerically solve poloidal flows using neoclassical theory (NEO model)
+c Main program driving all the routines
+c ------------------------------------------------------------------------
+c Written by Ping Zhu, 8/26/99
+c ========================================================================
+c
+        module com_block
+        real, parameter :: pi = 3.1415926
+c
+c	model specific parameters
+c
+        integer, parameter :: Nmu = 3   !number of viscosity coefficients
+                                        !muaj of each species;
+                                        !3: 13M approx.
+                                        !5: 21M approx.
+        integer, parameter :: Nl = 2    !number of friction coefficients
+                                        !labij of each species;
+                                        !2: 13M approx.
+                                        !3: 21M approx.
+c
+c	input data
+c
+        integer Ns              !number of particle species including electron
+                                !1: electron
+                                !2: main ion
+                                !3: impurity ion
+        real, allocatable :: m(:)               !particle mass [u]
+        real, allocatable :: Z(:)               !particle charge [e]
+        integer Nx              		!number of radial grid points
+        real, allocatable :: xarr(:)            !zone center coordinate
+        real, allocatable :: xbarr(:)   	!zone edge coordinate
+        real, allocatable :: n(:,:)             !density [m^-3]
+        real, allocatable :: T(:,:)             !temperature [eV]
+        real a0                 		!minor radius of plasma [m]
+        real R0                 		!major radius of plasma [m]
+        real Bt                 		!toroidal B field [T]
+        real, allocatable :: q(:)               !safty factor
+c
+c	intermediate data
+c
+        real, allocatable :: Bp(:)              !poloidal B field [T]
+        real, allocatable :: nuab(:,:,:)        !collision frequency [1/s]
+        real, allocatable :: muaj(:,:,:)	!normalized viscosity
+        real, allocatable :: labij(:,:,:,:,:)	!components of friction coeffs.
+        real, allocatable :: a(:,:,:)		!matrix for poloidal flow eqs.
+        real, allocatable :: f(:,:,:)		!normalized friction coeffs.
+        real, allocatable :: dn(:,:)		!density gradient [m^-4]
+        real, allocatable :: dT(:,:)		!temperature gradient [eV/m]
+        real, allocatable :: sr1(:,:)		!source term from gradient
+        real, allocatable :: ysr(:,:)		!RHS of poloidal flow eqs.
+c
+c	output data
+c
+        real, allocatable :: Vp(:,:)    	!poloidal velocity [m/s]
+c
+        contains
+c
+        subroutine alloc_com
+        integer :: alloc_stat
+c
+        allocate(m(Ns), Z(Ns), n(Ns,Nx), T(Ns,Nx), q(Nx),
+     &           xarr(Nx), xbarr(Nx), stat=alloc_stat)
+        allocate(nuab(Ns,Ns,Nx), muaj(Ns,Nmu,Nx), labij(Ns,Ns,Nl,Nl,Nx),
+     &           a(Nl*Ns,Nl*Ns,Nx), f(Nl*Ns,Nl*Ns,Nx),
+     &           dn(Ns,Nx), dT(Ns,Nx), sr1(Nl*Ns,Nx), ysr(Nl*Ns,Nx),
+     &           Bp(Nx), Vp(Ns,Nx), stat=alloc_stat)
+c
+        if(alloc_stat.ne.0) then
+        write(*,*)'alloc_com: array not allocated!'
+        stop
+        end if
+c
+        end subroutine alloc_com
+c
+        subroutine dealloc_com
+        integer :: dealloc_stat
+c
+        deallocate(m, Z, n, T, q, xarr, xbarr, stat=dealloc_stat)
+        deallocate(nuab, muaj, labij, a, f, dn, dT, sr1, ysr, Bp, Vp,
+     &             stat=dealloc_stat)
+c
+        if(dealloc_stat.ne.0) then
+        write(*,*)'dealloc_com: array not deallocated!'
+        stop
+        end if
+c
+        end subroutine dealloc_com
+c
+        end module com_block
+c
+c ========================================================================
+c
+	subroutine neo_pol(Ns_, m_, Z_, Nx_, xarr_, xbarr_, n_, T_, Vp_, 
+     &			a0_, R0_, Bt_, q_, ierr)	
+c
+	use com_block
+c
+	implicit none
+	integer Ns_             !number of particle species including electron
+                                !1: electron
+                                !2: main ion
+                                !3: impurity ion
+        real :: m_(Ns_)         !particle mass [u]
+        real :: Z_(Ns_)         !particle charge [e]
+        integer Nx_             !number of radial grid points
+        real :: xarr_(Nx_)      !zone center coordinate
+        real :: xbarr_(Nx_)   	!zone edge coordinate
+        real :: n_(Ns_,Nx_)    	!density [m^-3]
+        real :: T_(Ns_,Nx_)     !temperature [eV]
+        real a0_                !minor radius of plasma [m]
+        real R0_                !major radius of plasma [m]
+        real Bt_                !toroidal B field [T]
+        real :: q_(Nx_)         !safty factor
+        real :: Vp_(Ns_,Nx_)    !poloidal velocity [m/s]
+	integer :: ierr     	!error flag
+                                !0: no error upon return
+c
+	ierr = 0
+	Ns = Ns_
+	Nx = Nx_
+	call alloc_com
+	m = m_
+	Z = Z_
+	xarr = xarr_
+	xbarr = xbarr_
+	n = n_
+	T = T_
+	a0 = a0_
+	R0 = R0_
+	Bt = Bt_
+	q = q_
+c
+	call colifreq		!return nuab
+	call viscosity		!return muaj
+	call friction		!return labij
+	call matrixa		!return f and a
+	call source		!return ysr
+	call fpoloid		!return Vp
+c
+	Vp_ = Vp
+	call dealloc_com
+c	
+	end subroutine neo_pol
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt colifreq} computes collision frequency between species $a$ and $b$ which is
+\begin{equation}
+\nu_{ab}(s^{-1})=1.3566\times 10^{-12}
+		\frac{\displaystyle Z_a(e)^2Z_b(e)^2n_b(m^{-3})}
+		{\displaystyle m_a^{1/2}(u)T_a^{3/2}(eV)}\ 
+\label{eq:nu}
+\end{equation}
+\begin{verbatim}
+c
+	subroutine colifreq
+c
+	use com_block
+c
+        integer :: iprint = 0   !control parameter for output
+c
+	do k = 1, Nx
+	  do i = 1,Ns
+	    do j = 1,Ns
+	      nuab(i,j,k) = 1.3566*1.0d-12*
+     &		Z(i)**2*Z(j)**2*n(j,k)/(sqrt(m(i)*T(i,k))*T(i,k))
+				!Z [e]
+				!m [u]
+				!n [1/m^3]
+				!T [eV]
+	    end do
+	  end do
+	end do
+c
+	if(iprint.eq.1) then
+	  open(1, file = 'nu.d')
+	  do k = 1, Nx
+	    write(1,2000)xarr(k),((nuab(i,j,k),j=1,Ns),i=1,Ns)
+ 2000	    format(1x,10e14.5)
+	  end do
+	  close(1)
+	end if
+c	
+	return
+	end subroutine colifreq
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt viscosity} computes the normalized neoclassical viscosities, which are given by~\cite{hirshman81}
+\begin{equation}
+\widehat\mu_{aj}=1.469\left({r\over R_0}\right)^{1/2}{8\over
+3\sqrt\pi}\int_0^\infty dx\,x^4 e^{-x^2}\left(x^2-{5\over
+2}\right)^{j-1}\tau_{aa}\nu_{tot}^a(x), \hbox{\hskip
+1cm}(a=e,i,x;j=1,2,3),\label{eq:mu}
+\end{equation}
+Notes about formula~\ref{eq:mu}:
+\begin{enumerate}
+\item Neoclassical factor $\phi=(1-f_p)/f_p$ is approximated as $\phi\simeq 
+1.469\left({r\over R_0}\right)^{1/2}$ in large aspect ratio limit. 
+\item $\nu_{tot}^a(x)$ has different forms in banana and plateau regimes, while a extropolated formula valid for all collisionality regimes are used.
+\item In $\nu_{tot}^a(x)$, $<B^2>/<(\nabla_{\parallel}B)>\simeq 2(qR_0/\epsilon)^2$, where $\epsilon=r/R_0$, and effective collisionality connection length $L_c^*\simeq qR$.
+\end{enumerate}
+The integral is computed using Gauss-Hermite quadrature, which greatly reduces the computing time required by the ODE solver approach. The quadrature points and weights are stored in two arrays at the initialization (compiling) time.
+\begin{verbatim}
+c
+        subroutine viscosity
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+c       neoclassical_viscosity_coefficients using H-S (4_72)
+c       13M: mu_1 to mu_3
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        use com_block
+c
+        integer :: iprint = 0   !control parameter for output
+c
+        integer, parameter :: np = 11  !number of quadrature points
+        real :: qx(np) = (/0.9158657122E-07, 0.4794511199,
+     &                     0.9614993930, 1.448934197, 1.944962978,
+     &                     2.453553677, 2.979991436, 3.531972170,
+     &                     4.121994972, 4.773993492, 5.550352097/)
+                           !Gauss-Hermite quadrature points
+        real :: qw(np) = (/0.4790236652, 0.3816692233,
+     &                     0.1921202540, 0.6017980352E-01,
+     &                     0.1141404081E-01, 0.1254981034E-02,
+     &                     0.7478434418E-04, 0.2171897677E-05,
+     &                     0.2571234603E-07, 0.8818597935E-10,
+     &                     0.3720384528E-13/)
+                           !Gauss-Hermite quadrature weights
+c
+        do kx = 1, Nx
+          do is = 1, Ns
+c       initialization
+            muaj(is,1:3,kx)=0.
+c       integration
+            do it = 1, np
+                muaj(is,1:Nmu,kx) = muaj(is,1:Nmu,kx) +
+     &                              muf(qx(it))*qw(it)
+            end do
+          end do
+        end do
+c
+        if(iprint.eq.1) then
+          open(1,file="mu.d")
+          do kx = 1, Nx
+            write(1,3000)xarr(kx),((muaj(i,j,kx),j=1,3),i=1,Ns)
+ 3000       format(1x,10e14.5)
+          end do
+          close(1)
+        end if
+c
+        return
+c
+        contains
+c
+c
+\end{verbatim}
+Routine {\tt mu} prepares the integral functions used by routine {\tt viscosity} to compute the integrals. The functions are
+\begin{eqnarray}
+y_j=x^4\left(x^2-{5\over 2}\right)^{j-1}\tau_{aa}\nu_{tot}^a(x)\\
+\nu_{tot}^a(x)=
+\end{eqnarray}
+\begin{verbatim}
+        function muf(x) result(y)
+c
+        use com_block
+c
+        real x
+        real vtab(Ns),G(Ns)
+        real nustara
+        real y(Nmu)
+c
+        ftc=1.469*sqrt(a0*xarr(kx)/(R0+a0*xarr(kx)))
+        ft=ftc
+c     &         /(1.+ftc)
+        bdb=2.*(q(kx)*R0**2/(a0*xarr(kx)))**2
+        vta=sqrt(2.*T(is,kx)/m(is))*0.978729e4
+        wta=vta/q(kx)/(R0+a0*xarr(kx))
+        nustara=8./(3.*pi)*ft*wta*bdb*nuab(is,is,kx)/vta**2
+c
+c       write(*,*)'q1=',q(kx),'T=',T(is,kx),'vta=',wta
+c
+        do i=1,Ns
+          vtab(i)=sqrt(T(is,kx)/T(i,kx)*m(i)/m(is))
+          G(i)=(erf(vtab(i)*x)-2.*vtab(i)*x*
+     &          exp(-(vtab(i)*x)**2)/sqrt(pi))/
+     &          (2.*(vtab(i)*x)**2)
+        end do
+c
+          taonud=0.
+          taonut=0.
+c
+          do i=1,Ns
+            taonud=taonud+(Z(i)/Z(is))**2*n(i,kx)/n(is,kx)*
+     &       (erf(vtab(i)*x)-G(i))/x**3
+c       H-S (4.43)     
+            taonut=taonut+(Z(i)/Z(is))**2*n(i,kx)/n(is,kx)*
+     &       ((erf(vtab(i)*x)-3.*G(i))/x**3+
+     &       4.*(T(is,kx)/T(i,kx)+vtab(i)**2)*G(i)/x)
+          end do
+c
+          taonud=3.*sqrt(pi)/4.*taonud
+          taonut=3.*sqrt(pi)/4.*taonut
+          taonu=taonud
+     &          *x/(x+nustara*taonud)
+     &          *x/(x+5./8.*pi*taonut/wta*nuab(is,is,kx))
+c
+c       write(*,*)'nustara=',nustara,'wta=',wta,'nuaa=',nuab(is,is,kx)
+c       write(*,*)'nud=',taonud,'nut=',taonut,'nu=',taonu
+c       pause
+c
+c       taonu=1.        !plateau regime
+          do i=1,Nmu
+            y(i)=ft*8./(3.*sqrt(pi))*x**4*(x**2-2.5)**(i-1)*taonu
+          end do
+c
+c       if(xarr(kx).eq.0.325) then
+c       write(*,3020)x,taonu
+c3020   format(1x,2e14.5)
+c       end if
+c
+c       do j=1,neq/Ns
+c       write(*,*)'t=',x,'y(j)=',y(j)
+c       end do
+c
+c       pause
+
+        end function muf
+c
+        end subroutine viscosity
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt friction} computes the normalized friction coefficients $\hat l^{ab}_{ij}$, which are the sum of the test ($M^{ab}_{ij}$) and field ($N^{ab}_{ij}$) particle components of the linearized Coulomb collision operator~\cite{hirshman81} 
+\begin{eqnarray}
+\hat l^{ab}_{ij} = M^{ab}_{ij} + N^{ab}_{ij} \\
+M^{ab}_{ij} = \\
+N^{ab}_{ij} =
+\label{eq:labij}
+\end{eqnarray}
+\begin{verbatim}
+c
+      subroutine friction
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+c     friction coefficient matrix in 13M approx
+c     l^ab_ij using exact formular H-S (4.4-4.17)
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+      use com_block
+c
+      real Mab(Ns,Ns,0:1,0:1),Nab(Ns,Ns,0:1,0:1)
+      integer :: iprint = 0     !control parameter for output
+c	
+      do k = 1, Nx
+	do i=1,Ns
+          do j=1,Ns
+            xab=sqrt(T(j,k)/T(i,k)*m(i)/m(j))
+            Mab(i,j,0,0)=-(1.+m(i)/m(j))/sqrt((1.+xab**2)**3)
+            Mab(i,j,0,1)=-1.5*(1.+m(i)/m(j))/sqrt((1.+xab**2)**5)
+            Mab(i,j,1,0)=Mab(i,j,0,1)
+            Mab(i,j,1,1)=-(3.25+4.*xab**2+7.5*xab**4)/
+     &			sqrt((1.+xab**2)**5)
+          end do
+	end do
+c	
+c        write(*,*)'mab2111=',Mab(2,1,1,1)     
+c	
+	do i=1,Ns
+          do j=1,Ns
+            xab=sqrt(T(j,k)/T(i,k)*m(i)/m(j))
+            Nab(i,j,0,0)=-Mab(i,j,0,0)
+c	H-S version of Nab_01:
+c	Nab(i,j,0,1)=T(i,k)/T(j,k)*sqrt(T(i,k)/T(j,k)*m(j)/m(i))
+c     &		*(-Mab(j,i,1,0))
+c	Houlberg's version of Nab_10:
+            Nab(i,j,0,1)=-xab**2*Mab(i,j,0,1)
+            Nab(i,j,1,0)=-Mab(i,j,1,0)
+c       H-S version of Nab_11:
+c	Nab(i,j,1,1)=6.75*T(i,k)/T(j,k)*xab**2/sqrt((1.+xab**2)**5)
+c	Houlberg's version of Nab_11:
+            Nab(i,j,1,1)=6.75*sqrt(T(i,k)/T(j,k))*xab**2/
+     &			sqrt((1.+xab**2)**5)	
+          end do
+	end do
+c
+c        write(*,*)'nab2111=',Nab(2,1,1,1)
+c
+	do i=1,Ns
+          do j=1,Ns
+            do i1=1,2
+              do j1=1,2
+		labij(i,j,i1,j1,k)=(Z(j)/Z(i))**2*n(j,k)/n(i,k)*
+     &            Nab(i,j,i1-1,j1-1)
+              end do
+            end do
+          end do
+	end do
+c        
+	do i=1,Ns
+          do i1=1,2
+            do j1=1,2
+              do k1=1,Ns
+		labij(i,i,i1,j1,k)=labij(i,i,i1,j1,k)+
+     &            (Z(k1)/Z(i))**2*n(k1,k)/n(i,k)*
+     &            Mab(i,k1,i1-1,j1-1)
+              end do
+c
+c	write(*,*)'l',i,labij(i,i,i1,j1,k)
+c
+            end do
+          end do
+	end do
+      end do
+c
+        if(iprint.eq.1) then
+          open(1,file='lab.d')
+          do k = 1, Nx
+            write(1,4000)xarr(k),(labij(i,i,1,1,k),i=1,Ns)
+ 4000       format(1x,4e15.4)
+          end do
+          close(1)
+        end if
+c
+	return
+	end subroutine friction
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt matrixa} constructs the matrices appeared in poloidal flow equations ${\bf A}\cdot{\bf U}=({\bf M}-{\bf L})\cdot{\bf U}={\bf L}\cdot{\bf V}$ using the viscosity coefficients $\hat\mu_{aj}$ and the friction coefficients $\hat l^{ab}_{ij}$
+\begin{equation}
+{\bf M}=\pmatrix{
+\widehat\mu_{e1} & \widehat\mu_{e2} &0&0&0&0\cr 
+\widehat\mu_{e2} & \widehat\mu_{e3} &0&0&0&0\cr
+0&0& \widehat\mu_{i1} & \widehat\mu_{i2} &0&0\cr 
+0&0& \widehat\mu_{i2} & \widehat\mu_{i3} &0&0\cr 
+0&0&0&0& \widehat\mu_{x1} & \widehat\mu_{x2}\cr 
+0&0&0&0& \widehat\mu_{x2} & \widehat\mu_{x3}\cr} 
+\hbox{\hskip 2cm} 
+{\bf U}=\pmatrix{
+\widehat u_{\theta e}\cr \widehat q_{\theta e}\cr 
+\widehat u_{\theta i}\cr \widehat q_{\theta i}\cr 
+\widehat u_{\theta x}\cr \widehat q_{\theta x}\cr},
+\label{eq:MU}
+\end{equation}
+\begin{equation}
+{\bf L}=\pmatrix{
+\widehat l^{ee}_{11} & -\widehat l^{ee}_{12} & \widehat l^{ei}_{11} & -\widehat l^{ei}_{12} & \widehat l^{ex}_{11} & -\widehat l^{ex}_{12}\cr 
+-\widehat l^{ee}_{21} & \widehat l^{ee}_{22} &-\widehat l^{ei}_{21} & \widehat l^{ei}_{22} & -\widehat l^{ex}_{21} & \widehat l^{ex}_{22}\cr
+\widehat l^{ie}_{11} & -\widehat l^{ie}_{12} & \widehat l^{ii}_{11} & -\widehat l^{ii}_{12} & \widehat l^{ix}_{11} & -\widehat l^{ix}_{12}\cr 
+-\widehat l^{ie}_{21} & \widehat l^{ie}_{22} &-\widehat l^{ii}_{21} & \widehat l^{ii}_{22} & -\widehat l^{ix}_{21} & \widehat l^{ix}_{22}\cr 
+\widehat l^{xe}_{11} & -\widehat l^{xe}_{12} & \widehat l^{xi}_{11} & -\widehat l^{xi}_{12} & \widehat l^{xx}_{11} & -\widehat l^{xx}_{12}\cr 
+-\widehat l^{xe}_{21} & \widehat l^{xe}_{22} &-\widehat l^{xi}_{21} & \widehat l^{xi}_{22} & -\widehat l^{xx}_{21} & \widehat l^{xx}_{22}\cr} 
+\hbox{\hskip 2cm} 
+{\bf V}=\pmatrix{
+\widehat V_{1e}\cr \widehat V_{2e}\cr
+\widehat V_{1i}\cr \widehat V_{2i}\cr 
+\widehat V_{1x}\cr \widehat V_{2x}\cr}.
+\label{eq:LV}
+\end{equation}
+\begin{verbatim}
+c
+	subroutine matrixa
+c
+	use com_block
+c
+	integer :: iprint = 0   !control parameter for output
+c	
+	a=0.
+	f=0.
+	f0=0.	
+c
+	do k = 1, Nx
+c
+	  do i=1,Ns
+	    do i1=1,2
+	      do j1=1,i1-1
+		a(i1+(i-1)*2,j1+(i-1)*2,k)=muaj(i,i1*(i1-1)/2+j1,k)
+	      end do
+	      do j1=i1,2
+		a(i1+(i-1)*2,j1+(i-1)*2,k)=muaj(i,j1*(j1-1)/2+i1,k)
+	      end do
+	    end do
+	  end do
+c	
+c	f using exact l_ij (no assumption Ti~Tx)
+c
+	  do i=1,Ns
+	    do j=1,Ns
+	      do i1=1,2
+		do j1=1,2
+		  f(i1+(i-1)*2,j1+(j-1)*2,k)=(-1)**(i1+j1)*labij(i,j,i1,j1,k)
+		end do
+	      end do
+	    end do
+	  end do
+c	  
+	  do i=1,2*Ns
+	    do j=1,2*Ns
+	      a(i,j,k)=a(i,j,k)-f(i,j,k)
+	    end do
+	  end do
+c	  
+	end do
+c
+	if(iprint.eq.1) then
+	  open(1,file='mat.d')
+	  do k = 1, Nx
+	    write(1,5000)xarr(k),(a(1,j,k),j=1,2*Ns),(f(1,j,k),j=1,2*Ns)
+ 5000	    format(1x,13e14.5)
+	  end do
+	  close(1)
+	end if
+c
+	return
+	end subroutine matrixa
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt source} computes the source term ${\bf V}$ and ${\bf L}\cdot{\bf V}$ in poloidal flow equations ${\bf A}\cdot{\bf U}=({\bf M}-{\bf L})\cdot{\bf U}={\bf L}\cdot{\bf V}$. Here the source terms are computed from density and pressure gradients and frictions.
+\begin{verbatim}
+c
+	subroutine source
+c
+	use com_block
+c
+	integer :: iprint = 0   !control parameter for output
+c
+	do i=1,Ns
+c	2nd order finite difference approximation
+	  call grad1(Nx,xarr,n(i,1:Nx),dn(i,1:Nx))
+	  call grad1(Nx,xarr,T(i,1:Nx),dT(i,1:Nx))
+c	4th order finite difference approximation
+c	call grad2(Nx,xarr,n(i,1:Nx),dn(i,1:Nx))
+c	call grad2(Nx,xarr,T(i,1:Nx),dT(i,1:Nx))	
+	end do
+c
+        dn=dn/a0
+        dT=dT/a0
+c
+        do k = 1, Nx
+	  Bp(k)=a0/R0*xarr(k)*Bt/q(k)
+	  do i=1,Ns
+	    sr1(2*i-1,k)=-T(i,k)/Z(i)*(dn(i,k)/n(i,k)
+     &	     		+dT(i,k)/T(i,k))/Bp(k)/Bt
+	    sr1(2*i,k)=-dT(i,k)/Z(i)/Bp(k)/Bt
+	  end do
+	end do
+c	
+        do k = 1, Nx                              
+	  do i=1,2*Ns
+	    ysr(i,k)=0.
+	    do j=1,2*Ns                      
+	      ysr(i,k)=ysr(i,k)+f(i,j,k)*sr1(j,k)          
+	    end do                                         
+	  end do
+c	write(1,6000)xarr(k),(ysr(i,k),i=1,2*Ns)
+c       pause
+	end do                                   
+c	
+	if(iprint.eq.1) then
+	  open(1,file='src.d')
+	  do k = 1, Nx
+	    write(1,6000)xarr(k),(dn(i,k),i=1,Ns),(dT(i,k),i=1,Ns)
+     &	     		,(sr1(i,k),i=1,2*Ns)
+ 6000	    format(1x,13e15.4)
+	  end do
+	  close(1)
+	end if
+c
+	return
+	end subroutine source
+c
+\end{verbatim}
+Routine {\tt grad} computes 2nd order finite difference derivative
+\begin{equation}
+(\frac{dy}{dx}\ )_i = \frac{y_{i+1}-y_i}{x_{i+1}-x_i}+o(h^2)
+\end{equation}
+\begin{verbatim}
+c
+        subroutine grad(n,x,y,dy)
+        real x(n),y(n),dy(n)                                        
+c	
+        do i=1,n-1                                                  
+	  dy(i)=(y(i+1)-y(i))/(x(i+1)-x(i))                           
+c       write(*,*)x(i),dy(i)                                        
+c       pause                                                       
+        end do                                                      
+        dy(n)=dy(n-1)                                               
+c
+        return                                                      
+        end subroutine grad
+c
+\end{verbatim}
+Routine {\tt grad1} computes 2nd order finite difference derivative
+\begin{equation}
+(\frac{dy}{dx}\ )_i = \frac{y_i-y_{i-1}}{x_i-x_{i-1}}+o(h^2)
+\end{equation}
+\begin{verbatim}
+c
+	subroutine grad1(n,x,y,dy)
+        real x(n),y(n),dy(n)
+c
+        do i=1,n-1
+	  dy(i+1)=(y(i+1)-y(i))/(x(i+1)-x(i))
+c       write(*,*)x(i),dy(i)
+c       pause
+        end do
+        dy(1)=dy(2)
+c
+        return
+        end subroutine grad1
+c
+\end{verbatim}
+Routine {\tt grad2} computes 4th order finite difference derivative
+\begin{equation}
+(\frac{dy}{dx}\ )_i = \frac{-y_(i+2)+8y_{i+1}-8y_{i-1}+y_{i-2}}{x_i-x_{i-1}}+o(h^4)
+\end{equation}
+\begin{verbatim}
+c
+	subroutine grad2(n,x,y,dy)
+        real x(n),y(n),dy(n)
+c
+	if(n.ne.1) then
+        h = (x(n)-x(1))/float(n-1)
+        dy(1) = (y(2)-y(1))/(x(2)-x(1))
+        dy(2) = (y(3)-y(1))/(2.d0*h)
+        do i = 3, n-2
+	  dy(i) = (-y(i+2)+8.d0*y(i+1)-8.d0*y(i-1)+y(i-2))/(12.d0*h)
+        end do
+        dy(n-1) = (y(n)-y(n-2))/(2.d0*h)
+        dy(n) = (y(n)-y(n-1))/(x(n)-x(n-1))
+	end if
+c
+	return
+        end subroutine grad2
+c
+c ========================================================================
+\end{verbatim}
+Routine {\tt fpoloid} solves the poloidal flow equations ${\bf A}\cdot{\bf U}=({\bf M}-{\bf L})\cdot{\bf U}={\bf L}\cdot{\bf V}$, and returns poloidal velocity $u_{pa}$. 3 linear equations solver have been tested
+\begin{enumerate}
+\item IMSL routine LSARG using iterative refinement.
+\item LAPACK routine DGESV using LU decomposition.
+\item BALDUR routine MATRX1 and MATRX2 using LU decomposition.
+\end{enumerate}
+No much difference has been found regarding performance among the 3.
+\begin{verbatim}
+c
+	subroutine fpoloid
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+c	complete coefficient matrix in 13M approx
+c	mu_aj using nu_tot in H-S (4.72)
+c	l^ab_ij using exact formular H-S (4.4-4.17)
+c	numerically solve poloidal flux Vp, Qp
+c	call BALDUR routine MATRX1 and MATRX2 to solve linear equations
+c ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+	use com_block
+c
+	real uq(Nl*Ns,Nx)
+	integer, parameter :: nrhs = 1
+c
+	integer, parameter :: maxn = 10
+	real :: awork(maxn,maxn)
+	real :: bwork(maxn)
+	integer :: ipiv(maxn)
+	integer :: kerr(maxn)
+c
+	integer :: iprint = 0   !control parameter for output
+c
+	neq = Nl*Ns
+c
+	do k = 1, Nx
+	  awork(1:neq,1:neq) = a(1:Nl*Ns,1:Nl*Ns,k)
+	  bwork(1:neq) = ysr(1:Nl*Ns,k)
+	  call matrx1(awork, maxn, neq, ipiv, kerr)
+	  call matrx2(uq(1:Nl*Ns,k), bwork, awork, 
+     &			ipiv, maxn, neq, 1, neq, 1)
+c
+	  do i=1,Ns
+	    Vp(i,k)=uq(2*i-1,k)*Bp(k)
+	  end do
+	end do
+c	
+	if(iprint.eq.1) then
+	  open(1,file='vpol.d')
+	  do k = 1, Nx
+	    write(1,7000)xarr(k), (Vp(i,k),i=1,Ns)
+ 7000	    format(1x,4e15.5)
+	  end do
+	  close(1)
+	end if
+c
+	return
+	end subroutine fpoloid
+\end{verbatim}
+\end{document}

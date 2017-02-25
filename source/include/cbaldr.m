@@ -1,0 +1,653 @@
+!@cbaldr.m  .../com/cbaldr.m  common blocks
+!---------------------------------------------------------------------
+!l                  c1.1.    basic system parameters
+!  version 2!        1.8.73      kvr/mhh        culham
+       common/combas/                                                   &
+     &   altime,   cptime,   nledge,   nlend,    nlres,    nonlin,      &
+     &   nout,     nprint,   nread,    nrec,     nresum,   nstep,       &
+     &   stime,    ndiary,   nin,      npunch,   nrun,                  &
+     &   reread,   versno
+       logical     nlend,    nlres
+      common /combal/        label1,   label2,   label3,   label4       &
+     & , label5,   label6,   label7,   label8
+      character *80          label1,   label2,   label3,   label4       &
+     & , label5,   label6,   label7,   label8
+!--------------------------------------------------------------------
+!l                  c1.2.    control switches   Bateman 01-jul-87
+!
+       common /cswtch/                                                  &
+     &   lnumer(32), cnumer(32), linout(32), cinout(32)                 &
+     & , lstart(32), cstart(32), ltrnsp(32), ctrnsp(32)                 &
+     & , lemprc(32), cemprc(32), lbeams(32), cbeams(32)                 &
+     & , ldivrt(32), cdivrt(32), lauxil(32), cauxil(32)                 &
+     & , limprd(32), cimprd(32), lnugas(32), cnugas(32)                 &
+     & , lneocl(32), cneocl(32), lfsion(32), cfsion(32)                 &
+     & , lstabl(32), cstabl(32), lbound(32), cbound(32)
+!--------------------------------------------------------------------
+!                  c1.9.    development and diagnostic parameters
+!  version 2!        1.8.73      kvr/mhh        culham
+       common/comddp/                                                   &
+     &   maxdum,   mxdump,   nadump                                     &
+     & ,   npdump,   npoint,                                            &
+     &   nsub,     nvdump,                                              &
+     &   nlched,   nlhead,   nlomt1,   nlomt2,   nlomt3,   nlrept
+       logical                                                          &
+     &   nlched,   nlhead,   nlomt1,   nlomt2,   nlomt3,   nlrept
+       dimension                                                        &
+     &   nadump(20),         npdump(20),         nvdump(20),            &
+     &   nlhead(9),          nlomt1(50),         nlomt2(50),            &
+     &   nlomt3(50)
+!---------------------------------------------------------------------
+!                  c2.1     comtok--tokamak and plasma parameter
+!  Add current density parameter(znjtor) by Boonyarit Chatthong 6-11-09
+!  Add two constants rtmajb and rtminb by Boonyarit Chatthong 12/11/09
+!
+       common/comtok/                                                   &
+     &  aspec , bzi   , ellipt, rehe  , rehi  , reoff , reon  , revols, &
+     &  rex1  , rex2  , rey1  , rey2  , rle0  , rle1  , rleaux, rleprf, &
+     &  rlepwr, rlfreq, rli0  , rli1  , rliaux, rliprf, rlipwr, rlpara, &
+     &  rlpowr, rlheprf, rlhepwr, rlheaux, rlepwrt, rlipwrt,            &
+     &  nrenp , nrldmp, nrleex, nrliex, nrlmod, nrlpar, nspec , nzspec  &
+     & , nrlepwr, nrlipwr, znjtor, rtmajb, rtminb
+!
+       real                                                             &
+     &   aspec(6), rehe(20), rehi(20), reoff(20),          reon(20),    &
+     &   revols(mj),         rleaux(mj),         rleprf(mj),            &
+     &   rliaux(mj),         rliprf(mj),         rlpara(50),            &
+     &   rlpowr(50),         rlheprf(mj),        rlheaux(mj),           &
+     &   rlepwr(20),         rlipwr(20),         znjtor(mj),            &
+     &   rtmajb,             rtminb
+!
+      integer nspec(6), nzspec(6), nrlepwr, nrlipwr
+!
+!  rlepwr(j), rlipwr(j) electron and ion heating power as a fnc of time
+!  rlepwrt, rlipwrt electron and ion heating power at current time
+!  nrlepwr = number of positive elements in rlepwr array
+!  nrlipwr = number of positive elements in rlipwr array
+!---------------------------------------------------------------------
+!                  c2.2     comsta--arrays describing state of p
+!
+       common/comsta/ bpoli , chi, chn
+       real           bpoli(mj), chi(8,mj), chn(8,mj)
+!
+! chi and bpoli are the fundamental variables in MKS ISU units
+! chn are the density and energy density in normalized units
+!---------------------------------------------------------------------
+!                  c2.3     comcoe--transport equation and bound
+!
+       common/comcoe/                                                   &
+     &  aaaa  , alpha0, alpha1, azzz  , bbbb  , beta0 , beta1 , bouna0, &
+     &  bouna1, bounb0, bounb1, bounc0, bounc1, bound , bpa0  , bpa1  , &
+     &  bpb0  , bpb1  , bpc0  , bpc1  , cccc  , cpedst, dddd  , delta0, &
+     &  delta1, eeee  , etai  , ffff  , gamma0, gamma1,                 &
+     &  lflxng
+       common /comco1/  condei(mj), condii(mj), cvctei(mj), cvctii(mj)  &
+     &    , ctotei(mj), ctotii(mj)
+       logical                                                          &
+     &  lflxng
+       dimension                                                        &
+     &   aaaa(8,8,mj),       alpha0(8,8),        alpha1(8,8),           &
+     &   azzz(8,mj),         bbbb(8,8,mj),       beta0(8,8),            &
+     &   beta1(8,8),         bouna0(8),          bouna1(8),             &
+     &   bounb0(8),          bounb1(8),          bounc0(8),             &
+     &   bounc1(8),          bound(8,mj),        cccc(8,8,mj),          &
+     &   cpedst(8),          dddd(8,mj),         delta0(8),             &
+     &   delta1(8),          eeee(8,8,mj),       etai(mj),              &
+     &   ffff(8,mj),         gamma0(8,8),        gamma1(8,8),           &
+     &   lflxng(4)
+!
+! The following, representing power flow through boundary j,
+!   are set in sbrtn convrt and printed out in mprint:
+! condei(j) = electron conduction
+! condii(j) = ion conduction
+! cvctei(j) = electron convection
+! cvctii(j) = ion convection
+! ctotei(j) = total electron (conduction and convection)
+! ctotii(j) = total ion      (conduction and convection)
+!
+!---------------------------------------------------------------------
+!                  c2.4     comdif--diffusion coefficients
+!
+       common/comdif/                                                   &
+     &  bp11  , bp12  , cl11  , cl12  , cnueqs, dahs  , dais  , dbhis , &
+     &  dbhs  , dbihs , dbiis , dbis  , denes , detepr, detes , detis , &
+     &  dinhs , dinis , ditins, ditipr, ditis , dnhhs , dnhis , dnhs  , &
+     &  dnihs , dniis , dnis  , dweirs, dwicxs, dxemps, ps11  , ps12  , &
+     &  recoms, salfs , shbems, shblos, shchxs, shfus , shions, siions, &
+     &  vewars, vnwars, vxemps, wealfs, weauxs, webems, webrs , weecrh, &
+     &  weicrf, weions, weirs , weohms, wesrs , wialfs, wiauxs, wibems, &
+     &  wichxs, wiecrh, wiicrf, wiions, xeemps, xiemps, dites,          &
+     &  trdif,  trvel,  velnhs, velnis, veltes, veltis,                 &
+     &  lkeflg, lkiflg
+      common/cmdif2/ shfuel, sifuel,                                    &
+     & wed3fs, wid3fs, wid3fl, weash, shd3fs, sid3fs, wesyn,            &
+     & wefus, wifus
+       real                                                             &
+     &   bp11(6,6,mj),       bp12(6,6,mj),       cl11(6,6,mj),          &
+     &   cl12(6,6,mj),       cnueqs(mj),         dahs(2,mj),            &
+     &   dais(4,mj),         dbhis(2,4,mj),      dbhs(2,mj),            &
+     &   dbihs(4,2,mj),      dbiis(4,4,mj),      dbis(4,mj),            &
+     &   denes(mj),          detepr(mj),         detes(mj),             &
+     &   detis(mj),          dinhs(2,mj),        dinis(4,mj),           &
+     &   ditins(mj),         ditipr(mj),         ditis(mj),             &
+     &   dnhhs(2,2,mj),      dnhis(2,4,mj),      dnhs(2,mj),            &
+     &   dnihs(4,2,mj),      dniis(4,4,mj),      dnis(4,mj),            &
+     &   dweirs(4,mj),       dwicxs(mj),         dxemps(6,mj),          &
+     &   ps11(6,6,mj),       ps12(6,6,mj),       recoms(2,mj),          &
+     &   salfs(mj),          shbems(2,mj),       shblos(2,mj),          &
+     &   shchxs(2,mj),       shfus(2,mj),        shions(2,mj),          &
+     &   siions(4,mj),       vewars(mj),         vnwars(mj),            &
+     &   vxemps(6,mj),       wealfs(mj),         weauxs(mj),            &
+     &   webems(mj),         webrs(mj),          weecrh(mj),            &
+     &   weicrf(mj),         weions(mj),         weirs(4,mj),           &
+     &   weohms(mj),         wesrs(mj),          wialfs(mj),            &
+     &   wiauxs(mj),         wibems(mj),         wichxs(mj)
+       real                                                             &
+     &   wiecrh(mj),         wiicrf(mj),         wiions(mj),            &
+     &   xeemps(mj),         xiemps(mj),         dites(mj),             &
+     &   trdif(9,9,mj),      trvel(9,9,mj)
+       integer                                                          &
+     &   lkeflg(mj),         lkiflg(mj)
+        real                                                            &
+     & shfuel(2,mj), sifuel(4,mj), shd3fs(2,mj), sid3fs(4,mj),          &
+     & wed3fs(mj), wid3fs(mj), wid3fl(mj), weash(mj), wesyn(mj),        &
+     & wefus(mj), wifus(mj)
+        real                                                            &
+     &    velnhs(4,mj), velnis(4,mj), veltes(mj), veltis(mj)
+!
+! rgb 17-jun-01 convective velocities [cm/sec]
+!  velnhs(ih,jz) convective velocity of hydrogenic ion ih, bndry jz
+!  velnis(ii,jz) convective velocity of impurity ion ii at bndry jz
+!  veltes(jz)    convective velocity of electron heat at bndry jz
+!  veltis(jz)    convective velocity of ion heat at bndry jz
+!
+!..common block for neoclassical transport
+!
+      common /cmneo1/ dnneo1, vnneo1, xeneo1, xineo1, xeneo2            &
+     & , veneo1, vineo1
+!
+      real  dnneo1(6,6,mj), vnneo1(6,mj)                                &
+     & , xeneo1(mj), xineo1(mj), xeneo2(mj)                             &
+     & , veneo1(mj), vineo1(mj)
+!
+!---------------------------------------------------------------------
+!                   c2.4.2    comthe-diffusivities
+      common/comthe/                                                    &
+     &   fdr,   fig,   fti,   frm,   fkb,   frb,   fhf,   fmh           &
+     & , fec,   feg,   fdrint                                           &
+     & , eithes,   dxthes,   vxthes,   xethes,   xithes                 &
+     & , weithe,   weiths,   difthi,   velthi
+!
+      dimension                                                         &
+     &   fdr(5),fig(5),fti(5),frm(5),fkb(5),frb(5),fhf(5),fec(5),fmh(5) &
+     & , feg(5)                                                         &
+     & , eithes(mj), dxthes(6,mj), vxthes(6,mj), xethes(mj), xithes(mj) &
+     & , weithe(mj), weiths(mj), difthi(12,12,mj), velthi(12,mj)
+!
+!  piz 10-dec-98 add ETG mode viscosity multiplier feg(5)
+!  rgb 19-sep-98 difthi(20,20,mj) --> difthi(12,mj)...
+!  pis 11-jun-98 Changed order of comth1 to adhere to bigendian standards!!!
+!
+      common /comth1/                                                   &
+     &   cthery(150), sfutz(20), lthery(50)
+!
+      common /comth2/                                                   &
+     &   thdre(mj) , thrme(mj) , thrbe(mj) , thkbe(mj) , thhfe(mj)      &
+     & , thdri(mj) , thrmi(mj) , thrbi(mj) , thkbi(mj) , thhfi(mj)      &
+     & , thige(mj) , thigi(mj) , thtie(mj) , thtii(mj), threte(mj)      &
+     & , threti(mj), thdinu(mj), thfith(mj), thdte(mj) , thdi(mj)       &
+     & , thbeta(mj), thlni(mj) , thlti(mj) , thdia(mj) , thnust(mj)     &
+     & , thrstr(mj), theps(mj)                                          &
+     & , thlsh(mj),  thlpr(mj),  thlarp(mj), thrhos(mj), thdiaw(mj)     &
+     & , thlarpo(mj), thvthe(mj), thvthi(mj), thsoun(mj), thalfv(mj)    &
+     & , thbpbc(mj), thetth(mj), thsrhp(mj), thdias(mj), thlamb(mj)     &
+     & , thrlwe(mj), thrlwi(mj), thnme(mj),  thnmi(mj), thhme(mj)       &
+     & , thcee(mj), thcei(mj), thitie(mj), thitii(mj)                   &
+     & , thrbgb(mj), thrbb(mj),  thvalh(mj), thdwe(mj), thdwi(mj)       &
+     & , thfbth(mj), thbp2(mj),  thomr(mj)
+!  pis 02-jul-98 added vrota to the comth3 common block
+!  pis 11-jun-98 added comth3 to include flow shear variables
+!
+      Common /comth3/                                                   &
+     & wexba(mj,20),vrota(mj,20),xwexba(mj),twexba(20),nxwexba,ntwexba
+!
+!
+!..variables in common blocks /comth*/
+!
+!              electron/ion thermal diffusivity from:
+!  thdre/i(j)   drift waves (trapped electron modes)
+!  thige/i(j)   ion temperature gradient (eta_i) modes
+!  thtie/i(j)   trapped ion modes
+!  thrme/i(j)   rippling modes
+!  thrbe/i(j)   resistive ballooning modes
+!  thrbgb,thrbb(j)   gyro-Bohm and Bohm contributions to res. ball.
+!  thkbe/i(j)   kinetic ballooning modes
+!  thhfe/i(j)   eta_e mode
+!  thitie/i(j)  hot ion trapped ion mode
+!  thrlwe/i(j)  Rebut-Lallia-Watkins model
+!
+!  thdte(j)  = D_{te}
+!  thdi(j)   = D_i
+!
+! Lengths:
+!  thlni(j)  = L_{ni}
+!  thlti(j)  = L_{T_i}
+!  thlsh(j)  = L_s = R q / s\hat
+!  thlpr(j)  = L_p
+!  thlarp(j) = \rho_s
+!  thrhos(j) = \rho_{\theta i}
+!  thlarpo(j) = \rho_i
+!
+! Velocities:
+!  thvthe(j) = v_{the}
+!  thvthi(j) = v_{thi}
+!  thsoun(j) = c_s
+!  thalfv(j) = v_A
+!
+!  Dimensionless:
+!  threti(j) = \eta_i
+!  thdias(j) = resistive ballooning mode diamagnetic stabilization factor
+!  thdinu(j) = \omega_e^\ast / \nu_{eff}
+!  thfith(j) = f_{ith} as in eq (35)
+!  thbpbc(j) = \beta^{\prime} / \beta_{c1}^{\prime}
+!  thdia(j)  = \omega_e^\ast / k_\perp^2
+!  thnust(j) = \nu_e^*
+!  thrstr(j) = \rho_* = \rho_s/a
+!  thlamb(j) = \Lambda multiplier for resistive ballooning modes
+!  thvalh(j) = array of Hahm model criterion values
+!
+!  thbeta(j) = \beta
+!  thetth(j) = \eta_i^{th}  threshold for \eta_i mode
+!  thsrhp(j) = S = \tau_R / \tau_{hp} = r^2 \mu_0 v_A / ( \eta R_0 )
+!
+!  threti(j) = \eta_i
+!  thdinu(j) = \omega_e^\ast / \nu_{eff}
+!  thfith(j) = f_{ith} as in eq (35)
+!  thdte(j)  = D_{te}
+!  thdi(j)   = D_i
+!  thbeta(j) = \beta^{\prime} / \beta_{c1}^{\prime}
+!  thlni(j)  = L_{ni}
+!  thlti(j)  = L_{T_i}
+!  thdia(j)  = \omega_e^\ast / k_\perp^2
+!  thnust(j) = \nu_e^\star
+!  thlamb(j) = \Lambda in Carreras-Diamond resistive ballooning mode
+!           model PF B1 (1989) 1011-1017.
+!
+!---------------------------------------------------------------------
+!                  c2.5     comtim--time-dependent conditions
+!
+       common/comtim/                                                   &
+     &  bedgi , compl , compp , dvolx , rcurri, redgi , rmji  , tcompi  &
+     & , tcoef, coeft                                                   &
+     & , nzcomp                                                         &
+     & , nlcomp
+       logical                                                          &
+     &  nlcomp
+       dimension                                                        &
+     &   rcurri(20),         redgi(20),          rmji(20),              &
+     &   tcompi(20),         tcoef(20),          coeft(20,20)
+!---------------------------------------------------------------------
+!                  c2.6     comdf2--plasma quantities
+!  dps 12-dec-86 extend empirc dfutz range to 40 variables
+!
+       common/comdf2/   ajboot, ajtpbi,                                 &
+     &  ahmean, aimass, aired , ajzs  , bpols , bzs   , c2mean, calph , &
+     &  ccnu  , cdbohm, cdetes, cditis, cdnhis, cdnhs , cdniis, ceta  , &
+     &  cfutz , cloges, clogis, cmean , cnuel , cnuhyd, cteles, ctions, &
+     &  dfutzd, dfutze, dfutzi, dfutzv, dxsemi, eta   , ev50s , extf  , &
+     &  extzef, ftrap , gspitz, q     , qmhd1 , qmhd2 , qsmth , qstar , &
+     &  rhoels, rhohs , rhoins, rhois , rhosms, rmajs , rmins , rrstar, &
+     &  scroff, shear , slbps,  slnes , slprs , slpts , sltes , sltis , &
+     &  telecs, tes   , tesms , thpsms, thrprs, tions , tis   , tisms , &
+     &  topsms, trapbr, vxsemi, xesemi, xisemi, xnuel , xnuhyd, xzeff , &
+     &  memprt
+        common /comdf3/                                                 &
+     &  tmod, snestr, snebar
+      common /ctmp01/                                                   &
+     &  betate, betati, betatb, betata, betatt,                         &
+     &  betape, betapi, betapb, betapa, betapt,                         &
+     &  curnts, erges, ergis, ergbs, ergas, ergts, envaes, envais,      &
+     &  enlaes, enlais, gealfs, geauxs, gebems, gebrs, geecrs,          &
+     &  geicrs, geions, geohms, gesrs, gialfs, giauxs, gibems,          &
+     &  gichxs, giecrs, giicrs, giions,                                 &
+     &  cgbeta, cgpowr, gcoefs, gxp   , gcomb                           &
+     & ,armins, armajs, nrad, totprs
+!
+      common /comdf4/  rhisms, slnis
+!
+      real  rhisms(mj), slnis(mj)
+!
+!  rhisms(j) = ion density rhoins(2,j) smoothed
+!  slnis (j) = 1. / ( d ln (ni) / d r )
+!
+      common /ctmp03/                                                   &
+     &  ged3fs, geashs, gid3fs, gesyns, geirs, ergds, betatd,betapd
+!
+      real                                                              &
+     &   ged3fs(mj), geashs(mj), gid3fs(mj), gesyns(mj), geirs(mj),     &
+     &   ergds(mj), betatd(mj), betapd(mj)
+!
+       real, target ::       ajboot(mj),         ajtpbi(mj),            &
+     &   ahmean(2,mj),       aimass(2,mj),       aired(4,4),            &
+     &   ajzs(2,mj),         bpols(2,mj),        c2mean(4,2,mj),        &
+     &   calph(mj),          cfutz(500),         cloges(2,mj),          &
+     &   clogis(2,mj),       cmean(4,2,mj),      dfutzd(6,40),          &
+     &   dfutze(6,40),       dfutzi(6,40),       dfutzv(6,40),          &
+     &   dxsemi(6,6),        eta(2,mj),          ftrap(2,mj),           &
+     &   gspitz(2,mj),       q(mj),              qsmth(mj),             &
+     &   rhoels(2,mj),       rhohs(2,2,mj),      rhoins(2,mj),          &
+     &   rhois(4,2,mj),      rhosms(mj),         scroff(8,mj),          &
+     &   shear(mj),          slbps(mj),          slnes(mj),             &
+     &   slprs(mj),          slpts(mj),          sltes(mj),             &
+     &   sltis(mj),          telecs(2,mj),       tes(2,mj),             &
+     &   tesms(mj),          thrprs(mj),         thpsms(mj),            &
+     &   tions(2,mj),        tis(2,mj),          tisms(mj),             &
+     &   topsms(mj),         trapbr(mj,2),                              &
+     &   vxsemi(6,6),        xesemi(6),                                 &
+     &   xisemi(6),          xnuel(2,mj),        xnuhyd(2,mj),          &
+     &   xzeff(2,mj)
+!
+      real  curnts(mj), erges(mj), ergis(mj), ergbs(mj)                 &
+     & , ergas(mj), ergts(mj), envaes(mj), envais(mj), enlaes(mj)       &
+     & , enlais(mj), gealfs(mj), geauxs(mj), gebems(mj), gebrs(mj)      &
+     & , geecrs(mj), geicrs(mj), geions(mj), geohms(mj), gesrs(mj)      &
+     & , gialfs(mj), giauxs(mj), gibems(mj), gichxs(mj), giecrs(mj)     &
+     & , giicrs(mj), giions(mj)                                         &
+     & , betate(mj), betati(mj), betatb(mj), betata(mj), betatt(mj)     &
+     & , betape(mj), betapi(mj), betapb(mj), betapa(mj), betapt(mj)     &
+     & , cgbeta(20), cgpowr(20), gcoefs(6,6), gxp(6,6,30)               &
+     & , gcomb(6,6,6), armins(mj,2), armajs(mj,2), totprs(mj)
+!
+      integer memprt
+!
+!---------------------------------------------------------------------
+!                  c2.7     comneu--standard neutral gas variabl
+!
+       common/comneu/                                                   &
+     &  gblosi, gfdni , gflowi, gfluxi, gflx0i, gfrac1, gnchek, gnel1 , &
+     &  gneut , grecyc, gsputs, gtchek, gtflwi, gtprfi, gvsrci, gwmin , &
+     &  gxdome, gxmaxe, gxmine, gxphi , gxthet, rhons , tns   ,         &
+     &  ngpart, ngprof, ngsplt, ngsprf, ngxene, ngzone,                 &
+     &  nlglim, nlgmon, nlgpin, nlgref, nlgspt
+       logical                                                          &
+     &  nlglim, nlgmon, nlgpin, nlgref, nlgspt
+       dimension                                                        &
+     &   gblosi(2),          gfdni(2), gflowi(8,20),                    &
+     &   gfluxi(2),          gflx0i(2),          gfrac1(2),             &
+     &   gnel1(2), gneut(2), gsputs(4),          gtflwi(20),            &
+     &   gvsrci(2),          gxdome(2),          gxphi(4),              &
+     &   gxthet(4),          rhons(2,mj),        tns(2,mj)
+!---------------------------------------------------------------------
+!                  c2.8     combem--standard neutral beam variab
+!
+       common/combem/                                                   &
+     &  ajbs  , bpabs , bpinjs, bploss, cjbeam, habeam, halfas, hangle, &
+     &  haper , haperv, hdds  , hddtot, hdiv  , hdivv , hebeam, hebems, &
+     &  height, hfocl , hfoclv, hfract, hfutz , hibeam, hlenth, hnchek, &
+     &  hpbeam, hpowmw, hprof , hprofv, hr    , hrmaj , hrmin , htchek, &
+     &  htoff , hton  , hwidth, hzbeam, rhobes, rhobis,                 &
+     &  lhbeam, mhbeam, mxhbem, mxhfr , nhaper, nhbeam, nhe   , nhmu  , &
+     &  nhprfv, nhprof, nhshap, nhskip, nhsrc , nipart, niprof, nizone
+       dimension                                                        &
+     &   ajbs(mj), habeam(12),         halfas(mj),                      &
+     &   hangle(4,12),       haper(12),          haperv(12),            &
+     &   hdiv(12), hdivv(12), hebeam(12),        hpowmw(12),            &
+     &   hebems(mj),         height(12),         hfocl(12),             &
+     &   hfoclv(12),         hfract(3,12),       hfutz(12),             &
+     &   hibeam(12),         hlenth(12),         hpbeam(12),            &
+     &   hprof(12),          hprofv(12),         hr(mj),                &
+     &   hrmaj(12),          hrmin(12),          htoff(12),             &
+     &   hton(12), hwidth(12),         hzbeam(12),                      &
+     &   rhobes(2,mj),       rhobis(2,mj),                              &
+     &   lhbeam(12),         nhaper(12),         nhbeam(12),            &
+     &   nhprfv(12),         nhprof(12),         nhshap(12)
+!---------------------------------------------------------------------
+!                  c2.9     comalf--alpha particle slowing down
+!
+       common/comalf/                                                   &
+     &  aalpha, abfuse, abouni, acons , adds  , addtot, adifus, afslow, &
+     &  afuses, alfsrc, alphai, aoloss, aslows, atbi  , atfuse, azalfa, &
+     &  ealfai, ebouni, econsi, efusei, rcwals, rdwals,                 &
+     &  ntype
+       dimension                                                        &
+     &   abfuse(mj),         abouni(3,2),        acons(10),             &
+     &   adifus(mj),         afuses(mj),         alfsrc(mj),            &
+     &   alphai(mj),         aoloss(mj),         aslows(mj),            &
+     &   atfuse(mj),         ealfai(mj),         ebouni(3,2),           &
+     &   econsi(10)
+!---------------------------------------------------------------------
+!                  c3.1     comflg--code flags and variables
+!
+       common/comflg/                                                   &
+     &  delmax, dti   , dtmaxi, dtmini, dtoldi, errmax, smrlow,         &
+     &  smlwcy, tai   , tbi   , theta , thetai, thetap, tmaxi ,         &
+     &  tspare,                                                         &
+     &  lsmord, natomc, nbound, nfusn , nitmax, nounit,                 &
+     &  ntrans,                                                         &
+     &  lmpirc, nldiff, nlextr, nliter, nlrcom, nlrpet, nlsorc, nlsord, &
+     &  ltheor
+       logical                                                          &
+     &  lmpirc, nldiff, nlextr, nliter, nlrcom, nlrpet, nlsorc, nlsord, &
+     &  ltheor
+       common /comfl1/ lholab
+       character lholab*60
+!---------------------------------------------------------------------
+!                  c3.2     comcnv--conversion factors
+!
+       common/comcnv/                                                   &
+     &  evs   , evsinv, fcau  , fxau  , gamin1, ueib  , ueid  , ueie  , &
+     &  ueih  , ueii  , ueij  , ueil  , ueim  , ueip  , ueir  , ueit  , &
+     &  ueiv  , uesb  , uesd  , uese  , uesh  , uesi  , uesj  , uesl  , &
+     &  uesm  , uesp  , uesr  , uest  , uesv  , uieb  , uied  , uiee  , &
+     &  uieh  , uiei  , uiej  , uiel  , uiem  , uiep  , uier  , uiet  , &
+     &  uiev  , uisb  , uisd  , uise  , uish  , uisi  , uisj  , uisl  , &
+     &  uism  , uisp  , uisr  , uist  , uisv  , useb  , used  , usee  , &
+     &  useh  , usei  , usej  , usel  , usem  , usep  , user  , uset  , &
+     &  usev  , usib  , usid  , usie  , usih  , usii  , usij  , usil  , &
+     &  usim  , usip  , usir  , usit  , usiv  ,                         &
+     &  uind  , uine  , unid  , unie  , usnd  , usne  , unsd  , unse
+!---------------------------------------------------------------------
+!                  c3.3     comms!--miscellanious constants
+!
+       common/commsc/                                                   &
+     &  epsinv, epslon, rndeps, rndup ,                                 &
+     &  ninfin
+!bate     &  epsinv, epslon, fuzz  , round ,
+!  rndeps = small real number used for rounding up
+!  rndup  = 1.0 + rndeps
+!---------------------------------------------------------------------
+!                  c3.4     comext--extrapolation variables
+!
+       common/comext/                                                   &
+     &  xaci1 , xaci2 , xaci3 , xaddi1, xaddi2, xaddi3, xadi1 , xadi2 , &
+     &  xadi3 , xaii1 , xaii2 , xaii3 , xaoi1 , xaoi2 , xaoi3 , xbcon1, &
+     &  xbcon2, xbcon3, xbpol1, xbpol2, xbpol3, xccon1, xccon2, xccon3, &
+     &  xchi1 , xchi2 , xchi3 , xdel  , xdti1 , xdtol1, xebti1, xebti2, &
+     &  xebti3, xeomi1, xeomi2, xeomi3, xepoi1, xepoi2, xepoi3, xerr  , &
+     &  xfci1 , xfci2 , xfci3 , xfdi1 , xfdi2 , xfdi3 , xfii1 , xfii2 , &
+     &  xfii3 , xfoi1 , xfoi2 , xfoi3 , xfutz , xtai1 , xtbi1 , xtot1 , &
+     &  xtot2 , xtot3 , xwbi1 , xwbi2 , xwbi3 , xwomi1, xwomi2, xwomi3, &
+     &  xwpoi1, xwpoi2, xwpoi3,                                         &
+     &  liter , lpdel , lperr , lzdel , lzerr
+       real ::                                                          &
+     &   xaci1(8), xaci2(8), xaci3(8), xaddi1(8),          xaddi2(8),   &
+     &   xaddi3(8),          xadi1(8), xadi2(8), xadi3(8),              &
+     &   xaii1(8), xaii2(8), xaii3(8), xaoi1(8), xaoi2(8),              &
+     &   xaoi3(8), xbpol1(mj),         xbpol2(mj),                      &
+     &   xbpol3(mj),         xccon1(8),          xccon2(8),             &
+     &   xccon3(8),          xchi1(8,mj),        xchi2(8,mj),           &
+     &   xchi3(8,mj),        xfci1(8), xfci2(8), xfci3(8),              &
+     &   xfdi1(8), xfdi2(8), xfdi3(8), xfii1(8), xfii2(8),              &
+     &   xfii3(8), xfoi1(8), xfoi2(8), xfoi3(8), xfutz(10),             &
+     &   xtot1(8), xtot2(8), xtot3(8)
+!---------------------------------------------------------------------
+!                  c3.5     comcns--conservation checks
+!
+       common/comcns/                                                   &
+     &  acompi, addi  , aflxii, aflxoi, asorci, asordi, bcons , begini, &
+     &  ccons , ebini , ebtoti, ecompi, eohmi , epoyni, fcompi, fflxii, &
+     &  fflxoi, fsorci, fsordi, totali, wbi   , wcompi, wohmi , wpoyni
+       real ::                                                          &
+     &   acompi(8),          addi(8),  aflxii(8),          aflxoi(8),   &
+     &   asorci(8),          asordi(8),          begini(8),             &
+     &   ccons(8), fcompi(8),          fflxii(8),          fflxoi(8),   &
+     &   fsorci(8),          fsordi(8),          totali(8)
+!---------------------------------------------------------------------
+!                  c3.6     commsh--mesh variables
+!
+       common/commsh/                                                   &
+     &  bint  , dx2i  , dx2inv, dxboui, dxzoni, gx    , rmaji , rmini , &
+     &  xbouni, xzoni
+       real, target ::                                                  &
+     &   bint(3,mj),         dx2i(mj), dx2inv(mj),                      &
+     &   dxboui(mj),         dxzoni(mj),         gx(mj),                &
+     &   xbouni(mj),         xzoni(mj)
+!---------------------------------------------------------------------
+!                  c4.1     comdim--dimension of variables and i
+!
+       common/comdim/                                                   &
+     &  lalpha, lcentr, ldeut , ledge , lelec , lhe3  , lhyd1 , lhydn , &
+     &  limp1 , limpn , lion  , ltrit , mchi  , mhyd  , mimp  , mxchi , &
+     &  mxhyd , mximp , mxions, mxt   , mxt1  , mxzone, mzones
+!
+      common/cmdim2/   lprotn
+!---------------------------------------------------------------------
+!                  c4.2     comfun--fundamental constants
+!
+       common/comfun/                                                   &
+     &  cfev  , cfevdk, cxev  , cxevdk, fca0  , fcae  , fcalfa, fcan  , &
+     &  fcap  , fcc, fcc1  , fcc2  , fce   , fces  , fcf   , fcg   ,    &
+     &  fch   , fck   , fclnae, fclnap, fcme  , fcmn  , fcmp  , fcna  , &
+     &  fcpi  , fcr   , fcre  , fcrinf, fcsb  , fcsigt, fcv0  , fcwien, &
+     &  fxa0  , fxae  , fxalfa, fxc, fxc1  , fxc2  , fxe   , fxes  ,    &
+     &  fxf   , fxg   , fxh   , fxk   , fxlnae, fxlnap, fxme  , fxmn  , &
+     &  fxmp  , fxna  , fxnucl, fxr   , fxre  , fxrinf, fxsb  , fxsigt, &
+     &  fxv0  , fxwien
+
+       real                                                             &
+     &  cfev  , cfevdk, cxev  , cxevdk, fca0  , fcae  , fcalfa, fcan  , &
+     &  fcap  , fcc, fcc1  , fcc2  , fce   , fces  , fcf   , fcg   ,    &
+     &  fch   , fck   , fclnae, fclnap, fcme  , fcmn  , fcmp  , fcna  , &
+     &  fcpi  , fcr   , fcre  , fcrinf, fcsb  , fcsigt, fcv0  , fcwien, &
+     &  fxa0  , fxae  , fxalfa, fxc, fxc1  , fxc2  , fxe   , fxes  ,    &
+     &  fxf   , fxg   , fxh   , fxk   , fxlnae, fxlnap, fxme  , fxmn  , &
+     &  fxmp  , fxna  , fxnucl, fxr   , fxre  , fxrinf, fxsb  , fxsigt, &
+     &  fxv0  , fxwien
+!---------------------------------------------------------------------
+!                  c5.1     comin --
+!  pis 11-jun-98 moved nlxxx from within common comin
+!  alh 18-oct-97 made tcold & tcoldp arrays
+!  rgb 17-apr-94 added ftzeff
+!  dps 23-oct-86 added ypa
+!  rgb 12.54 1-aug-87 added bdhyde, bdimpe, bdtee , bdtie , bdtime,
+!    to control boundary as a function of time.
+!  RGB 4-aug-86 added variables frcor,frout,rpelc  from Cliff Singer
+       common/comin/                                                    &
+     &  bdhyde, bdimpe, bdtee , bdtie , bdtime, d0nmon, gainv,  ftzeff, &
+     &  apresr, bpoid , bz    , bzstar, cpvelc, cpvion, curent, denga0, &
+     &  denga1, dengas, denim0, denim1, denimp, denmon, dens  , dens0 , &
+     &  dens1 , dtinit, dtmax , dtmin , ebfit , eebfit, eefit , eehfit, &
+     &  eeifit, eeteft, eetift, efit  , ehfit , eifit , eioniz, elecd0, &
+     &  electe, etamod, etefit, etifit, flgas , flimp , fracth, fracti, &
+     &  gflmax, gflmon, gfract, gftime, gpers , radius, rastar, rlined, &
+     &  rmajor, rminor, rnebar, rpa   , rpela , rqs   ,                 &
+     &  tbpoid, tcomp , tcold , tcoldp, te    , te0   , te1   ,         &
+     &  tgas  , ti    , ti0   , ti1   , timp  , tinit , tmax  , tpela , &
+     &  vpela , wtgas , wtimp , frcor , frout , rpelc , ypa , denmont,  &
+     &  nbfit , nedit , ngas  , nimp  , nnfit , nnhfit, nnifit,         &
+     &  npel  , npel2 , npelga, npelou, npels , npelsa, npuff , nrfit , &
+     &  nskip , ntefit, ntifit, ntty  , ntychl, nzones, npelgc, cfz230, &
+     &  itvpel
+
+      integer :: nbfit, nnfit, npel, npel2, npelou, npels, npuff,       &
+     &  nrfit, nskip , ntefit, ntifit, ntty  , ntychl, nzones
+
+      real    :: tmax, tio, ti0, ti1, te1,                              &
+     &           bdhyde, bdimpe, bdtee, bdtie , bdtime, d0nmon, ftzeff, &
+     &           gainv, apresr, bz, bzstar, cpvelc, cpvion,             &
+     &           dens0, dens1, denmont
+!  pis removed nlxxx from common comin ---not used anywhere
+
+        real tcold(20), tcoldp(20)
+!
+!tcold & tcoldp are arrays keyed to breakpoint times, bdtime
+!
+       common/comn1/ lhgas
+       character *10 lhgas(2)
+
+!  pis 11-jun-98 moved comments from within common comin2
+!
+!synchrotron radiation (tamor)
+!d 3he fusion
+!coppi-mazzucato-gruber -type transport
+!analytic auxiliary heat and particle source
+
+      common/comin2/                                                    &
+     &   roo1, ree1, roe1, reo1, tacrt, areaw1,                         &
+     &   ash4, ashp, fploss, f4loss, ftloss, f3loss,                    &
+     &   alcmg, epscmg, alpcmg, gcmg, tohcmg,                           &
+     & atim(20),pauxe(20),pauxi(20),apaux,apauxe,apauxi,                &
+     & stim(20),spd(20),spt(20),spp(20),sp3(20),sp4(20),spimp4(20),     &
+     & spaux,spauxi(6),ekappa,edelta,                                   &
+     &   nzons1, iedit1, ndbug1,                                        &
+     &   lcmg, lpaux, lspaux, lrepld, lreplt, lrepl3
+!
+      integer :: lcmg, lpaux, lspaux, lrepld, lreplt, lrepl3, nzons1,   &
+     &          iedit1, ndbug1
+!
+      real    :: roo1, ree1, roe1, reo1, tacrt, areaw1,                 &
+     &   ash4, ashp, fploss, f4loss, ftloss, f3loss,                    &
+     &   alcmg, epscmg, alpcmg, gcmg, tohcmg,                           &
+     & atim,    pauxe,    pauxi,    apaux,apauxe,apauxi,                &
+     & stim,    spd,    spt,    spp,    sp3,    sp4,    spimp4,         &
+     & spaux, spauxi, ekappa, edelta
+!
+      dimension   bdhyde(20,2), bdimpe(20,4), bdtee(20), bdtie(20)      &
+     &          , bdtime(20),   d0nmon(20),   ftzeff(20)
+      real ::                                                           &
+     &   bpoid(20),          curent(20),         denga0(2),             &
+     &   denga1(2),          dengas(2,mj),       denim0(4),             &
+     &   denim1(4),          denimp(4,mj),       denmon(20),            &
+     &   dens(mj), eehfit(2),          eeifit(4),          ehfit(2),    &
+     &   eifit(4), flgas(2,20),        flimp(4,20),                     &
+     &   fracth(2),          fracti(4),          gflmax(20),            &
+     &   gflmon(2),          gfract(20,2),       gftime(20),            &
+     &   radius(mj),         rlined(20),         rmajor(20),            &
+     &   rminor(20),         rnebar(20),         rpa(20),               &
+     &   rpela(20),          tbpoid(20),         tcomp(20),             &
+     &   te(mj),   tedit(20),          tgas(20), ti(mj),                &
+     &   timp(20), tpela(20),          tplot(20),          vpela(20),   &
+     &   wtgas(2), wtimp(4), frcor(20), frout(20), rpelc(20),ypa(20),
+     &   itvpel(20), cfz230
+      integer ::                                                        &
+     &   ngas(2),  nimp(4),  nnhfit(2),                                 &
+     &   nnifit(4),          npelga(20), npelgc(20),      npelsa(20)
+!
+!
+!  d0nmon(j) target central densities [cm**-3] 2nd nl at times gftime(j)
+!  gainv     gain [sec**-1] for changing inward pinch in sbrtn empirc
+!  ftzeff(jt) = target Z_eff at times timp(jt)
+!---------------------------------------------------------------------
+!                  c5.2     comout--output parameters
+!
+       common/comout/                                                   &
+     &  sedit,  snplt,  snprt,  splot,  tedit,  tnplt,  tnprt,  tplot,  &
+     &  lpage , nbdump, nbuf  , nediti, nnplot, nnprnt, nplot , nrgraf, &
+     &  nsedit, nskpi , ntgraf,                                         &
+     &  nllprt, nlpomt
+       integer :: nbuf, nedit, nediti, nsedit, nskpi, ntgraf, nplot,    &
+     &            nnprnt, nbdump, lpage, nrgraf, nnplot
+       real    :: tploti, tediti, snplt, snprt, splot,                  &
+     &            sedit, tnplt, tnprt
+       logical                                                          &
+     &  nllprt, nlpomt
+       dimension                                                        &
+     &   tediti(20), tploti(20), nbuf(250), nlpomt(25)
+!
+       common /comou1/ lhspec,                                          &
+     &  lhb   , lhcden, lhcurr, lhdenr, lhdens, lheden, lhefld, lheflx, &
+     &  lhener, lhlen , lhnflx, lhpden, lhpowr, lhtemp, lhtime
+       character *10 lhspec(8),                                         &
+     &  lhb   , lhcden, lhcurr, lhdenr, lhdens, lheden, lhefld, lheflx, &
+     &  lhener, lhlen , lhnflx, lhpden, lhpowr, lhtemp, lhtime
+!---------------------------------------------------------------------

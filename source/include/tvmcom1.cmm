@@ -1,0 +1,113 @@
+c@vmcom1  .../baldur/code/com/tvmcom1.cmm
+c  rgb 12-jun-98 moved vcom17 -> vcom18 and vcom16 -> vcom17
+c
+      real bpoldl(mtheta,mm1),bmod(mtheta,mm1),vmodb(mtheta,mm1)
+      common /vcom1/bpoldl,bmod,vmodb
+c
+      real xp(mm1),c(mm1,mneq),param(mneq),xtheta(mtheta)
+      common /vcom2/ xp, c, param, xtheta
+c
+      real c11x(mm1),c12x(mm1),c13x(mm1)
+      real c31x(mm1),c32x(mm1),c33x(mm1)
+      real c51x(mm1),c52x(mm1),c53x(mm1)
+c
+      common /vcom3/ c11x,c12x,c13x,
+     1               c31x,c32x,c33x,
+     2               c51x,c52x,c53x
+c
+      integer initm, initc, initp, itpr, lprint
+      common /vcom4/ initm, initc, initp, itpr, lprint
+c
+      integer irot
+      real va0,va1,va2,va3
+      real formr(mm1),formr1(mm1),formr2(mm1),formr3(mm1)
+c
+      common /vcom5/ va0,va1,va2,va3,irot,
+     *               formr,formr1,formr2,formr3
+c
+      integer m1,ntheta
+      real error(mneq),parerr(mneq),mat(mneq,mneq),wspace(mneq,9),
+     1     wspac1(mneq),wspac2(mneq),copy(mneq,mneq),
+     2     hh,hh0,epslni
+c
+      common /vcom6/ error, parerr, mat, wspace, wspac1,
+     *     wspac2, copy, hh, hh0, epslni, m1, ntheta
+c
+      common /vcom7/ betat0, ajt0, f0, fwall, psic0, q0, argeom,
+     *     betapb, betatb, dmgphi, vtg1, vtg2
+      real betat0,ajt0,f0,fwall,psic0,q0,argeom,betapb,betatb,dmgphi,
+     *     vtg1,vtg2
+      common /vcom8/ xl0, dx, r0, a0, bt0, p0, ai0, e0, e1,
+     *     d0, arc, slpe, slpr0, betap0, kmhd, iunder
+      real xl0,dx,r0,a0,bt0,p0,ai0,e0,e1,d0,arc,slpe,slpr0,betap0
+      integer kmhd,iunder
+c
+      real pxp(mm1),ppxp(mm1),aispl(mm1),aippl(mm1)
+c
+      common /vcom9/  pxp, ppxp, aispl, aippl
+c
+      real s1th(mtheta),s2th(mtheta),c1th(mtheta),c2th(mtheta)
+c
+      common /vcom10/ s1th, s2th, c1th, c2th
+c
+      integer nrho
+      real pres(mnmx),curt(mnmx),rho(mnmx),bpres(mnmx)
+      real cpres(mnmx),dpres(mnmx),bcurt(mnmx),ccurt(mnmx),dcurt(mnmx)
+c
+      common /vcom11/ pres, curt, rho,
+     *     bpres, cpres, dpres, bcurt,
+     *     ccurt, dcurt, nrho
+c
+      real bsift(mm1), csift(mm1), dsift(mm1),
+     *     belli(mm1), celli(mm1), delli(mm1), btria(mm1),
+     *     ctria(mm1), dtria(mm1), r(mtheta), rx(mtheta),
+     *     rt(mtheta), rxt(mtheta), rtt(mtheta), z(mtheta),
+     *     zx(mtheta), zt(mtheta), zxt(mtheta), ztt(mtheta),
+     *     gtt(mtheta), tau(mtheta), gsqrt(mtheta),
+     *     gttx(mtheta), zmom1(mtheta), rmom0(mtheta),
+     *     tmom(mtheta), rmom2(mtheta), rtau2(mtheta),
+     *     rtau3(mtheta), gs10(mtheta), gs21(mtheta),
+     *     gs4(mtheta), gs5(mtheta), gs6(mtheta), gs7(mtheta),
+     *     gs8(mtheta), gs2(mtheta), gs12(mtheta),
+     *     gs22(mtheta), cs13n(mtheta), ss20(mtheta),
+     *     cs1n(mtheta)
+c
+      common /vcom12/ bsift,csift,dsift,belli,celli,delli,btria,
+     1     ctria,dtria,
+     *     r,rx,rt,rxt,rtt,z,zx,zt,zxt,ztt,gtt,tau,gsqrt,gttx,zmom1,
+     *     rmom0,tmom,rmom2,rtau2,rtau3,gs10,gs21,gs4,gs5,gs6,gs7,
+     *     gs8,gs2,gs12,gs22,cs13n,ss20,cs1n
+c
+      real ph(mm1), pph(mm1), aih(mm1), aiph(mm1),
+     *     psi(mm1), fpol(mm1), smq(mm1), agsqrt(mm1),
+     *     agttgs(mm1), atauor(mm1), agrho(mm1), arif(mm1),
+     *     ar2if(mm1), ffp(mm1), ajorf(mm1), ajtm(mm1t),
+     *     rmid(mm1t), gttgsq(mtheta), tauor(mtheta),
+     *     grxx(mtheta), r2i(mtheta)
+      common /vcom13/ ph,pph,aih,aiph,psi,fpol,smq,agsqrt,
+     1                agttgs,atauor,agrho,
+     *     arif,ar2if,ffp,ajorf,ajtm,rmid,gttgsq,tauor,grxx,r2i
+c
+      real r0avg(mm1), rotbar(mm1), dvdx(mm1),dvm(mm1),
+     *     bsqinf(mm1), chb1(mm1), chb2(mm1), fchhi(mm1), fli(mm1),
+     *     cumom(mm1)
+c
+      common /vcom14/ r0avg,rotbar,dvdx,dvm,bsqinf,chb1,chb2,
+     1                fchhi,fli,cumom
+c
+      real flxtor(mm1),phic0
+      common /vcom15/ flxtor, phic0
+c
+      real pa,pb,aia,aib,aic,xe0,xe1,xd0
+      common /vcom16/ pa, pb, aia, aib, aic, xe0, xe1, xd0
+c
+      real shift(mnmx),elong(mnmx),triang(mnmx)
+c
+      common /vcom17/ shift, elong, triang
+c
+      real wfcn(mtheta),cnorm,wm1(mm1),cm1
+c
+      common /vcom18/ wfcn, cnorm, wm1, cm1
+c
+cbate        endcliche
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7-c

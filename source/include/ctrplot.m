@@ -1,0 +1,16 @@
+!@ctrplot.m
+!
+	integer, parameter :: NTIME=4096    ! MAX NO. OF TIME POINTS
+!  NUMBER OF FCNS AND PACKAGES LIMITS
+	integer, parameter :: NAXFOT=750    ! MAX NO. OF SCALAR FUNCTIONS
+	integer, parameter :: NAXFXT=1500   ! MAX NO. OF PROFILE FUNCTIONS
+	integer, parameter :: NAXMGP=500    ! MAX NO. OF MULTIGRAPH GROUPINGS
+!
+	COMMON/TRPL01/LABELR,LABELT,LABELB,UNITSR,UNITST,UNITSB,          &
+     &        ABR,ABT,ABB,RUNID
+	CHARACTER*6 RUNID
+	CHARACTER*32 LABELR(NAXFXT),LABELT(NAXFOT),                       &
+     &             LABELB(NAXMGP)
+	CHARACTER*16 UNITSR(NAXFXT),UNITST(NAXFOT),                       &
+     &             UNITSB(NAXMGP)
+	CHARACTER*10 ABR(NAXFXT),ABT(NAXFOT),ABB(NAXMGP)      

@@ -1,0 +1,19 @@
+/users2/baldur/bald/code/bald/NEWS9607  Glenn Bateman
+
+   This version of BALDUR came from /users2/baldur/bald/code/bald1
+merged together with bald960530 from f.nersc.gov
+
+
+/user3/bateman/baldur/code1/bald1/NEWS9607  Glenn Bateman
+
+   The most recent version of BALDUR from f.nersc.gov dated 13 May 1996
+was merged with the version of BALDUR from
+plasma.physics.lehigh.edu> bald/code/bald1
+
+   The following issues are unresolved:
+
+call island is commented out in dislbal.f
+
+why was rewind 1 used in deqbald.f ?
+
+function ranz is used as a standard interface for all random number generator calls

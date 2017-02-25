@@ -1,0 +1,145 @@
+/u2/baldur/Codes/simstat2/simstat   3 June 1999  Glenn Bateman 
+bateman@fusion.physics.lehigh.edu
+
+    Program to compute statistics from BALDUR output and 
+lists of experimental data.
+
+    Below is the script /u2/baldur/Codes/simstat2/runsimstat
+which can be used to run the simstat program.
+Here, the input data is annotated:
+
+#!/bin/csh
+#
+#  runsimstat: script to run the simstat program
+#
+/u2/baldur/Codes/simstat2/simstat << END
+0                 ! read experimental data from separate xmgr input files
+prof-exp-TI.dat   ! ion temperature data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for ion temperature
+prof-exp-TE.dat   ! electron temperature data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for electron temperature
+prof-exp-NE.dat   ! electron density data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for electron density
+0                 ! read simulation data from separate xmgr input files
+prof-sim-TI.dat   ! ion temperature data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for ion temperature
+prof-sim-TE.dat   ! electron temperature data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for electron temperature
+prof-sim-NE.dat   ! electron density data file
+1.0               ! scale factor for radius array
+1.0               ! scale factor for electron density
+END
+
+
+   The following output to screen results from typing runsimstat:
+
+ Simstat program by Glenn Bateman
+  
+ Indicate the type of input data file ndatype =
+ 0 for separate xmgr input files
+ 1 for lists of profiles from Kinsey
+ 2 TRANSP data  prepared using [BATEMAN.TRANSP.TOOLS]TEST.EXE
+ 3 from SNAP run using [BATEMAN.BPLOT]COMPARE.COM
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-exp-TI.dat                 
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-exp-TE.dat                 
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-exp-NE.dat                 
+ Indicate the type of input data file ndatype =
+ 0 for separate xmgr input files
+ 1 jobxlpt file
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-sim-TI.dat                 
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-sim-TE.dat                 
+ Name of the file containing data:
+ Type conversion factor for radius
+ Type conversion factor for data
+ Conversion factors are:  convradius =  1.000000000   convdata =  1.000000000
+  Reading data from file prof-sim-NE.dat                 
+  
+ Maximum values of experimental data:
+  
+   6.1945E+19  = enmax
+       4.4345  = temax
+       6.0924  = timax
+  
+ RMS deviations with units:
+  
+   1.9688E+18  = enabsrms (m^-3)
+        .2144  = teabsrms (keV)
+        .3170  = tiabsrms (keV)
+  
+ RMS deviations relative to maximum, percent
+  
+       3.1784  = enper %
+       4.8349  = teper %
+       5.2036  = tiper %
+  
+ Offsets:
+  
+   9.8384E+16  = enoff
+       -.0556  = teoff
+        .1060  = tioff
+  
+ Variances after offsets with units:
+  
+   1.9664E+18  = enovr
+        .2071  = teovr
+        .2988  = tiovr
+  
+ Percent offset relative to maximum:
+  
+        .1588  = enpof %
+      -1.2538  = tepof %
+       1.7396  = tipof %
+  
+ Percent variances after offsets:
+  
+       3.1744  = enpov %
+       4.6695  = tepov %
+       4.9042  = tipov %
+  
+ Estimates from the Maximum Likelihood Method:
+  
+ Offset relative to maximum:
+  
+       -.1588  = enmloff %
+       1.2538  = temloff %
+      -1.7396  = timloff %
+  
+ Relative RMS deviations after offsets:
+  
+       3.1744  = enmlrms %
+       4.6695  = temlrms %
+       4.9042  = timlrms %
+  
+ Normalized chi square statistic:
+  
+       1.0256  = enchisqr
+       1.0256  = techisqr
+       1.0256  = tichisqr
+  
+
+	There is additional output in file "output"

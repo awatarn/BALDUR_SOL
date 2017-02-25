@@ -1,0 +1,82 @@
+c .../baldur/code/chngs95  Changes to the BALDUR code in 1995  Kinsey, Lehigh
+c---:----1----:----2----:----3----:----4----:----5----:----6----:----7----:----8
+
+c@theory /011359/baldur/code/bald/theory.f
+c  jek 02-dec-95 replaced dtheory.f with theory.f and ptheory.f
+c                added Guzdar-Drake RB model to theory.f
+c                and added RFCD to solveb.f
+c                reads in lhcurr when cfutz(499) = 1.0
+c
+c@dauxheat /000417/baldur/code/bald/dauxheat.f
+c  jek 23-feb-95 added lower hybrid heating with rlhepwr,rlheprf
+c                changed dio.f and added common blocks to comtok
+
+c@imprad  /11040/baldur/code/imprad.f
+c  rgb 02-feb-95 call ncinfl to compute neutral impurity influxing
+c  rgb 18-apr-94 implemented ftzeff(it) = Z_eff
+c    changed from gtflwi to timp and from gflowi to flimp
+c  rgb 17-apr-94 flimp(ii,it) = Z_eff when cfutz(200) = 3.0
+c  rgb 16-apr-94 documented neutral impurity influx
+
+c@ncdifu  /11040/baldur/code/bald/ncdifu.f
+c  rgb 02-feb-95  corrected units conversion for velthi
+
+c@ncinfl  .../baldur/code/bald/ncinfl.f
+c  rgb 02-feb-95 allow routine to run when natomc = 3
+
+c@ncsorc  /11040/baldur/code/bald/ncsorc.f
+c  rgb 02-feb-95 call ncinfl to compute impurity influx rate
+c    to make this routine consistent with sbrtn imprad
+
+c@neuset  /11040/baldur/code/bald/dimprad.f
+c  rgb 31-jan-95 dimension pfutz(1) -> dimension pfutz(*)
+
+c@neudep  /11040/baldur/code/bald/dimprad.f
+c  rgb 31-jan-95 dimension pion(1), piions(1) -> pion(*), piions(*)
+
+c@nccoef  /11040/baldur/code/bald/dimprad.f
+c  rgb 31-jan-95 equilibrium ionization states used for boundary cond
+c    removed renormalization of 19-dec-94
+
+c@ncprof0  /11040/baldur/code/bald/dimprad.f
+c  rgb 31-jan-95 move call ncrats before loop over zones
+
+c@preset  .../baldur/code/bald/preset.f
+c  rgb 04-jan-95 fixed d0nmon(jt) = 0.0 index
+c  rgb 16-dec-94 initialize cimprd(j) = 1.0, j=10,19 as coefficients for the
+c    sources and sinks in the non-equilibrium impurity radiation model
+
+c@inital  .../11040/baldur/code/bald/inital.f
+c  rgb 30-jan-95 iterate only if natomc = 3
+c  rgb 29-dec-94 change call noncor to call ncinit and call nprof0
+c  rgb 20-dec-94 iterate over impurity levels to get n_e to converge
+
+c@iprint   /baldur/code/bald  file DIO
+c  rgb 28-jan-95 nhprof(i002) -> nhprof(i001)
+
+c@gprint   /baldur/code/bald  file DIO
+c  rgb 28-jan-95 used max ( 1, min ( 3, ... ) ) for index of ihtype
+
+c@smooth  /11040/baldur/code/bald/dtransp.f
+c  rgb 28-jan-95 dimension pyin(1) -> dimension pyin(*)
+
+c@sawavg  .../11040/baldur/code/bald/dsawold.f
+c  rgb 28-jan-95 dimension pteavg(1) ... -> dimension pteavg(*) ...
+
+
+c@hrmtht   .../baldur/code/bald/deqbald.f
+c rgb 28-jan-95 changed dimension pcm(1)... to dimension pcm(*)...
+
+c@auxval  /11040/baldur/code/bald  DEFAULT
+c  rgb 04-jan-95 kept ita and itb .le. imax,  xzoni index > 0
+
+c@preset  .../baldur/code/bald/default.f
+c  rgb 04-jan-95 fixed d0nmon(jt) = 0.0 index
+
+
+c file dsolver.f split into files 
+
+c file dimprad.f split into files
+
+c file default.f split into files auxval.f, blockdata.f, errchk.f, preset.f,
+c    units.f, oclear.f, otable.f, and ofit.f

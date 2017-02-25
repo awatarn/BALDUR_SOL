@@ -1,0 +1,29 @@
+.../baldur/code/bald/README  by Glenn Bateman, Lehigh University
+bateman@fusion.physics.lehigh.edu
+
+   The files in this subdirectory constitute the heart of the BALDUR
+code.  Most of the subroutines in these files refer to common blocks
+found in .../baldur/code/com.
+
+   First type:
+
+gmake xtverb
+
+in order to compile xtverb from xtverb.f.
+
+   In order to compile any of these files, edit the files as needed,
+update the date and time in file labrun.f on line 12, and then type:
+
+gmake
+
+This utility will change the library ../libbald.a
+and will then reconsruct the executable ../run/xbaldur
+
+   Note that files with the .tex extension have FORTRAN source code
+imbedded in them.  The make utility calls on the application xtverb
+to extract the FORTRAN source code from these LaTeX files.
+When a .tex file is present, always make changes to it as needed,
+and never make changes to the corresponding .f file.
+
+   The lists of dependencies and the rules for compiling are in
+.../baldur/code/bald/makefile

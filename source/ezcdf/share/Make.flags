@@ -1,0 +1,838 @@
+#GNU Makefile Include file to setup FLAGS, etc.
+#
+#05/21/99 C. Ludescher
+#
+#NOTE:
+# due to TRANSP peculiarities we do not use the conventions
+# include "fpreproc/*.h" with -I<PREFIX>/include
+# the *.h files are included in the source directory
+#
+
+ifndef LIBROOT
+	LIBROOT := /usr/local
+endif
+
+PREFIX  = ../..
+LIBDIR  = $(PREFIX)/lib
+DBLDIR  = $(PREFIX)/lib/debug
+BINDIR  = $(PREFIX)/bin
+ETCDIR  = $(PREFIX)/etc
+INCLDIR = $(PREFIX)/include
+MODDIR  = $(PREFIX)/mod
+MANDIR  = $(PREFIX)/man
+
+# Fortran   
+FC=f90
+FC90=f90
+FFLAGS   = -c -O3
+DFFLAGS  =-c -g
+FPP=gcc
+FPPFLAGS = -E -P 
+STATIC=
+DYNAMIC=
+DEFS=
+OUT = -o
+DOUBLE = -r8
+# C
+CC=cc
+CFLAGS=-c -O 
+DCFLAGS=-c -g
+OPT=
+CPP=gcc
+CPPFLAGS=-E -P 
+# C++
+CXX=g++
+CXXFLAGS=-c
+DCXXFLAGS=-c -g
+# Include/Modules
+IOPT=-I
+MFLAGS=-I
+MODEXT=mod
+MFFLAGS= -c -w
+#Perl
+PERL=perl
+# Linking
+LD=ld
+ifndef LDFLAGS
+	LDFLAGS=
+endif
+MVU=
+# Libraries
+ifndef HDF
+ifneq ("$(wildcard $(LIBROOT)/lib/libz*)","")
+   HDF = -ldf -lz
+else
+   HDF = -lgeneric_dummy
+endif
+endif
+ifndef BLAS 
+ifndef SUNPERF
+  BLAS   = -lblas
+endif
+endif
+ifndef MDSPLUS_DIR
+  ifneq ("$(wildcard /usr/local/mdsplus/lib/*)","")
+       MDSPLUS_DIR = /usr/local/mdsplus
+       MDSLIB = -L$(MDSPLUS_DIR)/lib -lMdsLib
+  else
+       MDSLIB=
+  endif	
+else 
+   MDSLIB = -L$(MDSPLUS_DIR)/lib -lMdsLib
+endif
+
+ifndef LAPACK
+ifndef SUNPERF
+	LAPACK = -llapack
+endif
+endif
+ifndef FFTW
+	FFTW = -lfftw
+endif
+ifndef USRLIB
+  USRLIB = $(LIBROOT)/lib
+endif
+PPLLIB = -L$(LIBROOT)/lib
+ifndef NETCDF
+ NETCDF = -lnetcdf
+endif
+XLIBS=
+XFLIB=
+SHLIBS=
+
+INSTALL = install -m
+RANLIB = ar ts 
+
+# Determine OS Type
+sysname = $(shell uname -s)
+ifeq ($(sysname),Linux)
+   hardware = $(shell uname -m)
+   ifeq ($(hardware),alpha)
+     sysname = AlphaLin	
+     MACHINE = AlphaLin
+   endif 
+endif
+
+ifeq ($(MACHINE),AlphaLin)
+	OS=LINUX
+	FC=fort
+	FC90=fort
+	FFLAGS    = -c -O -align dcommons -align sequence -assume no2underscore
+	DFFLAGS   = -c -g -O0 -C -align dcommons -align sequence -assume no2underscore
+#	FFLAGS    = -c -fast -assume no2underscore
+	OPT = -Df2cFortran 
+	CPP=/lib/cpp
+	CC = cc
+	CFLAGS := $(CFLAGS) -pthread
+	DCFLAGS := $(DCFLAGS) -pthread
+###	CXX=cxx
+	X_CFLAGS = -fPIC 
+	FIXEDE = -extend_source
+	FORTLIBS = /usr/lib/libfor.a -lUfor
+	SHLIBS = $(FORTLIBS)
+	MDSLIB := $(MDSLIB) -lMdsIpShr
+	XLIBS = -lots
+	X_LDFLAGS = -shared -Bsymbolic
+	CLIBS = -lstdc++
+	SHLIBS = -lUfor -lfor -lFutil -lcpml -lc
+	USEFC=Y
+# Note -module <dir> is supported
+endif
+
+ifeq ($(sysname),OSF1)
+	MACHINE=ALPHA
+	OS=ALPHA
+	DYNAMIC=-automatic
+	CFLAGS := $(CFLAGS) -pthread
+	DCFLAGS := $(DCFLAGS) -pthread
+	FFLAGS =   -c -O3 -align commons
+	DFFLAGS =   -g -c -align commons
+	CXX=g++ 
+	XLIBS=-lfor
+	FIXEDE = -extend_source
+#	FORTLIBS = /usr/lib/libfor.a -lUfor -lFutil -lmld
+	FORTLIBS = -lfor -lUfor -lFutil 
+	X_LDFLAGS = -S -shared
+#	SHLIBS = -lm -lots -lc
+	SHLIBS = -lUfor -lFutil -lm -lots -lc
+	MDSLIB = -L$(MDSPLUS_DIR)/lib -lMdsLib -lMdsIpShr
+# For PPPL
+	CLIBS =  -liostream /usr/local/lib/libstdc++.so.2.10.0 /usr/local/lib/gcc-lib/alphaev56-dec-osf4.0b/2.8.1/libgcc.a
+# required is:   CLIBS = -lstdc++ -lgcc
+	USEFC = Y 
+endif
+
+ifeq ($(sysname),SUPER-UX)
+	MACHINE=NECsx5
+	OS=SX
+	CC=cc
+	CPP=/lib/cpp
+	FPP=/lib/cpp
+#	FPPFLAGS = -P -f -C
+	FPPFLAGS = -P 
+	FIXED=-f0
+	FIXEDE=-f3
+	DYNAMIC=-automatic
+	CFLAGS = -c -hnovector
+	DCFLAGS := $(DCFLAGS)
+        CXXFLAGS = -c 
+	FFLAGS =  -c -C ssafe -Wf" -init stack=zero -init heap=zero"
+	DFFLAGS = -g -c 
+	CXX=c++ 
+	XLIBS=
+	FORTLIBS = -lf90sx -lf90sxe -lf90sxg 
+	CLIBS =  -liostream 
+endif
+
+ifeq ($(sysname),SunOS)
+	MACHINE=SUN
+	OS=SUN
+	DYNAMIC = -stackvar
+	CC = gcc
+	CFLAGS := $(CFLAGS) -w
+	X_CFLAGS = -fPIC 
+	CPP=/usr/ccs/lib/cpp
+#	FFLAGS  := -c -fast -ftrap=common
+	FFLAGS  := -c -O3 -depend -dalign -fns -libmil -xlibmopt -ftrap=common
+	DFFLAGS :=  -c -dalign -fns -libmil -xlibmopt -g -C -ftrap=common
+	X_FFLAGS = -PIC -G
+	MFLAGS=-M
+	MODEXT=M
+	CXX=g++
+	CXXFLAGS=-c 
+	XLIBS = -lsocket
+	ifneq ("$(wildcard /opt/SUNWspro/lib/libf77compat*)","")        
+	  XFLIB = -lf77compat
+	  MODEXT=mod
+	else
+	  XFLIB = -lF77
+        endif
+        FIXEDE = -e
+	ifndef FORTLIBS
+          FORTLIBS = -L/opt/SUNWspro/lib -lfsu -lF77 -lsunmath -lfai -lfai2 \
+		   -lfmaxvai -lfmaxlai -lfminvai -lfminlai -lfsumai
+	endif
+	ifndef CLIBS
+		CLIBS = /usr/local/lib/libstdc++.so.2.10.0
+	endif
+	SHLIBS = -L/opt/SUNWspro/lib -lfsu -lF77 -lsunmath -lc
+	X_LDFLAGS =  -G -Bsymbolic
+	RPATH= -R $(LIBDIR) 
+endif
+
+ifeq ($(sysname),AIX)
+	MACHINE=RS6000
+	OS=RS6000
+#  xlf90 expects suffix .f or .F
+#  for .f90/.F90 use f90
+#  if f90 does not exist, make a link to /usr/bin/xlf90
+	FC=xlf
+	FC90=f90
+	FIXED=-qfixed=72
+	FIXEDE=-qfixed=132
+	FFLAGS  = -c -O -qintlog -qspillsize=2048
+	DFFLAGS := $(DFFLAGS) -qintlog -qspillsize=2048
+	CFLAGS := $(CFLAGS) -Dextname
+	X_CFLAGS = -fPIC 
+        INSTALL = /usr/bin/install -M
+	FORTLIBS = -lxlf90
+	X_LDFLAGS = -bM:SRE -bnoentry 
+endif
+
+ifeq ($(sysname),IRIX64)
+	MACHINE=SGI
+	OS=SGI
+	ifdef ABI
+          SGI_ABI=-64
+	  CC = cc
+	  CXX = CC
+	else
+	  SGI_ABI=
+	  CC = cc
+	  CXX = CC
+	endif
+	STATIC=-static
+	FFLAGS  = -c -O3 -OPT:Olimit=0 $(SGI_ABI)
+	DFFLAGS = -c -g $(SGI_ABI) -check_bounds
+	LDFLAGS = $(SGI_ABI)
+	CFLAGS := $(CFLAGS) -w $(SGI_ABI)
+	X_CFLAGS = -KPIC 
+	CXXFLAGS = -c $(SGI_ABI) -LANG:std -woff 1355
+	DCXXFLAGS = -c -g $(SGI_ABI) -LANG:std -woff 1355
+	DCFLAGS := $(DCFLAGS) $(SGI_ABI)
+	CPP=/usr/lib/cpp
+	XLIBS = -lfortran
+        INSTALL = install -m
+	CLIBS = -lC
+	FORTLIBS = -lfortran  -lffio -lftn -lm
+	X_LDFLAGS = -shared
+#	USEFC=Y
+endif
+
+#===========
+# LINUX
+#============
+ifeq ($(sysname),Linux)
+	MACHINE=LINUX
+	OS=LINUX
+	OPT = -Df2cFortran 
+	CPP=/lib/cpp
+	CC = gcc
+	CXXFLAGS= -c 
+	CFLAGS := $(CFLAGS) -w
+	X_CFLAGS = -fPIC
+  ifdef NAG90
+      MKNAGFLAG=TRUE
+  else 
+    ifdef VASTF90
+      NO_DEF=TRUE
+      FC=/usr/local/vastf90/bin/f90
+      FC90=/usr/local/vastf90/bin/f90
+      MODEXT=vo
+      XFLIB = -L$(LIBROOT)/vastf90/lib -lvast90 -lf2c -lm
+      FFLAGS = -c -O -ff90
+      DFFLAGS = -c -g -ff90
+    else
+      ifdef NAG95
+        MKNAGFLAG=TRUE
+      else
+	ifdef Portland
+          NO_DEF=TRUE
+          FC=pgf90
+          FC90=pgf90
+	endif
+      endif
+    endif
+  endif
+# endif "ifdef NAG90"
+
+  ifeq "$(findstring ifc,$(FC))" "ifc"
+    NO_DEF=TRUE
+    __IFC=true
+    FC90=ifc
+    FFLAGS = -c -O1 -w 
+    DFFLAGS = -c -g -C 
+    FIXEDE = -132
+    DYNAMIC=-auto
+    MFLAGS= -I
+    MODEXT=d
+    LDFLAGS = -Vaxlib
+    DEFS = -D__IFC
+    XLIBS = /lib/libc.so.6
+    XFLIB = -L/usr/local/intelfc/compiler50/ia32/lib  -lCEPCF90 -lintrins -lIEPCF90 -lF90 -lm -lcxa 
+    CLIBS = -lstdc++
+  endif
+  ifeq "$(findstring g77,$(FC))" "g77"
+    NO_DEF=TRUE
+    FFLAGS = -c -O3
+    DFFLAGS = -c -g
+  endif
+  ifeq "$(findstring pgf77,$(FC))" "pgf77"
+    NO_DEF=TRUE
+  endif
+  ifeq "$(findstring pgf90,$(FC))" "pgf90"
+    NO_DEF=TRUE
+  endif
+  ifeq "$(findstring lf90,$(FC))" "lf90"
+    FORTRAN_COMMAND = lf90
+  endif
+  ifeq "$(findstring lf95,$(FC))" "lf95"
+    FORTRAN_COMMAND = lf95
+  endif
+
+  ifdef FORTRAN_VARIANT
+      ifeq ("${FORTRAN_VARIANT}","Portland") 
+	ifeq ("${FORTRAN_TYPE}","90")
+	  FC=pgf90
+          FC90=pgf90
+	else
+	  FC=pgf90
+          FC90=pgf90
+	endif
+      endif
+      ifeq ("${FORTRAN_VARIANT}","NagWare")
+        MKNAGFLAG=TRUE
+      endif	 
+      ifeq ("${FORTRAN_VARIANT}","Fujitsu")
+        MKFUJITSU=TRUE
+      endif	 
+      ifeq ("${FORTRAN_VARIANT}","LaheyFujitsu")
+        MKLAHEY=TRUE
+      endif	 
+      ifeq ("${FORTRAN_VARIANT}","Absoft")
+	 FFLAGS= -c -O -w -YEXT_NAMES=LCS
+	 DFFLAGS= -c -g -w -YEXT_NAMES=LCS
+	 FFLAGS= -c -O -w 
+	 DFFLAGS= -c -g -w 
+	 FIXEDE=-W132
+	 MFLAGS=-p
+         MODEXT=mod
+	 DEFS := $(DEFS) -D__ABS
+	 CDEFS:= -D__ABS
+         XFLIB= -lm -lU77
+      endif
+  else
+      ifndef NO_DEF
+# DEFAULT = LaheyFujitsu 
+        MKLAHEY=TRUE
+      endif
+  endif
+
+# Portland
+  ifeq "$(findstring pgf77,$(FC))" "pgf77"
+    NO_DEF=TRUE
+    FFLAGS = -c -O3 -Mnoupcase -Mdalign -Mdefaultunit
+    DFFLAGS = -c -g -Mnoupcase -Mdalign -Mdefaultunit
+    FC90=pgf90
+    FFLAGS = -c -O3 
+    DFFLAGS = -c -g
+  endif
+
+  ifeq "$(findstring pgf90,$(FC))" "pgf90"
+    NO_DEF=TRUE
+    ifneq ("$(wildcard $(PREFIX)/pgf90/*)","")
+	LIBDIR  = $(PREFIX)/pgf90/lib
+	MODDIR  = $(PREFIX)/pgf90/mod
+    endif
+    ifneq ("$(wildcard $(LIBROOT)/pgf90/*)","")
+	FLIBROOT= $(LIBROOT)/pgf90
+    endif
+    FC90=pgf90
+    FFLAGS = -c -O3
+    DFFLAGS =  -c -g
+    ifndef FORTLIBS
+       FORTLIBS = -L/usr/pgi/linux86/lib -lpgf90 -lpgf90_rpm1 -lpgf902 -lpgf90rtl -lpgftnrtl -lm -lpgc   
+    endif
+#    CLIBS = -L/usr/i386-glibc20-linux/lib -lstdc++
+    ifndef CLIBS
+      CLIBS = -L/usr/lib/gcc-lib/i386-redhat-linux/egcs-2.96 -lgcc -lstdc++
+    endif
+    USEFC=Y
+#    XFLIB=-lpgftnrtl 
+  endif
+# End Portland
+
+ ifdef MKNAGFLAG
+      ifdef NAG90
+	FC=f90
+      else
+	FC=f95
+	FC90=f95
+      endif
+      FFLAGS := $(FFLAGS) -w -mismatch_all -maxcontin=50 -N150
+      DFFLAGS := -g90 -c -w -mismatch_all -maxcontin=50 -N150
+      XFLIB = -L$(LIBROOT)/lib/NAGWare -lf95 -lm
+      DEFS = -D__NAGWARE
+      FIXED = -72
+      FIXEDE = -132
+  endif
+  ifdef MKFUJITSU
+      ifneq ("$(wildcard $(PREFIX)/ffc/*)","")
+	LIBDIR  = $(PREFIX)/ffc/lib
+	MODDIR  = $(PREFIX)/ffc/mod
+      endif
+      ifneq ("$(wildcard $(LIBROOT)/ffc/*)","")
+	FLIBROOT = $(LIBROOT)/ffc
+      endif
+      ifdef FUJITSU_90
+	FC=f90
+	FC90=f90
+      else
+	FC=f95
+	FC90=f95
+      endif
+      ifdef FORTRAN_COMMAND
+        FC = ${FORTRAN_COMMAND}
+        FC90 = ${FORTRAN_COMMAND}
+      endif
+      DEFS = -D__FUJITSU
+      FIXED = -Fixed
+      FIXEDE = -Fixed -w
+      MFLAGS=-I
+      FFLAGS= -c -O -Am -Kfast -X9 -f1444 -f2004,2006,2008 -Kfap -Nallextput
+      DFFLAGS= -c -g -Am -Haesu -X9 -f1444 -f2004,2006,2008 -Kfap -Nallextput
+      X_FFLAGS = -KPIC
+      X_LDFLAGS = -shared 
+      ifndef FORTLIBS
+        FORTLIBS = -L/usr/local/ffc/lib -lfj9f6 -lfj9i6 -lfj9e6
+      endif
+      SHLIBS = $(FORTLIBS)
+      ifndef
+       CLIBS = -L/usr/lib/gcc-lib/i386-redhat-linux/egcs-2.91.66 -lstdc++
+#      CLIBS = -L/usr/i386-glibc20-linux/lib -lstdc++
+      endif
+      USEFC=Y
+  endif
+  ifdef MKLAHEY
+      ifneq ("$(wildcard $(PREFIX)/lff95/*)","")
+	LIBDIR  = $(PREFIX)/lff95/lib
+	MODDIR  = $(PREFIX)/lff95/mod
+      endif
+      ifneq ("$(wildcard $(LIBROOT)/lff95/*)","")
+	FLIBROOT = $(LIBROOT)/lff95
+      endif
+      FC=lf95
+      FC90=lf95
+      ifdef FORTRAN_COMMAND
+        FC = ${FORTRAN_COMMAND}
+        FC90 = ${FORTRAN_COMMAND}
+      endif
+      DEFS = -D__FUJITSU
+      FIXED = --fix
+      FIXEDE = --wide
+      MFLAGS=-I
+      FFLAGS= -O --trap --trace --quiet -ls 
+      DFFLAGS= -g --trap --trace --chk a,e,s,u 
+      X_FFLAGS = -KPIC
+      X_LDFLAGS = -shared
+      ifndef FORTLIBS
+        FORTLIBS = -L/usr/local/lff95/lib -lfj9f6 -lfj9i6 -lfj9e6 -lfccx86_6a
+      endif
+      SHLIBS= $(FORTLIBS)
+      ifndef CLIBS
+        CLIBS = -L/usr/lib/gcc-lib/i386-redhat-linux/2.96 -lgcc -lstdc++
+      endif
+      USEFC=Y
+      DOUBLE = --dbl
+  endif
+  RPATH= -rpath $(LIBDIR)
+  ifdef FLIBROOT
+	PPLLIB  = -L$(FLIBROOT)/lib -L$(LIBROOT)/lib
+	USRLIB  = $(FLIBROOT)/lib -L$(LIBROOT)/lib   
+  endif
+endif
+#==============
+# End LINUX
+#==============
+
+ifeq ($(sysname),HP-UX)
+        MACHINE=HP
+        OS=HP
+        CC = cc
+#       FC = fort77
+#                                  +es allows lines > 72 characters
+#                                  +A8 does alignment
+#                                  +U77 get /usr/lib/libU77.a
+#                                  +E1 gets nonstandard subs   
+#                                  +E6 allows variable formats.
+#                                  -K = static allocation.
+#                                  +DA  & +DS = HP compat.
+#				   +DA2.0W PA-RISC model
+#
+#       FFLAGS = -c -O3 +es +e +U77  ! U77 = BSD 3F library
+#       FFLAGS = -c -O3 -C +DA2.0    ! "-O -C" does not work on f90 modules
+        FFLAGS = -c +U77
+        DFFLAGS = -c -g +U77
+        CFLAGS = -c -O -w -Ae -Dextname
+        DCFLAGS = -g -c  -Ae -Dextname
+#        XLIBS = -lm
+        XLIBS =
+        XFLIB = -lU77 -lm -lcl
+#       FIXEDE = +es               ! fort77
+#       STATIC = +E7 -K            ! fort77
+        FIXEDE = +extend_source
+        STATIC = +save
+        MODUP = Y
+	FORTLIBS = -L/opt/fortran90/lib -lf -lF90
+	CLIBS =  -lc -L/usr/local/lib -lstdc++ -lm 
+	USEFC=Y
+	X_LDFLAGS = -b
+endif
+
+
+ifeq ($(findstring sn,$(sysname)),sn)
+#  -dp = disable double; -Ca produce CIF file; -p find modules
+	MACHINE=CRAY
+        OS=CRAY
+	MODUP = Y
+	FFLAGS = -O3 -em
+	DFFLAGS = -g -em
+	OUT = -b
+	FPP = cpp
+	FPPFLAGS = -P
+	CPP = cpp
+	CXX = CC
+	CXXFLAGS = -c -h exceptions
+	DCXXFLAGS = -c -g -h exceptions
+	MFLAGS=-p
+	MODEXT=mod
+	RANLIB = :
+	NETCDF=-lnetcdf
+	BLAS=
+	LAPACK=
+	CLIBS = -L/opt/ctl/CC/3.3.0.2/lib -lC
+endif
+
+#	OBJ=$(shell pwd)/$(MACHINE)
+
+OBJ = ../../
+OBJDIR = $(OBJ)/obj
+MDIR = $(OBJ)/mod
+
+MFFLAGS = $(FFLAGS)
+
+# if $(PREFIX)/lib exists,
+# define LLOC to be added when linking
+ifneq ("$(wildcard $(LIBDIR)/libportlib.a)","")
+	LLOC=-L$(LIBDIR)
+endif 
+
+#include directories
+ifneq ("$(wildcard ../incl_cpp/*)","")
+	INCFLAGS := $(IOPT)../incl_cpp
+endif
+ifneq ("$(wildcard ../inclshare/*)","")
+	INCFLAGS := $(INCFLAGS) $(IOPT)../inclshare
+endif
+
+ifneq ("$(wildcard ../include/*)","")
+	INCFLAGS := $(IOPT)../include
+endif
+
+DEFS  := $(DEFS) -D__F90 -D__$(OS) -D__UNIX
+CDEFS := $(CDEFS) -D__$(OS)
+ 
+
+override FPPFLAGS := $(FPPFLAGS) $(INCFLAGS) $(DEFS)
+
+#include for C code
+CINCL = $(IOPT)$(LIBROOT)/include 
+
+ifneq ("$(wildcard $(INCLDIR)/*)","")
+	INCFLAGS := $(INCFLAGS) $(IOPT)$(INCLDIR)
+	CINCL := $(CINCL) $(IOPT)$(INCLDIR)
+endif
+
+ifdef INCLDIR2
+	INCFLAGS := $(INCFLAGS) $(IOPT)$(INCLDIR2)
+	CINCL := $(CINCL) $(IOPT)$(INCLDIR2)
+endif
+
+#include directory for f90 modules
+ifdef __IFC
+     ifneq "$(THISMOD)" ""
+	MODFLAGS := -cl,$(THISMOD).pcl
+     else
+        MODFLAGS :=
+     endif
+else
+	MODFLAGS := $(MFLAGS)$(MDIR)  
+# if some modules (e.g. ezcdf) were already installed, need to add also
+ifneq ("$(wildcard $(MODDIR)/*)","")
+	MODFLAGS := $(MODFLAGS) $(MFLAGS)$(MODDIR)
+endif
+endif
+
+# define location of FPreProc
+PL = ../fpreproc
+ifneq ("$(wildcard $(ETCDIR)/prefpp.pl)","")
+	PL=$(ETCDIR)
+endif
+PREFPP = $(PERL) $(PL)/prefpp.pl
+POSTFPP =  $(PERL) $(PL)/postfpp.pl
+
+# define location of prefpp/postfpp
+ifneq ("$(wildcard $(OBJ)/bin/prefpp)","")
+	PREFPP = $(OBJ)/bin/prefpp
+	POSTFPP = $(OBJ)/bin/postfpp
+else
+ifneq ("$(wildcard $(BINDIR)/prefpp)","")
+	PREFPP = $(BINDIR)/prefpp
+	POSTFPP = $(BINDIR)/postfpp
+endif
+endif
+
+# check if gnu command line editing libs exist
+
+ifndef NO_EDITLIBS
+ifneq ("$(wildcard $(USRLIB)/libtermcap*)","") 
+	EDITLIBS = -lreadline -lhistory -ltermcap
+else
+   ifneq ("$(wildcard /usr/lib/libtermcap*)","") 
+	EDITLIBS = -lreadline -lhistory -ltermcap
+   else
+	ifneq ("$(wildcard /usr/ccs/lib/libtermcap*)","") 
+	   EDITLIBS = -L/usr/ccs/lib -lreadline -lhistory -ltermcap
+        endif
+   endif
+endif
+endif
+
+#check if MDSplus exists
+ifeq ("$(wildcard $(MDSPLUS_DIR)/lib/*)","")
+	MDSLIB=
+endif
+
+#check if HDF exists
+ifeq ("$(wildcard $(LIBROOT)/lib/libdf.*)","")
+	HDF = -lgeneric_dummy
+endif
+#
+#===================================================
+# define function to pre-process/compile c code
+#===================================================
+# result is %.o
+ifeq ($(MACHINE),CRAY)
+define c_proc
+	@cat $< | $(PERL)  -ne \
+	's/F77NAME(\([a-zA-Z0-9_ ]+)\)*/F77NAME\U$$1)/g; print;' > $(OBJDIR)/$<;\
+	$(CC) $(CFLAGS) -I./ $(INCFLAGS) $(CDEFS) -o $(OBJDIR)/$*.o $(OBJDIR)/$<;\
+	if test -z "$(DEBUG)"; then \
+	rm $(OBJDIR)/$<; fi
+endef
+define cxx_proc
+	@cat $< | $(PERL)  -ne \
+	's/F77NAME(\([a-zA-Z0-9_ ]+)\)*/F77NAME\U$$1)/g; print;' >  $(OBJDIR)/$<;\
+	$(CXX) $(CXXFLAGS) -I$(OBJ)/obj $(INCFLAGS) $(CDEFS) -o $(OBJDIR)/$*.o $(OBJDIR)/$<;\
+	if test -z "$(DEBUG)"; then \
+	rm $(OBJDIR)/$<; fi
+endef
+else
+define c_proc
+	$(CC) $(CFLAGS) -I./ $(INCFLAGS) $(CDEFS) -o $(OBJDIR)/$*.o $<
+endef
+define cxx_proc
+	$(CXX) $(CXXFLAGS) -I./ $(INCFLAGS) $(CDEFS) -o $(OBJDIR)/$*.o $<
+endef
+endif
+
+#            --------------------------------------------------
+
+ifdef __IFC
+define rm_f
+   @if test -z "$(DEBUG)"; then \
+     rm -f $(OBJDIR)/$*.f*; fi
+endef
+else
+define rm_f
+   @if test -z "$(DEBUG)"; then \
+     rm -f $(OBJDIR)/$*.f*; fi
+   $(mv_mod)
+endef
+endif
+
+#
+# functions for fortran pre/processing using perl
+#================================================
+# USE for ARCHIVES
+
+# define function to pre-process/compile fixed length fortran 90 code
+define F_proc
+	@$(PREFPP) $< | $(FPP) $(FPPFLAGS) - | $(POSTFPP) > $(OBJDIR)/$*.f
+	@$(FC) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(FIXED) $(OUT) $(OBJDIR)/$*.o $(OBJDIR)/$*.f
+	$(rm_f)
+endef
+
+
+# define function to pre-process/compile free form fortran 90 code
+define F90_proc
+	@$(PREFPP) -free $< | $(FPP) $(FPPFLAGS) - | $(POSTFPP) -free > $(OBJDIR)/$*.f90
+	@$(FC90) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(OUT) $(OBJDIR)/$*.o $(OBJDIR)/$*.f90
+$(rm_f)
+endef
+
+
+# define function to pre-process/compile fixed length fortran 90 code
+# 07/08/02 - CAL: Alex's perl scripts; replaced by above
+define F_proc_pl
+	@$(PERL) $(PL)/prefpp.pl $< | $(FPP) $(FPPFLAGS) - | $(PERL) $(PL)/postfpp.pl > $(OBJDIR)/$*.f
+	@$(FC) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(FIXED) $(OUT) $(OBJDIR)/$*.o $(OBJDIR)/$*.f
+	$(rm_f)
+endef
+
+
+# define function to pre-process/compile free form fortran 90 code
+define F90_proc_pl
+@$(PERL) $(PL)/prefpp.pl -free $< | $(FPP) $(FPPFLAGS) - | $(PERL) $(PL)/postfpp.pl -free > $(OBJDIR)/$*.f90
+@$(FC90) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(OUT) $(OBJDIR)/$*.o $(OBJDIR)/$*.f90
+$(rm_f)
+endef
+#                    -----------------------------
+#
+# functions for fortran pre/processing using perl
+#==================================================
+# Note: these are to support TRANSP conventions
+#       all code is pre-processed
+# USE for executable test programs - when  $* contains $OBJECTDIR
+
+#Fixed Form Fortran 90
+define proc_F
+@$(PERL) $(PL)/prefpp.pl $< | $(FPP) $(FPPFLAGS) - | $(PERL) $(PL)/postfpp.pl > $*.f
+$(FC) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(FIXED) $(OUT) $*.o $*.f
+$(rm_f)
+endef
+
+# Free Form Fortran 90
+define proc_F90
+@$(PERL) $(PL)/prefpp.pl -free $< | $(FPP) $(FPPFLAGS) - | $(PERL) $(PL)/postfpp.pl -free > $*.f90
+$(FC) $(FFLAGS) $(MODFLAGS) -I./ $(INCFLAGS) $(OUT) $*.o $*.f90
+$(rm_f)
+endef
+
+
+#----------------------------------------------------------------------
+
+# processing of f90 modules
+#==========================
+
+# move f90 modules to "$MDIR" dir
+# Note:
+# mv $*.$(MODEXT) $(MDIR)
+# does not work, since module may have different name than file
+# Also: module files are always in CWD
+
+#ifdef MVU
+#define mv_mod
+#   mv $(shell  echo $(*F) | tr 'a-z' 'A-Z').$(MODEXT) $(MDIR)/
+#endef
+#endif
+ifeq ($(OS),LINUX)
+define mv_mod
+   @list=`/bin/ls *.$(MODEXT) 2> /dev/null`; \
+   for i in  $$list; do \
+     mv $$i $(MDIR)/; done
+endef
+else
+define mv_mod
+   @if test -f *.$(MODEXT); then \
+     mv *.$(MODEXT) $(MDIR)/; fi
+endef
+endif
+
+#--------------------------------------------------------------------
+# ARCHIVES
+#==========
+
+ifndef __IFC
+define make_ar
+	@ar r $(ARC)  $(OBJDIR)/$*.o
+	@$(mv_mod)
+	@rm -f $(OBJDIR)/$*.o
+endef
+else
+define make_ar
+	@ar r $(ARC)  $(OBJDIR)/$*.o
+	@rm -f $(OBJDIR)/$*.o
+endef
+endif
+
+#For Intel Fortran Compiler
+#---------------------------
+define add_work.pc
+	$(md_mod)
+	@cp $(THISMOD).pc* $(MDIR)/
+	@if [ ! -e $(MDIR)/work.pcl ]; then \
+	touch $(MDIR)/work.pcl; \
+	echo "work.pc" > $(MDIR)/work.pcl; \
+	cp $(THISMOD).pc $(MDIR)/work.pc; fi 
+	@echo "$(MDIR)/$(THISMOD).pc" >> $(MDIR)/work.pcl
+	@echo "$(MDIR)/$(THISMOD).pc" >> $(MDIR)/$(THISMOD).pcl
+endef
+
+define mk_work.pc
+	@if [ ! -e $(THISMOD).pcl ]; then \
+	touch $(THISMOD).pcl; \
+	echo "$(THISMOD).pc" > $(THISMOD).pcl; \
+	echo "$(OBJ)/mod/work.pc" >> $(THISMOD).pcl; fi
+endef
+

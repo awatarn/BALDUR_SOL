@@ -1,0 +1,73 @@
+#!/bin/csh
+#   sprofcdf:  script to read profiles from 2-D data file
+# and write output lists in a form that xmgr can use.
+#
+#   To use this script, type:
+#
+# sprofcdf exp-file rplot-file-base-name time
+#
+#   where:
+# exp-file is the full name of the 2-D U-file with experimental data
+# time     is the time in seconds
+#
+#   for example:
+# sprofcdf ../exp/tftr_73268_2d.dat 3.5 3.6 3.7
+#
+#   The output appears in the files:
+# exp-NE-<time>.dat
+# exp-TE-<time>.dat
+# exp-TI-<time>.dat
+#
+# Too few arguments
+#
+if ( $#argv < 2 ) then
+  echo sprofcdf: script to read profiles from 2-D data file
+  echo  and plot them at a given time
+  echo To use this script, type:
+  echo sprofcdf exp-file rplot-file-base-name time
+  echo where:
+  echo exp-file is the full name of the 2-D U-file with experimental data
+  echo time     is the time in seconds
+  echo for example:
+  echo sprofcdf ../exp/tftr_73268_2d.dat 3.5 3.6 3.7
+  exit 1
+endif
+#
+#
+# read NE profile from simulation data
+#
+#getprofcdf << END
+# &nin
+# filein  = '$2XF.PLN',
+# lrplot = .TRUE.,
+# fileout = '$2-NE-$3.dat',
+# profname = 'NE',
+# rmajname = 'RMAJC',
+# rminname = 'RZON',
+# rnorname = 'XZONI',
+# time     = $3,
+# convrad  = 1.0e-2,
+# convprof = 1.0e+6,
+# lrmajor  = .TRUE.,
+# lrminor  = .FALSE.,
+# lrnorm   = .FALSE.,
+# /
+#END
+#
+# read TI profile from experimental data
+#
+getprofcdf << END
+ &nin
+ filein  = '$1',
+ fileout = 'prof-TI.dat',
+ profname = 'TI',
+ rmajname = 'RMAJOR',
+ rminname = 'RMINOR',
+ time     = $2,
+ convprof = 1.e-3,
+ convrad  = 1.0,
+ lrmajor  = .TRUE.,
+ lrminor  = .FALSE.,
+ lrnorm   = .FALSE.,
+ /
+END
