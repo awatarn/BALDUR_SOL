@@ -21,6 +21,7 @@ c
 c**********************************************************************c
 c----------------------------------------------------------------------c
 c@trcoef  .../baldur/bald/dtransp.f
+c pub 16-dec-16 add option for neoclassical transport in SOL
 c rgb 12-jul-01 removed comtrp
 c rgb 27-jun-01 use lneocl(1) = 1 to call nclass_int
 c   lneocl(1) replaces cfutz(281) as neoclassical model switch
