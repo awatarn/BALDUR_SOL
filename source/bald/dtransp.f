@@ -29,10 +29,10 @@ c rgb 17-jun-01 Added convective velocities
 c   veltis, veltes, velnis, velnhs
 c   changed from dneo1 to dnneo1(j1,j2,jz)
 c rap 29-may-01 Normalization of xineo1 is changed
-c rap 02-may-00 Dimension of dneo1 is increased to account different 
+c rap 02-may-00 Dimension of dneo1 is increased to account different
 c               contribution from different hydrogenic atoms
 c rap 23-feb-00 call ifix(...) changed to call int(...)
-c rap  15-feb-00 changed Hollerith character representation into '...' 
+c rap  15-feb-00 changed Hollerith character representation into '...'
 c                in call mesage(...) and call error_olymp(...)
 c rgb 02-jun-96 removed if(.not.inital) go to 550
 c rgb 16-apr-95 change call theory -> call ptheory
@@ -45,7 +45,7 @@ c   for now until I revise the structure of dnhis, dnihs, ...
 c   which have peculiarities of the Rutherford neoclassical transport
 c   model built into them.  Sort this out later.
 c rgb 11-sep-93 new diffusivity matrix from Weiland model sbrtn etawn6
-c rgb 04-feb-93 matrix form of Nordman-Weiland model from sbrtn theory 
+c rgb 04-feb-93 matrix form of Nordman-Weiland model from sbrtn theory
 c rgb 17-jul-92 added xeneo2(mj) to common
 c   electron thermal heat flux due to ion temperature gradient
 c  les  2-jan-90  changes for d-3he fusion
@@ -119,7 +119,7 @@ c
      1   zk(22)       , zahred(2,2)  , yitgrd(mj)   ,
      2   ydbohm(mj)   , ydpsdo(mj)   , ydkp(mj)     ,
      3   ycd(mj)      , ydrift(mj)   , ydtpe(mj)    , ydtpi(mj)    ,
-     4   yki6rg(mj)   , ykeneo(mj)   , ykanom(mj)   
+     4   yki6rg(mj)   , ykeneo(mj)   , ykanom(mj)
 !cap     &   aspinv(mj)
 c
 c
@@ -212,7 +212,7 @@ c     7          ikeem2,ikeem3,ikeemq,ikeem4 /29,30,16,17/,
 c     8         idhq1,idiq1,ikeq1,ikiq1 /31,32,33,34/,
 c     9         idhem2,idhem3,idhem4,idiem2,idiem3,idiem4
 c     1         /35,36,37,38,39,42/
- 
+
 c               cfutz(izfebp) is the exponent of epsilon**2*beta
 c               poloidal factor renormalizing the temperature
 c               dependence of q<1 transport
@@ -525,7 +525,7 @@ c       density equations:
 c
 c       d(rhohs(ih,2,jz))/dt = div ( - flux hyd. ih) + source terms
 c               - sink terms - recoms(ih,j)*rhohs(ih,2,jz)
-c       d(rhois(ii,2,jz))/dt 
+c       d(rhois(ii,2,jz))/dt
 c               = div ( - flux imp. ii) + source terms - sink terms
 c
 c       energy equations:
@@ -536,7 +536,7 @@ c                       - k * T_e * veltes(jz)
 c                       + 3/2 k * T_e * total electron flux ]
 c               + ohmic heating term + source terms - sink terms
 c               - cnueqs(jz)*k*( T_e - T_i )
-c       d(ion energy dens.)/dt = div { 
+c       d(ion energy dens.)/dt = div {
 c                 ditis(jz)* grad ti + dites(jz)* grad te
 c               + sum over ih2 [ dinhs(ih2,jz)* grad dens hyd. ih2 ]
 c               + sum over ii2 [ dinis(ii2,jz)* grad dens imp. ii2 ]
@@ -780,11 +780,11 @@ c
 c..simple neoclassical transport models
 c  and transport from magnetic ripple
 c
-      if ( lneocl(1) == 1 ) then 
+      if ( lneocl(1) == 1 ) then
         call nclass_int
-      else 
+      else
         call trneo1
-      endif	 	
+      endif
 cbate      call tripl1
 c
 c**********************************************************************c
@@ -890,7 +890,7 @@ c
 cpub1
 c      write(*,*) 'start of main do-loop over the radial index jz'
 c      write(*,*) 'cpub> ,jz,detes(jz),cfutz(ikeneo),xeneo1(jz)'
-cpub2 
+cpub2
       do 1540 jz = lcentr, mzones
 c
 c
@@ -1030,7 +1030,7 @@ c
         zeps=gx(jz)/epstar
         zbetap=(rhoels(1,jz)*tes(1,jz)+rhoins(1,jz)*tis(1,jz))/
      &          (epslon+bpols(1,jz)**2/(8.0*fcpi))
- 
+
         zfermi=(1.1*za/(1.+za))*(zbetap*(zeps+epslon)**2)**cfutz(izfebp)
       else
         zfermi=0.
@@ -1314,14 +1314,18 @@ c
 c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
       dnhs(jh,jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
      1  (cfutz(iscrp1)-dnhs(jh,kscrp2))
-      dnhs(jh,jz)=dnhs(jh,jz)+dnhs(jh,kscrp2)      
+      dnhs(jh,jz)=dnhs(jh,jz)+dnhs(jh,kscrp2)
       go to 1260
  1220 continue
 cpub if cfutz(iscrp1) = 1234567, it'll be overided by neocls transport
       if(cfutz(iscrp1).gt.1234566 .and. cfutz(iscrp1).lt.1234568) then
-	dnhs(jh,jz)=cfutz(idhneo) * dnneo1(jh, jh, jz)
+	    dnhs(jh,jz)=cfutz(idhneo) * dnneo1(jh, jh, jz)
+cpub elseif cfutz(iscrp1) = 2222222, it'll be overided by anomalous
+      elseif(cfutz(iscrp1).gt.222221.and.cfutz(iscrp1).lt.222223) then
+      dnhs(jh,jz)=zd6rgm
+cpub otherwise, it'll be set to its input value
       else
-	dnhs(jh,jz)=cfutz(iscrp1)
+      dnhs(jh,jz)=cfutz(iscrp1)
       endif
       go to 1260
 c
@@ -1373,7 +1377,7 @@ cap
         else
           z21 = difthi(2,2,jz) * uisl**2
           zsum = min( zsum+z21, cfutz(idlimt) ) - z21
-        endif 
+        endif
       endif
 c
       dnhs(jh,jz) = zsum
@@ -1441,9 +1445,13 @@ c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
  1290 continue
 cpub if cfutz(iscrp2) = 1234567, it'll be overided by neocls transport
       if(cfutz(iscrp2).gt.1234566 .and. cfutz(iscrp2).lt.1234568) then
-	dnhs(ji,jz)=cfutz(idineo) * dnneo1(ii, ii, jz)
-      else 
-	dnis(ji,jz)=cfutz(iscrp2)
+      dnis(ji,jz)=cfutz(idineo) * dnneo1(ii, ii, jz)
+cpub elseif cfutz(iscrp2) = 2222222, it'll be overided by anomalous
+      elseif(cfutz(iscrp2).gt.222221.and.cfutz(iscrp2).lt.222223) then
+      dnis(jh,jz)=zd6rgm
+cpub otherwise, it'll be set to its input value
+      else
+      dnis(ji,jz)=cfutz(iscrp2)
       endif
       go to 1330
 c
@@ -1491,7 +1499,7 @@ cap
         else
           z21 = difthi(4,4,jz) * uisl**2
           zsum = min( zsum+z21, cfutz(idlimt) ) - z21
-        endif 
+        endif
       endif
 c
       dnis(ji,jz) = zsum
@@ -1528,8 +1536,8 @@ c**********************************************************************c
 c
 c                       k-e
 c
-c      
-c      
+c
+c
       ykeneo(jz)=0.0
       if(nadump(1).le.lcentr) go to 1380
       if(cfutz(idivrt).le.epslon) go to 1360
@@ -1549,9 +1557,13 @@ c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
  1370 continue
 cpub if cfutz(iscrp3) = 1234567, it'll be overided by neocls transport
       if(cfutz(iscrp3).gt.1234566 .and. cfutz(iscrp3).lt.1234568) then
-	detes(jz)=cfutz(ikeneo) * xeneo1(jz)
-      else 
-	detes(jz)=cfutz(iscrp3)
+      detes(jz)=cfutz(ikeneo) * xeneo1(jz)
+cpub elseif cfutz(iscrp3) = 2222222, it'll be overided by anomalous
+      elseif(cfutz(iscrp3).gt.222221.and.cfutz(iscrp3).lt.222223) then
+      detes(jz)=1.5*(5.0*zdtpi+zdtpe+zdrift)
+cpub otherwise, it'll be set to its input value
+      else
+      detes(jz)=cfutz(iscrp3)
       endif
       go to 1430
 c
@@ -1559,7 +1571,7 @@ c
       call resetr(zk,22,0.0)
       zk(1) = cfutz(ikeps) * zdpseu * 1.5
       zk(2) = cfutz(ikebom) * zdbohm * 1.5
-      zk(3) = cfutz(ikeneo) * xeneo1(jz)      
+      zk(3) = cfutz(ikeneo) * xeneo1(jz)
 c
       ykeneo(jz)=zk(3)
 c
@@ -1635,7 +1647,7 @@ cap
           z21 = difthi(3,3,jz) * uisl**2
           detes(jz) = min( detes(jz)+z21, cfutz(ixelmt) ) - z21
           if( abs(detes(jz)-cfutz(ixelmt)) .le. epslon ) imax=10
-        endif 
+        endif
       endif
 c
  1430 continue
@@ -1679,7 +1691,7 @@ cb        denes(jz) = denes(jz)
 cb     &    + difthi(3,2,jz) * uisl**2 * tes(1,jz)
 c
 c  Note:  This term should be
-c    denes(jz) = denes(jz) + uisl**2 * tes(1,jz) *  
+c    denes(jz) = denes(jz) + uisl**2 * tes(1,jz) *
 c     ( difthi(3,2,jz) * grad n_H / n_H
 c     + difthi(3,4,jz) * grad n_Z / n_Z ) * n_e / grad n_e
 c
@@ -1692,7 +1704,7 @@ c
 c
       ykineo(jz)=0.0
       yitgrd(jz)=0.0
-cpub1      
+cpub1
       if(nadump(1).le.lcentr) go to 1440
       if(cfutz(idivrt).le.epslon) go to 1439
       if(jz.lt.nadump(1)) go to 1440
@@ -1711,12 +1723,16 @@ cpub1
  1438 continue
 cpub if cfutz(iscrp3) = 1234567, it'll be overided by neocls transport
       if(cfutz(iscrp3).gt.1234566 .and. cfutz(iscrp3).lt.1234568) then
-	ditis(jz)=cfutz(ikineo) * xineo1(jz) * rhoins(1, jz)
-      else 
-	ditis(jz)=0.5*cfutz(iscrp3)
+	    ditis(jz)=cfutz(ikineo) * xineo1(jz) * rhoins(1, jz)
+cpub elseif cfutz(iscrp3) = 2222222, it'll be overided by anomalous
+      elseif(cfutz(iscrp3).gt.222221.and.cfutz(iscrp3).lt.222223) then
+      ditis(jz)=1.5*cfutz(iki6on)*zd6rgm*rhoins(1,jz)
+cpub otherwise, it'll be set to its input value
+      else
+	    ditis(jz)=0.5*cfutz(iscrp3)
       endif
       go to 1470
-cpub2      
+cpub2
 
 c
  1440 continue
@@ -1770,7 +1786,7 @@ cap
           z21 =  difthi(1,1,jz) * uisl**2 * rhoins(1,jz)
           ditis(jz) = min( ditis(jz)+z21, z0 ) - z21
           if ( ditis(jz) .eq. z0 ) imax=10
-        endif 
+        endif
       endif
  1470 continue
 c
@@ -1849,7 +1865,7 @@ cbate        denes(jz) =0.0
 c
 c
 cpub1
-c      write(*,*) 'cpub> ',jz,detes(jz),cfutz(ikeneo),xeneo1(jz) 
+c      write(*,*) 'cpub> ',jz,detes(jz),cfutz(ikeneo),xeneo1(jz)
 cpub2
  1540 continue
 c
