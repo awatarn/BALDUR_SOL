@@ -1068,8 +1068,9 @@ c
 c**********************************************************************c
 c
 cl             six-regime model (rutherford)
-c
-      if((cfutz(i6regm).gt.epslon).and.(jz.le.kscrp3)) go to 920
+cpub allow to compute six-regime model in SOL
+c      if((cfutz(i6regm).gt.epslon).and.(jz.le.kscrp3)) go to 920
+      if((cfutz(i6regm).gt.epslon)) go to 920
         zd6rgm=0.0
         go to 1040
   920 continue
@@ -1153,6 +1154,9 @@ c
       zncrit=6.0e+13*zcrit0*tes(1,jz)*tes(1,jz)
       z0=rhoels(1,jz)/(zncrit+epslon)
 c
+cpub add default value (in SOL)
+      zdtpe=0.0
+c
       if ( z0 .gt. 13. ) then
 c
 c..90-degree scattering frequency
@@ -1173,6 +1177,7 @@ c
           zdtpe = 3.0*z2/(znu+10.0*znu0)
         endif
 c
+c        write(*,*) 'zdtpe= ',zdtpe,' - ',z0,' - ',zdbohm
         zdtpe=zdtpe*exp(-z0)
         zdtpe=(zdbohm*zdtpe)/(zdbohm+zdtpe)
 c
@@ -1181,6 +1186,13 @@ c
         zdtpe=0.0
 c
       endif
+cpub add stability check for zdtpe
+      if (zdtpe.gt.0.0) then
+         zdtpe=zdtpe
+      else
+         zdtpe=0.0
+      endif
+c
 c
 c     trapped-ion effects
 c
@@ -1189,6 +1201,9 @@ c
       zncrit=2.2e+12*zcrit0*tes(1,jz)*tis(1,jz)/
      1  (ahmean(1,jz)**.33333333333)
       z0=rhoels(1,jz)/(zncrit+epslon)
+c
+cpub add default value for zdtpi
+      zdtpi=0.0
 c
       if ( z0 .gt. 13.) then
 c
@@ -1212,6 +1227,9 @@ c
 c     combined particle-diffusion coefficient
 c
       zd6rgm=zrnrt*(1.5*zdtpi+zdtpe)+zdtpi+zdrift
+cpub add print-out
+c      write(*,*) 'jz= ',jz,' zd6rgm= ',zd6rgm,' - ',zdtpi,' - ',zdtpe
+c     1           ,' - ',zdrift,' - ',z0,' - ',zrnrt
 c
 c     output arrays
 c
@@ -1312,8 +1330,10 @@ c
       if(jz.le.lcentr) go to 1230
       if(jz.gt.kscrp1) go to 1220
 c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
+c      dnhs(jh,jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
+c     1  (cfutz(iscrp1)-dnhs(jh,kscrp2))
       dnhs(jh,jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
-     1  (cfutz(iscrp1)-dnhs(jh,kscrp2))
+     1  (2500-dnhs(jh,kscrp2))
       dnhs(jh,jz)=dnhs(jh,jz)+dnhs(jh,kscrp2)
       go to 1260
  1220 continue
@@ -1444,8 +1464,10 @@ c
       if(jz.le.lcentr) go to 1300
       if(jz.gt.kscrp1) go to 1290
 c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
+c      dnis(ji,jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
+c     1  (cfutz(iscrp2)-dnis(ji,kscrp2))
       dnis(ji,jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
-     1  (cfutz(iscrp2)-dnis(ji,kscrp2))
+     1  (2500-dnis(ji,kscrp2))
       dnis(ji,jz)=dnis(ji,jz)+dnis(ji,kscrp2)
       go to 1330
  1290 continue
@@ -1564,8 +1586,12 @@ c
       if(jz.le.lcentr) go to 1380
       if(jz.gt.kscrp1) go to 1370
 c       zdx0=1./(xbouni(kscrp1)-xbouni(kscrp2)), see 340
+cpub comment out 2 following sentences. Do linear interpolation
+cpub of detes to 5000 cm**2/s, not cfutz(iscrp3)
+c      detes(jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
+c     1  (cfutz(iscrp3)-zkes0)
       detes(jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
-     1  (cfutz(iscrp3)-zkes0)
+     1  (5000-zkes0)
       detes(jz)=detes(jz)+zkes0
       go to 1430
  1370 continue
@@ -1739,8 +1765,12 @@ cpub1
       if(jz.lt.kscrp3) go to 1440
       if(jz.le.lcentr) go to 1440
       if(jz.gt.kscrp1) go to 1438
+cpub comment out 2 following sentences. Do linear interpolation
+cpub of detes to 5000 cm**2/s, not cfutz(iscrp3)
+c      ditis(jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
+c     1  (cfutz(iscrp3)-zkes0)
       ditis(jz)=zdx0*(xbouni(jz)-xbouni(kscrp2))*
-     1  (cfutz(iscrp3)-zkes0)
+     1  (2500-zkes0)
       ditis(jz)=(ditis(jz)+zkes0)*rhoins(1,jz)
       go to 1470
  1438 continue
@@ -1750,6 +1780,8 @@ cpub if cfutz(iscrp3) = 1234567, it'll be overided by neocls transport
 cpub elseif cfutz(iscrp3) = 2222222, it'll be overided by anomalous
       elseif(cfutz(iscrp3).gt.222221.and.cfutz(iscrp3).lt.222223) then
       ditis(jz)=1.5*cfutz(iki6on)*zd6rgm
+c      write(*,*) 'ditis0=',jz,' - ',jz,' - ',ditis(jz),' - ',
+c     1          cfutz(iki6on),' - ',zd6rgm
         if(ditis(jz).gt.0) then
            ditis(jz)=ditis(jz)
         else
@@ -1818,7 +1850,7 @@ cap
       endif
  1470 continue
 cpub add print-out
-      write(*,*) 'ditis=        ',jz,' - ',ditis(jz),' - ',yki6rg(jz)
+      write(*,*) 'ditis= ',jz,' - ',jz,' - ',ditis(jz),' - ',yki6rg(jz)
      1          ,' - ',rhoins(1,jz),' - ',zk(14)
 c
 c
