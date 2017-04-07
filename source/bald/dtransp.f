@@ -1322,7 +1322,11 @@ cpub if cfutz(iscrp1) = 1234567, it'll be overided by neocls transport
 	    dnhs(jh,jz)=cfutz(idhneo) * dnneo1(jh, jh, jz)
 cpub elseif cfutz(iscrp1) = 2222222, it'll be overided by anomalous
       elseif(cfutz(iscrp1).gt.222221.and.cfutz(iscrp1).lt.222223) then
-      dnhs(jh,jz)=zd6rgm
+        if (zd6rgm.gt.0) then
+           dnhs(jh,jz)=zd6rgm
+        else
+           dnhs(jh,jz)=2500
+        endif
 cpub otherwise, it'll be set to its input value
       else
       dnhs(jh,jz)=cfutz(iscrp1)
@@ -1382,7 +1386,9 @@ cap
 c
       dnhs(jh,jz) = zsum
  1260 continue
-c
+cpub add print-out
+      write(*,*) 'dnhs= ',jh,' - ',jz,' - ',dnhs(jh,jz),' - ',zd6rgm
+     1           ,' - ',zk(14)
 c
 c     set q=1 transport inhibition
        if(iqflag.eq.1 .and. cfutz(isawd).gt.epslon .and. jz.eq.iqzone)
@@ -1448,7 +1454,11 @@ cpub if cfutz(iscrp2) = 1234567, it'll be overided by neocls transport
       dnis(ji,jz)=cfutz(idineo) * dnneo1(ii, ii, jz)
 cpub elseif cfutz(iscrp2) = 2222222, it'll be overided by anomalous
       elseif(cfutz(iscrp2).gt.222221.and.cfutz(iscrp2).lt.222223) then
-      dnis(jh,jz)=zd6rgm
+        if(zd6rgm.gt.0) then
+           dnis(ji,jz)=zd6rgm
+        else
+           dnis(ji,jz)=2500
+        endif
 cpub otherwise, it'll be set to its input value
       else
       dnis(ji,jz)=cfutz(iscrp2)
@@ -1504,6 +1514,10 @@ cap
 c
       dnis(ji,jz) = zsum
  1330 continue
+cpub add print-out
+      write(*,*) 'dnis= ',ji,' - ',jz,' - ',dnis(ji,jz),' - ',zd6rgm
+     1           ,' - ',zk(14)
+c
  1340 continue
 c
 c..convective velocity velnis(jz)
@@ -1561,6 +1575,11 @@ cpub if cfutz(iscrp3) = 1234567, it'll be overided by neocls transport
 cpub elseif cfutz(iscrp3) = 2222222, it'll be overided by anomalous
       elseif(cfutz(iscrp3).gt.222221.and.cfutz(iscrp3).lt.222223) then
       detes(jz)=1.5*(5.0*zdtpi+zdtpe+zdrift)
+        if(detes(jz).gt.0) then
+          detes(jz)=detes(jz)
+        else
+          detes(jz)=5000
+        endif
 cpub otherwise, it'll be set to its input value
       else
       detes(jz)=cfutz(iscrp3)
@@ -1651,6 +1670,10 @@ cap
       endif
 c
  1430 continue
+cpub add print-out
+      write(*,*) 'detes= ',jz,' - ',jz,' - ',detes(jz),' - ',zdtpi
+     1           ,' - ',zdtep,' - ',zdrift,' - ',zk(14)
+c
       if ( jz .eq. kscrp2 ) zkes0=detes(jz)
 c
 c
@@ -1726,7 +1749,12 @@ cpub if cfutz(iscrp3) = 1234567, it'll be overided by neocls transport
 	    ditis(jz)=cfutz(ikineo) * xineo1(jz) * rhoins(1, jz)
 cpub elseif cfutz(iscrp3) = 2222222, it'll be overided by anomalous
       elseif(cfutz(iscrp3).gt.222221.and.cfutz(iscrp3).lt.222223) then
-      ditis(jz)=1.5*cfutz(iki6on)*zd6rgm*rhoins(1,jz)
+      ditis(jz)=1.5*cfutz(iki6on)*zd6rgm
+        if(ditis(jz).gt.0) then
+           ditis(jz)=ditis(jz)
+        else
+            ditis(jz)=2500.0
+        endif
 cpub otherwise, it'll be set to its input value
       else
 	    ditis(jz)=0.5*cfutz(iscrp3)
@@ -1789,6 +1817,9 @@ cap
         endif
       endif
  1470 continue
+cpub add print-out
+      write(*,*) 'ditis=        ',jz,' - ',ditis(jz),' - ',yki6rg(jz)
+     1          ,' - ',rhoins(1,jz),' - ',zk(14)
 c
 c
       ditipr(jz) = ditis(jz)/(rhoins(1,jz)+epslon)
